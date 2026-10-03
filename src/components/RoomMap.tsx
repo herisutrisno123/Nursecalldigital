@@ -42,78 +42,105 @@ export default function RoomMap() {
     }
   };
 
-  // Render detailed room layout
+  // Render detailed room layout - Hospital Room Blueprint Style
   const renderRoomLayout = (room: any) => {
     const bedCount = room.bed_count;
-    const hasBathroom = true; // All rooms have bathroom
+    const hasBathroom = true;
     const isVIP = room.room_type === 'VIP';
     const isICU = room.room_type === 'ICU' || room.room_type === 'NICU';
+    const isHCU = room.room_type === 'HCU';
     
     return (
-      <div className="relative w-full h-full min-h-[140px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-400 overflow-hidden shadow-sm">
+      <div className="relative w-full h-full min-h-[180px] bg-white border-4 border-gray-700 overflow-hidden">
         {/* Room Number Label - Top Left */}
-        <div className="absolute top-1.5 left-1.5 bg-white px-2 py-0.5 rounded text-xs font-bold shadow-sm z-20 border border-gray-300">
+        <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold z-30 border-2 border-gray-700">
           {room.room_number}
         </div>
 
         {/* VIP/ICU Badge - Top Right */}
-        {(isVIP || isICU) && (
-          <div className={`absolute top-1.5 right-1.5 px-2 py-0.5 rounded text-[9px] font-bold z-20 ${
-            isVIP ? 'bg-purple-500 text-white' : 'bg-blue-500 text-white'
+        {(isVIP || isICU || isHCU) && (
+          <div className={`absolute top-2 right-2 px-2 py-1 rounded text-[9px] font-bold z-30 ${
+            isVIP ? 'bg-purple-600 text-white' : 
+            isICU ? 'bg-red-600 text-white' : 
+            'bg-orange-600 text-white'
           }`}>
             {room.room_type}
           </div>
         )}
 
-        {/* Bathroom - Top Right Corner (below badge if exists) */}
+        {/* Bathroom - Top Right Corner */}
         {hasBathroom && (
-          <div className={`absolute top-8 right-1.5 w-12 h-12 bg-blue-50 border-2 border-blue-400 rounded flex flex-col items-center justify-center ${
-            (isVIP || isICU) ? 'mt-1' : ''
-          }`}>
-            <i className="fas fa-bath text-blue-500 text-sm"></i>
-            <span className="text-[7px] text-blue-600 font-medium mt-0.5">KM</span>
+          <div className={`absolute top-10 right-2 w-14 h-16 bg-blue-50 border-2 border-gray-600 flex flex-col items-center justify-center gap-0.5`}>
+            <div className="text-[8px] font-bold text-gray-700">KM</div>
+            {/* Toilet */}
+            <div className="w-4 h-4 bg-white border border-gray-500 rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
+            </div>
+            {/* Sink */}
+            <div className="w-3 h-2 bg-white border border-gray-500 rounded-sm"></div>
           </div>
         )}
 
-        {/* Beds - Center Area */}
-        <div className={`absolute top-10 left-2 right-16 grid gap-2 ${
+        {/* Beds Area */}
+        <div className={`absolute top-12 left-3 ${hasBathroom ? 'right-18' : 'right-3'} grid gap-3 ${
           bedCount === 1 ? 'grid-cols-1' : 'grid-cols-2'
         }`}>
           {Array.from({ length: bedCount }).map((_, i) => (
             <div key={i} className="flex flex-col items-center">
-              {/* Bed */}
-              <div className={`w-full h-14 rounded border-2 ${
-                isICU ? 'bg-blue-100 border-blue-400' :
-                isVIP ? 'bg-purple-100 border-purple-400' :
-                'bg-white border-gray-400'
-              } flex items-center justify-center relative shadow-sm`}>
-                {/* Pillow */}
-                <div className="absolute top-1 left-1 right-1 h-2 bg-gray-200 rounded border border-gray-300"></div>
-                {/* Bed icon */}
-                <i className={`fas fa-bed text-sm ${
-                  isICU ? 'text-blue-600' :
-                  isVIP ? 'text-purple-600' :
-                  'text-gray-600'
-                }`}></i>
-                {/* Bed number */}
-                <span className="absolute bottom-1 right-1 text-[9px] font-bold text-gray-500 bg-white px-1 rounded">
+              {/* Bed Frame */}
+              <div className={`w-full h-16 rounded border-3 ${
+                isICU ? 'bg-blue-50 border-blue-600' :
+                isVIP ? 'bg-purple-50 border-purple-600' :
+                'bg-white border-gray-600'
+              } relative shadow-md`}>
+                {/* Mattress */}
+                <div className="absolute inset-1 bg-white border border-gray-300 rounded-sm">
+                  {/* Pillow */}
+                  <div className="absolute top-1 left-1 right-1 h-3 bg-gray-100 border border-gray-300 rounded-sm"></div>
+                  {/* Blanket */}
+                  <div className="absolute bottom-1 left-1 right-1 h-4 bg-gray-50 border border-gray-200 rounded-sm"></div>
+                </div>
+                
+                {/* IV Stand for ICU */}
+                {isICU && (
+                  <div className="absolute -top-1 -right-1 w-1 h-6 bg-gray-600">
+                    <div className="absolute -top-1 left-0 w-1 h-1 bg-gray-700"></div>
+                  </div>
+                )}
+
+                {/* Bed Label */}
+                <div className="absolute bottom-0.5 right-0.5 bg-white px-1 rounded text-[8px] font-bold text-gray-700 border border-gray-400">
                   {String.fromCharCode(65 + i)}
-                </span>
+                </div>
               </div>
+
+              {/* Nightstand */}
+              <div className="w-4 h-4 bg-amber-100 border border-gray-500 rounded-sm mt-1"></div>
             </div>
           ))}
         </div>
 
-        {/* Architectural Door Design - Bottom Center */}
+        {/* Window - Left Wall */}
+        <div className="absolute top-1/2 left-0 w-1 h-12 bg-blue-300 border-t-2 border-b-2 border-blue-500 transform -translate-y-1/2"></div>
+
+        {/* Door - Bottom Center */}
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-          <div className="relative">
-            {/* Door arc (swinging) */}
-            <div className="w-12 h-12 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-50"></div>
-            {/* Door line */}
-            <div className="absolute bottom-0 left-0 w-0.5 h-12 bg-gray-600"></div>
-            {/* Door threshold */}
-            <div className="absolute bottom-0 left-0 w-12 h-1 bg-amber-600"></div>
+          {/* Door Frame */}
+          <div className="relative w-14">
+            {/* Door Arc */}
+            <div className="w-14 h-14 border-l-3 border-t-3 border-gray-700 rounded-tl-full opacity-40"></div>
+            {/* Door Leaf */}
+            <div className="absolute bottom-0 left-0 w-1 h-14 bg-gray-700"></div>
+            {/* Door Handle */}
+            <div className="absolute bottom-2 left-1 w-1 h-1 bg-gray-900 rounded-full"></div>
+            {/* Threshold */}
+            <div className="absolute bottom-0 left-0 w-14 h-1.5 bg-amber-700"></div>
           </div>
+        </div>
+
+        {/* Nurse Call Button - Near Bed */}
+        <div className="absolute bottom-20 left-4 w-3 h-3 bg-red-500 border-2 border-red-700 rounded-full flex items-center justify-center">
+          <div className="w-1 h-1 bg-white rounded-full"></div>
         </div>
       </div>
     );
@@ -178,7 +205,7 @@ export default function RoomMap() {
                 <button
                   key={room.id}
                   onClick={() => setSelectedRoom(room.id)}
-                  className={`relative p-3 rounded-xl border-2 transition-all min-h-[160px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  className={`relative p-4 rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
                   {/* Status indicator */}
                   <div className="absolute top-2 right-2 z-10">
@@ -215,7 +242,7 @@ export default function RoomMap() {
                 <button
                   key={room.id}
                   onClick={() => setSelectedRoom(room.id)}
-                  className={`relative p-3 rounded-xl border-2 transition-all min-h-[160px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  className={`relative p-4 rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
                   {/* Status indicator */}
                   <div className="absolute top-2 right-2 z-10">
@@ -472,7 +499,7 @@ export default function RoomMap() {
                     <button
                       key={room.id}
                       onClick={() => setSelectedRoom(room.id)}
-                      className={`relative p-4 rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                      className={`relative p-5 rounded-xl border-2 transition-all min-h-[200px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                     >
                       {/* Status indicator */}
                       <div className="absolute top-2 right-2 z-10">
@@ -509,7 +536,7 @@ export default function RoomMap() {
                     <button
                       key={room.id}
                       onClick={() => setSelectedRoom(room.id)}
-                      className={`relative p-4 rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                      className={`relative p-5 rounded-xl border-2 transition-all min-h-[200px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                     >
                       {/* Status indicator */}
                       <div className="absolute top-2 right-2 z-10">
