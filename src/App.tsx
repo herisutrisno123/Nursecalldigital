@@ -7,10 +7,11 @@ import RoomMap from './components/RoomMap';
 import Statistics from './components/Statistics';
 import Integration from './components/Integration';
 import Accounts from './components/Accounts';
+import Trash from './components/Trash';
 import Settings from './components/Settings';
 import DatabaseView from './components/DatabaseView';
 
-type Page = 'dashboard' | 'call-events' | 'device-status' | 'nurse-activity' | 'room-map' | 'statistics' | 'integration' | 'database' | 'accounts' | 'settings';
+type Page = 'dashboard' | 'call-events' | 'device-status' | 'nurse-activity' | 'room-map' | 'statistics' | 'integration' | 'database' | 'accounts' | 'trash' | 'settings';
 
 const menuItems: { id: Page; label: string; icon: string; section?: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'fa-gauge-high', section: 'Monitoring' },
@@ -22,6 +23,7 @@ const menuItems: { id: Page; label: string; icon: string; section?: string }[] =
   { id: 'integration', label: 'Integrasi Gateway', icon: 'fa-network-wired' },
   { id: 'database', label: 'Struktur Database', icon: 'fa-database', section: 'Sistem' },
   { id: 'accounts', label: 'Kelola Akun', icon: 'fa-users-gear' },
+  { id: 'trash', label: 'Sampah', icon: 'fa-trash-can' },
   { id: 'settings', label: 'Pengaturan', icon: 'fa-gear' },
 ];
 
@@ -47,6 +49,7 @@ function App() {
       case 'integration': return <Integration />;
       case 'database': return <DatabaseView />;
       case 'accounts': return <Accounts />;
+      case 'trash': return <Trash />;
       case 'settings': return <Settings />;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
