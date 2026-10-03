@@ -21,7 +21,7 @@ interface RoomLayout {
   createdAt: string;
 }
 
-// Preset Layouts
+// Preset Layouts - Optimized for Professional Architectural Look
 const presetLayouts: RoomLayout[] = [
   {
     id: 'preset-reguler-1',
@@ -30,11 +30,12 @@ const presetLayouts: RoomLayout[] = [
     isPreset: true,
     createdAt: '2026-01-01',
     elements: [
-      { id: 'bed-1', type: 'bed', x: 20, y: 40, width: 60, height: 100, label: 'A' },
-      { id: 'bathroom-1', type: 'bathroom', x: 200, y: 20, width: 80, height: 80 },
-      { id: 'door-1', type: 'door', x: 140, y: 280, width: 60, height: 20 },
-      { id: 'window-1', type: 'window', x: 0, y: 100, width: 10, height: 60 },
-      { id: 'nurse-call-1', type: 'nurse_call', x: 90, y: 30, width: 15, height: 15 },
+      { id: 'bed-1', type: 'bed', x: 30, y: 50, width: 70, height: 110, label: 'A' },
+      { id: 'bathroom-1', type: 'bathroom', x: 220, y: 30, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 70 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 110, y: 40, width: 15, height: 15 },
+      { id: 'wardrobe-1', type: 'wardrobe', x: 220, y: 120, width: 30, height: 60 },
     ]
   },
   {
@@ -44,77 +45,78 @@ const presetLayouts: RoomLayout[] = [
     isPreset: true,
     createdAt: '2026-01-01',
     elements: [
-      { id: 'bed-1', type: 'bed', x: 20, y: 40, width: 60, height: 100, label: 'A' },
-      { id: 'bed-2', type: 'bed', x: 100, y: 40, width: 60, height: 100, label: 'B' },
-      { id: 'bathroom-1', type: 'bathroom', x: 200, y: 20, width: 80, height: 80 },
-      { id: 'door-1', type: 'door', x: 140, y: 280, width: 60, height: 20 },
-      { id: 'window-1', type: 'window', x: 0, y: 100, width: 10, height: 60 },
-      { id: 'nurse-call-1', type: 'nurse_call', x: 50, y: 30, width: 15, height: 15 },
-      { id: 'nurse-call-2', type: 'nurse_call', x: 130, y: 30, width: 15, height: 15 },
+      { id: 'bed-1', type: 'bed', x: 30, y: 50, width: 70, height: 110, label: 'A' },
+      { id: 'bed-2', type: 'bed', x: 120, y: 50, width: 70, height: 110, label: 'B' },
+      { id: 'bathroom-1', type: 'bathroom', x: 220, y: 30, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 70 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 65, y: 40, width: 15, height: 15 },
+      { id: 'nurse-call-2', type: 'nurse_call', x: 155, y: 40, width: 15, height: 15 },
     ]
   },
   {
     id: 'preset-icu',
-    name: 'ICU 1 Bed',
+    name: 'ICU Critical Care',
     roomType: 'ICU',
     isPreset: true,
     createdAt: '2026-01-01',
     elements: [
-      { id: 'bed-1', type: 'bed', x: 60, y: 60, width: 80, height: 120, label: 'A' },
-      { id: 'iv-stand-1', type: 'iv_stand', x: 150, y: 50, width: 10, height: 40 },
-      { id: 'monitor-1', type: 'monitor', x: 180, y: 80, width: 40, height: 50 },
-      { id: 'bathroom-1', type: 'bathroom', x: 200, y: 200, width: 80, height: 80 },
-      { id: 'door-1', type: 'door', x: 140, y: 280, width: 60, height: 20 },
-      { id: 'window-1', type: 'window', x: 0, y: 80, width: 10, height: 80 },
-      { id: 'nurse-call-1', type: 'nurse_call', x: 100, y: 40, width: 15, height: 15 },
-    ]
-  },
-  {
-    id: 'preset-vip',
-    name: 'VIP Suite',
-    roomType: 'VIP',
-    isPreset: true,
-    createdAt: '2026-01-01',
-    elements: [
-      { id: 'bed-1', type: 'bed', x: 40, y: 60, width: 90, height: 130, label: 'A' },
-      { id: 'sofa-1', type: 'sofa', x: 180, y: 40, width: 80, height: 40 },
-      { id: 'tv-1', type: 'tv', x: 200, y: 10, width: 50, height: 10 },
-      { id: 'bathroom-1', type: 'bathroom', x: 200, y: 200, width: 80, height: 80 },
-      { id: 'door-1', type: 'door', x: 140, y: 280, width: 60, height: 20 },
-      { id: 'window-1', type: 'window', x: 0, y: 80, width: 10, height: 100 },
-      { id: 'wardrobe-1', type: 'wardrobe', x: 200, y: 120, width: 30, height: 60 },
-      { id: 'nurse-call-1', type: 'nurse_call', x: 80, y: 40, width: 15, height: 15 },
-    ]
-  },
-  {
-    id: 'preset-hcu',
-    name: 'HCU 1 Bed',
-    roomType: 'HCU',
-    isPreset: true,
-    createdAt: '2026-01-01',
-    elements: [
       { id: 'bed-1', type: 'bed', x: 80, y: 80, width: 80, height: 120, label: 'A' },
-      { id: 'monitor-1', type: 'monitor', x: 180, y: 100, width: 40, height: 50 },
       { id: 'iv-stand-1', type: 'iv_stand', x: 170, y: 70, width: 10, height: 40 },
-      { id: 'door-1', type: 'door', x: 140, y: 280, width: 60, height: 20 },
-      { id: 'window-1', type: 'window', x: 0, y: 100, width: 10, height: 80 },
+      { id: 'iv-stand-2', type: 'iv_stand', x: 70, y: 70, width: 10, height: 40 },
+      { id: 'monitor-1', type: 'monitor', x: 190, y: 100, width: 50, height: 60 },
+      { id: 'bathroom-1', type: 'bathroom', x: 220, y: 220, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 100, width: 15, height: 90 },
       { id: 'nurse-call-1', type: 'nurse_call', x: 120, y: 60, width: 15, height: 15 },
     ]
   },
   {
+    id: 'preset-vip',
+    name: 'VIP Suite Deluxe',
+    roomType: 'VIP',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 50, y: 80, width: 90, height: 130, label: 'A' },
+      { id: 'sofa-1', type: 'sofa', x: 180, y: 60, width: 80, height: 40 },
+      { id: 'tv-1', type: 'tv', x: 200, y: 20, width: 60, height: 12 },
+      { id: 'bathroom-1', type: 'bathroom', x: 220, y: 220, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 100, width: 15, height: 100 },
+      { id: 'wardrobe-1', type: 'wardrobe', x: 220, y: 130, width: 35, height: 70 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 100, y: 60, width: 15, height: 15 },
+    ]
+  },
+  {
+    id: 'preset-hcu',
+    name: 'HCU High Care',
+    roomType: 'HCU',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 90, y: 90, width: 80, height: 120, label: 'A' },
+      { id: 'monitor-1', type: 'monitor', x: 190, y: 110, width: 50, height: 60 },
+      { id: 'iv-stand-1', type: 'iv_stand', x: 180, y: 80, width: 10, height: 40 },
+      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 80 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 130, y: 70, width: 15, height: 15 },
+    ]
+  },
+  {
     id: 'preset-nicu',
-    name: 'NICU Incubator',
+    name: 'NICU Neonatal',
     roomType: 'NICU',
     isPreset: true,
     createdAt: '2026-01-01',
     elements: [
-      { id: 'bed-1', type: 'bed', x: 80, y: 80, width: 70, height: 90, label: 'A' },
-      { id: 'monitor-1', type: 'monitor', x: 170, y: 80, width: 50, height: 60 },
-      { id: 'iv-stand-1', type: 'iv_stand', x: 160, y: 60, width: 10, height: 40 },
-      { id: 'iv-stand-2', type: 'iv_stand', x: 60, y: 60, width: 10, height: 40 },
-      { id: 'door-1', type: 'door', x: 140, y: 280, width: 60, height: 20 },
-      { id: 'window-1', type: 'window', x: 0, y: 100, width: 10, height: 80 },
-      { id: 'nurse-call-1', type: 'nurse_call', x: 110, y: 60, width: 15, height: 15 },
+      { id: 'bed-1', type: 'bed', x: 100, y: 100, width: 70, height: 90, label: 'A' },
+      { id: 'monitor-1', type: 'monitor', x: 190, y: 100, width: 50, height: 60 },
+      { id: 'iv-stand-1', type: 'iv_stand', x: 180, y: 80, width: 10, height: 40 },
+      { id: 'iv-stand-2', type: 'iv_stand', x: 90, y: 80, width: 10, height: 40 },
+      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 80 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 135, y: 80, width: 15, height: 15 },
     ]
   },
 ];
@@ -182,11 +184,16 @@ export default function RoomLayoutEditor() {
     const item = toolboxItems.find(i => i.type === draggedItem);
     if (!item) return;
 
+    const GRID_SIZE = 10;
+    // Snap to grid
+    const snappedX = Math.round((x - item.defaultWidth / 2) / GRID_SIZE) * GRID_SIZE;
+    const snappedY = Math.round((y - item.defaultHeight / 2) / GRID_SIZE) * GRID_SIZE;
+
     const newElement: LayoutElement = {
       id: `${draggedItem}-${Date.now()}`,
       type: draggedItem as any,
-      x: Math.max(0, x - item.defaultWidth / 2),
-      y: Math.max(0, y - item.defaultHeight / 2),
+      x: Math.max(0, snappedX),
+      y: Math.max(0, snappedY),
       width: item.defaultWidth,
       height: item.defaultHeight,
       label: draggedItem === 'bed' ? String.fromCharCode(65 + editorLayout.elements.filter(e => e.type === 'bed').length) : undefined,
@@ -221,15 +228,21 @@ export default function RoomLayoutEditor() {
     const element = editorLayout.elements.find(el => el.id === id);
     if (!element) return;
 
+    const GRID_SIZE = 10; // Snap to 10px grid
+
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const dx = moveEvent.clientX - startX;
       const dy = moveEvent.clientY - startY;
+
+      // Snap to grid
+      const newX = Math.round((element.x + dx) / GRID_SIZE) * GRID_SIZE;
+      const newY = Math.round((element.y + dy) / GRID_SIZE) * GRID_SIZE;
 
       setEditorLayout({
         ...editorLayout,
         elements: editorLayout.elements.map(el =>
           el.id === id
-            ? { ...el, x: Math.max(0, element.x + dx), y: Math.max(0, element.y + dy) }
+            ? { ...el, x: Math.max(0, newX), y: Math.max(0, newY) }
             : el
         ),
       });
@@ -289,7 +302,7 @@ export default function RoomLayoutEditor() {
     setActiveTab('saved');
   };
 
-  // Render element based on type
+  // Render element based on type - Architectural Style
   const renderElement = (element: LayoutElement, isSelected: boolean) => {
     const baseStyle = {
       position: 'absolute' as const,
@@ -299,62 +312,172 @@ export default function RoomLayoutEditor() {
       height: `${element.height}px`,
       transform: `rotate(${element.rotation || 0}deg)`,
       cursor: 'move',
-      border: isSelected ? '2px solid #3b82f6' : '1px solid #6b7280',
-      boxShadow: isSelected ? '0 0 0 2px rgba(59, 130, 246, 0.3)' : 'none',
+      border: isSelected ? '2px solid #2563eb' : '2px solid #1f2937',
+      boxShadow: isSelected ? '0 0 0 3px rgba(37, 99, 235, 0.3)' : '0 1px 3px rgba(0,0,0,0.2)',
     };
 
     switch (element.type) {
       case 'bed':
         return (
-          <div key={element.id} style={baseStyle} className="bg-white border-2 border-gray-600 rounded-sm" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            <div className="absolute top-1 left-1 right-1 h-2 bg-gray-200 rounded-sm"></div>
-            <div className="absolute bottom-1 left-1 right-1 h-3 bg-gray-100 rounded-sm"></div>
-            {element.label && <div className="absolute bottom-0 right-0 bg-white px-1 text-[8px] font-bold">{element.label}</div>}
+          <div key={element.id} style={baseStyle} className="bg-white" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Bed Frame */}
+            <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-gray-50 to-white">
+              {/* Headboard */}
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gray-700"></div>
+              {/* Pillow */}
+              <div className="absolute top-2 left-1 right-1 h-3 bg-white border border-gray-400 rounded-sm"></div>
+              {/* Mattress */}
+              <div className="absolute top-6 left-1 right-1 bottom-4 bg-white border border-gray-300 rounded-sm">
+                {/* Blanket fold */}
+                <div className="absolute bottom-0 left-0 right-0 h-4 bg-gray-100 border-t border-gray-300"></div>
+              </div>
+              {/* Footboard */}
+              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-700"></div>
+            </div>
+            {/* Bed Label */}
+            {element.label && (
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded text-[9px] font-bold text-gray-800 border border-gray-400 shadow-sm">
+                {element.label}
+              </div>
+            )}
           </div>
         );
       case 'bathroom':
         return (
-          <div key={element.id} style={baseStyle} className="bg-blue-50 border-2 border-blue-400 rounded-sm flex items-center justify-center" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            <span className="text-xs font-bold text-blue-600">KM</span>
+          <div key={element.id} style={baseStyle} className="bg-blue-50" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Bathroom Interior */}
+            <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-blue-50 to-blue-100">
+              {/* Toilet */}
+              <div className="absolute top-2 left-2 w-4 h-5 bg-white border-2 border-gray-600 rounded-full">
+                <div className="absolute top-0.5 left-0.5 right-0.5 h-1.5 bg-blue-200 rounded-full"></div>
+              </div>
+              {/* Sink */}
+              <div className="absolute top-2 right-2 w-3 h-3 bg-white border-2 border-gray-600 rounded-sm">
+                <div className="absolute top-0.5 left-0.5 right-0.5 h-0.5 bg-blue-300 rounded-sm"></div>
+              </div>
+              {/* Shower */}
+              <div className="absolute bottom-2 left-2 right-2 h-4 bg-blue-200 border border-blue-400 rounded-sm flex items-center justify-center">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+              </div>
+              {/* Label */}
+              <div className="absolute bottom-1 right-1 text-[7px] font-bold text-blue-700">KM</div>
+            </div>
           </div>
         );
       case 'door':
         return (
-          <div key={element.id} style={baseStyle} className="bg-amber-100 border-2 border-amber-700" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            <div className="w-full h-full border-t-2 border-gray-700 rounded-t-full opacity-50"></div>
+          <div key={element.id} style={{...baseStyle, border: 'none'}} onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Door Frame */}
+            <div className="absolute inset-0 border-2 border-gray-800 bg-amber-50">
+              {/* Door Panel */}
+              <div className="absolute inset-0.5 bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-700">
+                {/* Door Handle */}
+                <div className="absolute top-1/2 right-1 w-1 h-1 bg-gray-800 rounded-full transform -translate-y-1/2"></div>
+              </div>
+            </div>
+            {/* Door Swing Arc */}
+            <div className="absolute -top-12 left-0 w-12 h-12 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-40 pointer-events-none"></div>
           </div>
         );
       case 'window':
         return (
-          <div key={element.id} style={baseStyle} className="bg-blue-200 border-2 border-blue-500" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}></div>
+          <div key={element.id} style={baseStyle} className="bg-gradient-to-br from-blue-100 to-blue-200" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Window Frame */}
+            <div className="absolute inset-0 border-2 border-gray-700">
+              {/* Glass Panes */}
+              <div className="absolute inset-0.5 grid grid-cols-2 gap-0.5">
+                <div className="bg-blue-200 border border-blue-400"></div>
+                <div className="bg-blue-200 border border-blue-400"></div>
+              </div>
+              {/* Window Sill */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600"></div>
+            </div>
+          </div>
         );
       case 'nurse_call':
         return (
-          <div key={element.id} style={baseStyle} className="bg-red-500 border-2 border-red-700 rounded-full flex items-center justify-center" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            <div className="w-2 h-2 bg-white rounded-full"></div>
+          <div key={element.id} style={{...baseStyle, borderRadius: '50%'}} className="bg-red-500" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Nurse Call Button */}
+            <div className="absolute inset-0 rounded-full border-2 border-red-700 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center shadow-lg">
+              <div className="w-2 h-2 bg-white rounded-full shadow-inner"></div>
+            </div>
+            {/* Label */}
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-[7px] font-bold text-red-700 whitespace-nowrap">CALL</div>
           </div>
         );
       case 'iv_stand':
         return (
-          <div key={element.id} style={baseStyle} className="bg-gray-600" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}></div>
+          <div key={element.id} style={baseStyle} className="bg-transparent" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* IV Stand Pole */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-700"></div>
+            {/* IV Stand Base */}
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-3 h-0.5 bg-gray-700"></div>
+            {/* IV Bag */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-blue-300 border border-blue-500 rounded-t-sm"></div>
+            {/* Hook */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0.5 h-1 bg-gray-700"></div>
+          </div>
         );
       case 'monitor':
         return (
-          <div key={element.id} style={baseStyle} className="bg-gray-800 border-2 border-gray-900 rounded-sm flex items-center justify-center" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            <span className="text-[8px] text-green-400 font-bold">MONITOR</span>
+          <div key={element.id} style={baseStyle} className="bg-gray-900" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Monitor Screen */}
+            <div className="absolute inset-0.5 bg-black border border-gray-600 rounded-sm overflow-hidden">
+              {/* Screen Content */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
+                {/* ECG Line */}
+                <div className="w-full h-2 bg-transparent relative">
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-green-500 transform -translate-y-1/2"></div>
+                  <div className="absolute top-1/2 left-1/4 w-1 h-3 bg-green-500 transform -translate-y-1/2 -translate-x-1/2"></div>
+                </div>
+              </div>
+              {/* Monitor Label */}
+              <div className="absolute bottom-0.5 left-0.5 text-[6px] text-green-400 font-bold">MON</div>
+            </div>
+            {/* Monitor Stand */}
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-1 bg-gray-700"></div>
           </div>
         );
       case 'sofa':
         return (
-          <div key={element.id} style={baseStyle} className="bg-purple-100 border-2 border-purple-400 rounded-sm" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}></div>
+          <div key={element.id} style={baseStyle} className="bg-gradient-to-br from-purple-100 to-purple-200" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Sofa Back */}
+            <div className="absolute top-0 left-0 right-0 h-2 bg-purple-400 border-b border-purple-600"></div>
+            {/* Sofa Seat */}
+            <div className="absolute top-2 left-0.5 right-0.5 bottom-0.5 bg-purple-200 border border-purple-400 rounded-sm">
+              {/* Cushions */}
+              <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
+                <div className="bg-purple-100 border border-purple-300 rounded-sm"></div>
+                <div className="bg-purple-100 border border-purple-300 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
         );
       case 'tv':
         return (
-          <div key={element.id} style={baseStyle} className="bg-gray-900 border-2 border-black" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}></div>
+          <div key={element.id} style={baseStyle} className="bg-gray-900" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* TV Screen */}
+            <div className="absolute inset-0.5 bg-black border border-gray-700 rounded-sm">
+              {/* Screen Reflection */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black opacity-80"></div>
+              {/* TV Label */}
+              <div className="absolute bottom-0.5 right-0.5 text-[6px] text-gray-400">TV</div>
+            </div>
+          </div>
         );
       case 'wardrobe':
         return (
-          <div key={element.id} style={baseStyle} className="bg-amber-100 border-2 border-amber-600 rounded-sm" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}></div>
+          <div key={element.id} style={baseStyle} className="bg-gradient-to-br from-amber-100 to-amber-200" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Wardrobe Doors */}
+            <div className="absolute inset-0 border-2 border-amber-700 grid grid-cols-2 gap-0.5 p-0.5">
+              <div className="bg-amber-100 border border-amber-600 rounded-sm relative">
+                <div className="absolute top-1/2 right-0.5 w-0.5 h-2 bg-amber-800 transform -translate-y-1/2"></div>
+              </div>
+              <div className="bg-amber-100 border border-amber-600 rounded-sm relative">
+                <div className="absolute top-1/2 left-0.5 w-0.5 h-2 bg-amber-800 transform -translate-y-1/2"></div>
+              </div>
+            </div>
+          </div>
         );
       default:
         return null;
@@ -520,22 +643,25 @@ export default function RoomLayoutEditor() {
           </div>
 
           {/* Canvas */}
-          <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white rounded-xl border p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="font-semibold text-gray-800">Canvas Denah</h4>
-                <div className="flex gap-2">
+          <div className="lg:col-span-3 space-y-3">
+            <div className="bg-white rounded-xl border-2 border-gray-300 shadow-lg">
+              <div className="bg-gradient-to-r from-gray-100 to-gray-200 px-4 py-3 border-b-2 border-gray-300 flex items-center justify-between">
+                <h4 className="font-bold text-gray-800 flex items-center gap-2">
+                  <i className="fas fa-drafting-compass text-indigo-600"></i>
+                  Canvas Denah Kamar
+                </h4>
+                <div className="flex gap-2 items-center">
                   <input
                     type="text"
                     placeholder="Nama Layout"
                     value={layoutName}
                     onChange={(e) => setLayoutName(e.target.value)}
-                    className="px-3 py-1.5 border rounded-lg text-sm"
+                    className="px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm font-medium focus:border-indigo-500 focus:outline-none"
                   />
                   <select
                     value={roomType}
                     onChange={(e) => setRoomType(e.target.value)}
-                    className="px-3 py-1.5 border rounded-lg text-sm"
+                    className="px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm font-medium focus:border-indigo-500 focus:outline-none"
                   >
                     <option>Reguler</option>
                     <option>VIP</option>
@@ -545,24 +671,59 @@ export default function RoomLayoutEditor() {
                   </select>
                   <button
                     onClick={handleSaveLayout}
-                    className="px-4 py-1.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                    className="px-4 py-1.5 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 shadow-md"
                   >
                     <i className="fas fa-save mr-2"></i>Simpan
                   </button>
                 </div>
               </div>
 
-              <div
-                className="relative w-full h-96 bg-white border-4 border-gray-700 rounded-lg overflow-hidden"
-                onDrop={handleCanvasDrop}
-                onDragOver={handleDragOver}
-                onClick={handleCanvasClick}
-              >
-                {/* Grid */}
-                <div className="absolute inset-0 opacity-10" style={{
-                  backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)',
-                  backgroundSize: '20px 20px'
-                }}></div>
+              <div className="p-4">
+                <div
+                  className="relative w-full h-[500px] bg-white border-4 border-gray-800 rounded-lg overflow-hidden shadow-xl"
+                  onDrop={handleCanvasDrop}
+                  onDragOver={handleDragOver}
+                  onClick={handleCanvasClick}
+                  style={{
+                    backgroundImage: `
+                      linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px),
+                      linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)
+                    `,
+                    backgroundSize: '10px 10px, 10px 10px, 50px 50px, 50px 50px'
+                  }}
+                >
+                {/* Scale Indicator */}
+                <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded shadow text-[10px] font-bold text-gray-700 border border-gray-400 z-10">
+                  Skala 1:50 • Grid 10px
+                </div>
+
+                {/* Dimension Lines - Top */}
+                <div className="absolute top-0 left-0 right-0 h-6 flex items-center justify-center pointer-events-none">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-0.5 bg-gray-600"></div>
+                    <div className="flex-1 h-0.5 bg-gray-600 relative">
+                      <div className="absolute left-0 top-0 w-0.5 h-2 bg-gray-600 -translate-y-1"></div>
+                      <div className="absolute right-0 top-0 w-0.5 h-2 bg-gray-600 -translate-y-1"></div>
+                    </div>
+                    <div className="w-2 h-0.5 bg-gray-600"></div>
+                    <span className="text-[9px] font-bold text-gray-700 bg-white px-1">4.0m</span>
+                  </div>
+                </div>
+
+                {/* Dimension Lines - Left */}
+                <div className="absolute top-0 left-0 bottom-0 w-6 flex items-center justify-center pointer-events-none">
+                  <div className="flex flex-col items-center gap-1 h-full justify-center">
+                    <div className="h-2 w-0.5 bg-gray-600"></div>
+                    <div className="flex-1 w-0.5 bg-gray-600 relative">
+                      <div className="absolute top-0 left-0 h-0.5 w-2 bg-gray-600 -translate-x-1"></div>
+                      <div className="absolute bottom-0 left-0 h-0.5 w-2 bg-gray-600 -translate-x-1"></div>
+                    </div>
+                    <div className="h-2 w-0.5 bg-gray-600"></div>
+                    <span className="text-[9px] font-bold text-gray-700 bg-white px-1 -rotate-90">3.5m</span>
+                  </div>
+                </div>
 
                 {/* Elements */}
                 {editorLayout.elements.map(element => renderElement(element, selectedElement === element.id))}
@@ -576,11 +737,32 @@ export default function RoomLayoutEditor() {
                     </div>
                   </div>
                 )}
+                </div>
               </div>
 
-              <div className="mt-3 text-xs text-gray-500">
-                <i className="fas fa-info-circle mr-1"></i>
-                Tip: Drag elemen dari toolbox, klik elemen untuk memilih, lalu drag untuk memindahkan
+              <div className="px-4 py-3 bg-gray-50 border-t-2 border-gray-300">
+                <div className="flex items-center justify-between text-xs text-gray-600">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1">
+                      <i className="fas fa-info-circle text-indigo-500"></i>
+                      <span>Drag elemen dari toolbox, klik untuk memilih, drag untuk memindahkan</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <div className="w-3 h-3 border border-gray-600 bg-white"></div>
+                      <span>Bed</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <div className="w-3 h-3 border border-blue-400 bg-blue-50"></div>
+                      <span>KM</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <div className="w-3 h-3 border border-amber-700 bg-amber-50"></div>
+                      <span>Pintu</span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
