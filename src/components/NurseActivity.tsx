@@ -3,6 +3,7 @@ import { nurses, nurseActions, callSessions, rooms } from '../data/mockData';
 
 export default function NurseActivity() {
   const [selectedNurse, setSelectedNurse] = useState<string>('all');
+  const [showAddNurseModal, setShowAddNurseModal] = useState(false);
 
   const filteredActions = selectedNurse === 'all'
     ? nurseActions
@@ -23,7 +24,7 @@ export default function NurseActivity() {
   return (
     <div className="space-y-6">
       {/* Nurse Filter */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setSelectedNurse('all')}
@@ -41,6 +42,12 @@ export default function NurseActivity() {
             </button>
           ))}
         </div>
+        <button
+          onClick={() => setShowAddNurseModal(true)}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition shadow-sm"
+        >
+          <i className="fas fa-plus mr-2"></i>Tambah Perawat
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -151,6 +158,123 @@ export default function NurseActivity() {
           <p className="text-xs text-gray-500">Eskalasi</p>
         </div>
       </div>
+
+      {/* Add Nurse Modal */}
+      {showAddNurseModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="p-4 border-b flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i className="fas fa-user-nurse text-green-600"></i>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Tambah Perawat Baru</h3>
+                </div>
+                <button 
+                  onClick={() => setShowAddNurseModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div className="p-4 space-y-3 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Nama Lengkap</label>
+                  <input 
+                    type="text" 
+                    placeholder="Contoh: Nurse Dewi Kartika"
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" 
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">NIP</label>
+                  <input 
+                    type="text" 
+                    placeholder="Nomor Induk Pegawai"
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" 
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Role</label>
+                  <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="nurse">Nurse</option>
+                    <option value="head_nurse">Head Nurse</option>
+                    <option value="assistant_nurse">Assistant Nurse</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Shift</label>
+                  <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="pagi">Pagi</option>
+                    <option value="siang">Siang</option>
+                    <option value="malam">Malam</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Lantai Penugasan</label>
+                  <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value={1}>Lantai 1</option>
+                    <option value={2}>Lantai 2</option>
+                    <option value={3}>Lantai 3</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Status</label>
+                  <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="on_duty">On Duty</option>
+                    <option value="off_duty">Off Duty</option>
+                    <option value="break">Break</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Nomor Telepon</label>
+                  <input 
+                    type="tel" 
+                    placeholder="08xxxxxxxxxx"
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" 
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Email</label>
+                  <input 
+                    type="email" 
+                    placeholder="nama@hospital.com"
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" 
+                  />
+                </div>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+                <i className="fas fa-info-circle mr-1"></i>
+                Setelah perawat ditambahkan, mereka akan langsung dapat ditugaskan untuk merespon panggilan pasien.
+              </div>
+            </div>
+            <div className="p-4 border-t bg-gray-50 flex gap-3 justify-end flex-shrink-0">
+              <button 
+                onClick={() => setShowAddNurseModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={() => setShowAddNurseModal(false)}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-2"
+              >
+                <i className="fas fa-save"></i>
+                Simpan Perawat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
