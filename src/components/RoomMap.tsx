@@ -55,8 +55,16 @@ export default function RoomMap() {
           {room.room_number}
         </div>
 
-        {/* Door */}
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-2 bg-amber-600 rounded-t"></div>
+        {/* Architectural Door Design */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+          {/* Door frame */}
+          <div className="relative w-10 h-1">
+            {/* Door leaf (swinging arc) */}
+            <div className="absolute bottom-0 left-0 w-10 h-10 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-60"></div>
+            {/* Door line */}
+            <div className="absolute bottom-0 left-0 w-0.5 h-10 bg-gray-600"></div>
+          </div>
+        </div>
 
         {/* Beds */}
         <div className={`absolute top-6 left-2 right-2 grid gap-1 ${
@@ -93,11 +101,6 @@ export default function RoomMap() {
             <i className="fas fa-bath text-blue-500 text-xs"></i>
           </div>
         )}
-
-        {/* Wardrobe */}
-        <div className="absolute top-6 right-1 w-6 h-12 bg-amber-100 border border-amber-400 rounded flex items-center justify-center">
-          <i className="fas fa-archive text-amber-600 text-[8px]"></i>
-        </div>
 
         {/* VIP/ICU Badge */}
         {(isVIP || isICU) && (
