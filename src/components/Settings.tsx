@@ -9,6 +9,7 @@ export default function Settings() {
     { id: 'network', label: 'Jaringan', icon: 'fa-wifi' },
     { id: 'commax', label: 'Commax Device', icon: 'fa-microchip' },
     { id: 'backup', label: 'Backup & Restore', icon: 'fa-database' },
+    { id: 'license', label: 'Lisensi', icon: 'fa-certificate' },
     { id: 'about', label: 'Tentang Sistem', icon: 'fa-info-circle' },
   ];
 
@@ -274,6 +275,128 @@ export default function Settings() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* License */}
+          {activeSection === 'license' && (
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-800">Manajemen Lisensi</h3>
+
+              {/* License Status Card */}
+              <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+                      <i className="fas fa-shield-halved text-white text-xl"></i>
+                    </div>
+                    <div>
+                      <p className="text-sm text-green-700 font-medium">Status Lisensi</p>
+                      <p className="text-xl font-bold text-green-800">Aktif — Enterprise</p>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-full">
+                    <i className="fas fa-check-circle mr-1"></i>Valid
+                  </span>
+                </div>
+              </div>
+
+              {/* License Details */}
+              <div className="bg-white border rounded-xl p-5">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Informasi Lisensi</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Tipe Lisensi</span>
+                    <span className="font-medium text-gray-800">Enterprise (Perpetual)</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Nomor Lisensi</span>
+                    <span className="font-mono text-gray-800">NDM-ENT-2026-001234</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Tanggal Aktivasi</span>
+                    <span className="font-medium text-gray-800">01 Januari 2026</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Masa Berlaku</span>
+                    <span className="font-medium text-green-700">Unlimited (Perpetual)</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Support & Update</span>
+                    <span className="font-medium text-gray-800">s/d 31 Desember 2026</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Penerbit</span>
+                    <span className="font-medium text-gray-800">PT. Nurse Digital Indonesia</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-gray-500">Dilaporkan ke</span>
+                    <span className="font-medium text-gray-800">RSUD Harapan Sehat</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="bg-white border rounded-xl p-5">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Fitur yang Tersedia</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {[
+                    { label: 'Manajemen Panggilan Pasien', enabled: true },
+                    { label: 'Monitoring Perangkat Commax', enabled: true },
+                    { label: 'Peta Kamar Real-time', enabled: true },
+                    { label: 'Statistik & Reporting', enabled: true },
+                    { label: 'Integrasi MQTT / API / TCP', enabled: true },
+                    { label: 'Manajemen Akun Multi-Role', enabled: true },
+                    { label: 'Maksimal 512 Channel', enabled: true },
+                    { label: 'Maksimal 100 Kamar', enabled: true },
+                    { label: 'Backup & Restore Otomatis', enabled: true },
+                    { label: 'Audit Trail & Log', enabled: true },
+                    { label: 'Multi-Floor & Multi-Building', enabled: true },
+                    { label: 'Priority Escalation', enabled: true },
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-2 p-2 bg-gray-50 rounded text-sm">
+                      <i className={`fas ${feature.enabled ? 'fa-check-circle text-green-600' : 'fa-times-circle text-gray-400'}`}></i>
+                      <span className={feature.enabled ? 'text-gray-700' : 'text-gray-400'}>{feature.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
+                  <i className="fas fa-key mr-2"></i>Aktivasikan Lisensi Baru
+                </button>
+                <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
+                  <i className="fas fa-sync-alt mr-2"></i>Perbarui Lisensi
+                </button>
+                <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
+                  <i className="fas fa-file-export mr-2"></i>Ekspor File Lisensi
+                </button>
+              </div>
+
+              {/* License History */}
+              <div className="bg-white border rounded-xl p-5">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Riwayat Lisensi</h4>
+                <div className="space-y-2 text-xs">
+                  {[
+                    { date: '01 Jan 2026', action: 'Aktivasi Lisensi Enterprise', status: 'success', user: 'admin' },
+                    { date: '15 Des 2025', action: 'Upgrade dari Professional ke Enterprise', status: 'success', user: 'admin' },
+                    { date: '01 Jan 2025', action: 'Aktivasi Lisensi Professional', status: 'success', user: 'admin' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <i className="fas fa-circle text-green-500 text-[8px]"></i>
+                        <span className="text-gray-700">{item.action}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-gray-500">
+                        <span>oleh {item.user}</span>
+                        <span>{item.date}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
