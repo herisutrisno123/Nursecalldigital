@@ -123,19 +123,15 @@ export default function RoomMap() {
       {/* Floor Selector */}
       <div className="flex items-center gap-4 flex-wrap">
         <span className="text-sm font-medium text-gray-700">Bangsal:</span>
-        <div className="flex gap-2">
+        <select
+          value={selectedFloor}
+          onChange={(e) => { setSelectedFloor(Number(e.target.value)); setSelectedRoom(null); }}
+          className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
           {floors.map(floor => (
-            <button
-              key={floor}
-              onClick={() => { setSelectedFloor(floor); setSelectedRoom(null); }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                selectedFloor === floor ? 'bg-blue-600 text-white shadow' : 'bg-white text-gray-600 border hover:bg-gray-50'
-              }`}
-            >
-              Bangsal {floor}
-            </button>
+            <option key={floor} value={floor}>Bangsal {floor}</option>
           ))}
-        </div>
+        </select>
         <button
           onClick={() => setShowAddRoomModal(true)}
           className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition shadow-sm"
