@@ -584,59 +584,116 @@ export default function RoomLayoutEditor() {
       {activeTab === 'preset' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {presetLayouts.map(preset => (
-              <div
-                key={preset.id}
-                onClick={() => handlePresetSelect(preset)}
-                className={`bg-white rounded-xl border-2 p-4 cursor-pointer transition ${
-                  selectedPreset?.id === preset.id ? 'border-indigo-500 shadow-lg' : 'border-gray-200 hover:border-indigo-300'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-gray-800">{preset.name}</h4>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                    preset.roomType === 'ICU' ? 'bg-red-100 text-red-700' :
-                    preset.roomType === 'VIP' ? 'bg-purple-100 text-purple-700' :
-                    preset.roomType === 'HCU' ? 'bg-orange-100 text-orange-700' :
-                    preset.roomType === 'NICU' ? 'bg-blue-100 text-blue-700' :
-                    'bg-green-100 text-green-700'
-                  }`}>
-                    {preset.roomType}
-                  </span>
-                </div>
-                
-                {/* Mini Preview */}
-                <div className="relative w-full h-40 bg-gray-50 border border-gray-300 rounded-lg overflow-hidden mb-3">
-                  {preset.elements.map(element => {
-                    const scale = 0.4;
-                    return (
+            {presetLayouts.map(preset => {
+              // Calculate optimal scale based on content
+              const bedCount = preset.elements.filter(e => e.type === 'bed').length;
+              const hasBathroom = preset.elements.some(e => e.type === 'bathroom');
+              
+              // Calculate bounds
+              const maxX = Math.max(...preset.elements.map(e => e.x + e.width));
+              const maxY = Math.max(...preset.elements.map(e => e.y + e.height));
+              
+              // Preview container size
+              const previewWidth = 280;
+              const previewHeight = 160;
+              
+              // Calculate scale to fit content with padding
+              const scaleX = (previewWidth - 20) / maxX;
+              const scaleY = (previewHeight - 20) / maxY;
+              const scale = Math.min(scaleX, scaleY, 0.6);
+
+              return (
+                <div
+                  key={preset.id}
+                  onClick={() => handlePresetSelect(preset)}
+                  className={`bg-white rounded-xl border-2 p-4 cursor-pointer transition ${
+                    selectedPreset?.id === preset.id ? 'border-indigo-500 shadow-lg' : 'border-gray-200 hover:border-indigo-300 hover:shadow-md'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-bold text-gray-800">{preset.name}</h4>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                      preset.roomType === 'ICU' ? 'bg-red-100 text-red-700' :
+                      preset.roomType === 'VIP' ? 'bg-purple-100 text-purple-700' :
+                      preset.roomType === 'HCU' ? 'bg-orange-100 text-orange-700' :
+                      preset.roomType === 'NICU' ? 'bg-blue-100 text-blue-700' :
+                      'bg-green-100 text-green-700'
+                    }`}>
+                      {preset.roomType}
+                    </span>
+                  </div>
+                  
+                  {/* Mini Preview - Optimized */}
+                  <div 
+                    className="relative bg-white border-2 border-gray-700 rounded-lg overflow-hidden mb-3 mx-auto"
+                    style={{ 
+                      width: `${previewWidth}px`, 
+                      height: `${previewHeight}px`,
+                      backgroundImage: `
+                        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)
+                      `,
+                      backgroundSize: '10px 10px'
+                    }}
+                  >
+                    {preset.elements.map(element => (
                       <div
                         key={element.id}
                         className={`absolute ${
-                          element.type === 'bed' ? 'bg-white border border-gray-600' :
-                          element.type === 'bathroom' ? 'bg-blue-50 border border-blue-400' :
-                          element.type === 'door' ? 'bg-amber-100 border border-amber-700' :
-                          element.type === 'window' ? 'bg-blue-200 border border-blue-500' :
-                          element.type === 'nurse_call' ? 'bg-red-500 border border-red-700 rounded-full' :
-                          element.type === 'monitor' ? 'bg-gray-800 border border-gray-900' :
-                          'bg-gray-200 border border-gray-400'
+                          element.type === 'bed' ? 'bg-white border-2 border-gray-700' :
+                          element.type === 'bathroom' ? 'bg-blue-50 border-2 border-blue-500' :
+                          element.type === 'door' ? 'bg-amber-100 border-2 border-amber-700' :
+                          element.type === 'window' ? 'bg-blue-200 border-2 border-blue-500' :
+                          element.type === 'nurse_call' ? 'bg-red-500 border-2 border-red-700 rounded-full' :
+                          element.type === 'monitor' ? 'bg-gray-800 border-2 border-gray-900' :
+                          element.type === 'iv_stand' ? 'bg-gray-600' :
+                          element.type === 'sofa' ? 'bg-purple-100 border-2 border-purple-400' :
+                          element.type === 'tv' ? 'bg-gray-900 border-2 border-black' :
+                          'bg-amber-100 border-2 border-amber-600'
                         }`}
                         style={{
                           left: `${element.x * scale}px`,
                           top: `${element.y * scale}px`,
                           width: `${element.width * scale}px`,
                           height: `${element.height * scale}px`,
+                          transform: `rotate(${element.rotation || 0}deg)`,
                         }}
-                      ></div>
-                    );
-                  })}
-                </div>
+                      >
+                        {/* Bed Label */}
+                        {element.type === 'bed' && element.label && (
+                          <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-700">
+                            {element.label}
+                          </div>
+                        )}
+                        {/* Bathroom Label */}
+                        {element.type === 'bathroom' && (
+                          <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-blue-700">
+                            KM
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
 
-                <div className="text-xs text-gray-500">
-                  {preset.elements.length} elemen • {preset.elements.filter(e => e.type === 'bed').length} bed
+                  {/* Stats */}
+                  <div className="flex items-center justify-between text-xs text-gray-600">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1">
+                        <i className="fas fa-bed text-gray-500"></i>
+                        <span className="font-medium">{bedCount} Bed</span>
+                      </span>
+                      {hasBathroom && (
+                        <span className="flex items-center gap-1">
+                          <i className="fas fa-bath text-blue-500"></i>
+                          <span className="font-medium">KM</span>
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-gray-500">{preset.elements.length} elemen</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {selectedPreset && (
@@ -855,78 +912,135 @@ export default function RoomLayoutEditor() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {savedLayouts.map(layout => (
-                <div key={layout.id} className="bg-white rounded-xl border p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-gray-800">{layout.name}</h4>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                      layout.roomType === 'ICU' ? 'bg-red-100 text-red-700' :
-                      layout.roomType === 'VIP' ? 'bg-purple-100 text-purple-700' :
-                      layout.roomType === 'HCU' ? 'bg-orange-100 text-orange-700' :
-                      layout.roomType === 'NICU' ? 'bg-blue-100 text-blue-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>
-                      {layout.roomType}
-                    </span>
-                  </div>
-                  
-                  {/* Mini Preview */}
-                  <div className="relative w-full h-32 bg-gray-50 border border-gray-300 rounded-lg overflow-hidden mb-3">
-                    {layout.elements.map(element => {
-                      const scale = 0.35;
-                      return (
+              {savedLayouts.map(layout => {
+                // Calculate optimal scale based on content
+                const bedCount = layout.elements.filter(e => e.type === 'bed').length;
+                const hasBathroom = layout.elements.some(e => e.type === 'bathroom');
+                
+                // Calculate bounds
+                const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
+                const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
+                
+                // Preview container size
+                const previewWidth = 280;
+                const previewHeight = 180;
+                
+                // Calculate scale to fit content with padding
+                const scaleX = (previewWidth - 20) / maxX;
+                const scaleY = (previewHeight - 20) / maxY;
+                const scale = Math.min(scaleX, scaleY, 0.6);
+
+                return (
+                  <div key={layout.id} className="bg-white rounded-xl border-2 border-gray-200 p-4 hover:border-indigo-300 hover:shadow-lg transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-bold text-gray-800">{layout.name}</h4>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                        layout.roomType === 'ICU' ? 'bg-red-100 text-red-700' :
+                        layout.roomType === 'VIP' ? 'bg-purple-100 text-purple-700' :
+                        layout.roomType === 'HCU' ? 'bg-orange-100 text-orange-700' :
+                        layout.roomType === 'NICU' ? 'bg-blue-100 text-blue-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>
+                        {layout.roomType}
+                      </span>
+                    </div>
+                    
+                    {/* Mini Preview - Optimized */}
+                    <div 
+                      className="relative bg-white border-2 border-gray-700 rounded-lg overflow-hidden mb-3 mx-auto"
+                      style={{ 
+                        width: `${previewWidth}px`, 
+                        height: `${previewHeight}px`,
+                        backgroundImage: `
+                          linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '10px 10px'
+                      }}
+                    >
+                      {layout.elements.map(element => (
                         <div
                           key={element.id}
                           className={`absolute ${
-                            element.type === 'bed' ? 'bg-white border border-gray-600' :
-                            element.type === 'bathroom' ? 'bg-blue-50 border border-blue-400' :
-                            element.type === 'door' ? 'bg-amber-100 border border-amber-700' :
-                            element.type === 'window' ? 'bg-blue-200 border border-blue-500' :
-                            element.type === 'nurse_call' ? 'bg-red-500 border border-red-700 rounded-full' :
-                            element.type === 'monitor' ? 'bg-gray-800 border border-gray-900' :
-                            'bg-gray-200 border border-gray-400'
+                            element.type === 'bed' ? 'bg-white border-2 border-gray-700' :
+                            element.type === 'bathroom' ? 'bg-blue-50 border-2 border-blue-500' :
+                            element.type === 'door' ? 'bg-amber-100 border-2 border-amber-700' :
+                            element.type === 'window' ? 'bg-blue-200 border-2 border-blue-500' :
+                            element.type === 'nurse_call' ? 'bg-red-500 border-2 border-red-700 rounded-full' :
+                            element.type === 'monitor' ? 'bg-gray-800 border-2 border-gray-900' :
+                            element.type === 'iv_stand' ? 'bg-gray-600' :
+                            element.type === 'sofa' ? 'bg-purple-100 border-2 border-purple-400' :
+                            element.type === 'tv' ? 'bg-gray-900 border-2 border-black' :
+                            'bg-amber-100 border-2 border-amber-600'
                           }`}
                           style={{
                             left: `${element.x * scale}px`,
                             top: `${element.y * scale}px`,
                             width: `${element.width * scale}px`,
                             height: `${element.height * scale}px`,
+                            transform: `rotate(${element.rotation || 0}deg)`,
                           }}
-                        ></div>
-                      );
-                    })}
-                  </div>
+                        >
+                          {/* Bed Label */}
+                          {element.type === 'bed' && element.label && (
+                            <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-700">
+                              {element.label}
+                            </div>
+                          )}
+                          {/* Bathroom Label */}
+                          {element.type === 'bathroom' && (
+                            <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-blue-700">
+                              KM
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
 
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>{layout.elements.length} elemen</span>
-                    <span>{new Date(layout.createdAt).toLocaleDateString('id-ID')}</span>
-                  </div>
+                    {/* Stats */}
+                    <div className="flex items-center justify-between text-xs text-gray-600 mb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-1">
+                          <i className="fas fa-bed text-gray-500"></i>
+                          <span className="font-medium">{bedCount} Bed</span>
+                        </span>
+                        {hasBathroom && (
+                          <span className="flex items-center gap-1">
+                            <i className="fas fa-bath text-blue-500"></i>
+                            <span className="font-medium">KM</span>
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-gray-500">{new Date(layout.createdAt).toLocaleDateString('id-ID')}</span>
+                    </div>
 
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      onClick={() => {
-                        setEditorLayout(layout);
-                        setLayoutName(layout.name);
-                        setRoomType(layout.roomType);
-                        setActiveTab('editor');
-                      }}
-                      className="flex-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-200"
-                    >
-                      <i className="fas fa-edit mr-1"></i>Edit
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm('Hapus layout ini?')) {
-                          setSavedLayouts(savedLayouts.filter(l => l.id !== layout.id));
-                        }
-                      }}
-                      className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200"
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    {/* Actions */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditorLayout(layout);
+                          setLayoutName(layout.name);
+                          setRoomType(layout.roomType);
+                          setActiveTab('editor');
+                        }}
+                        className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
+                      >
+                        <i className="fas fa-edit mr-1"></i>Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm('Hapus layout ini?')) {
+                            setSavedLayouts(savedLayouts.filter(l => l.id !== layout.id));
+                          }
+                        }}
+                        className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors"
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
