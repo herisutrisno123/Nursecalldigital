@@ -25,13 +25,25 @@ export default function NurseActivity() {
     <div className="space-y-6">
       {/* Nurse Filter */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
           <button
             onClick={() => setSelectedNurse('all')}
             className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${selectedNurse === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
           >
             Semua Perawat
           </button>
+          <select
+            value={selectedNurse}
+            onChange={(e) => setSelectedNurse(e.target.value)}
+            className="px-3 py-1.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="all">Pilih Perawat</option>
+            {nurses.map(nurse => (
+              <option key={nurse.id} value={nurse.id}>
+                {nurse.avatar} {nurse.name} - Lantai {nurse.floor}
+              </option>
+            ))}
+          </select>
         </div>
         <button
           onClick={() => setShowAddNurseModal(true)}
