@@ -46,6 +46,26 @@ export default function Settings() {
                   <input type="text" defaultValue="RS Umum Daerah Harapan Sehat" className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
+                  <label className="text-sm font-medium text-gray-700">Alamat Rumah Sakit</label>
+                  <textarea rows={3} defaultValue="Jl. Kesehatan No. 123, Kel. Sukamaju, Kec. Cilandak, Jakarta Selatan, DKI Jakarta 12560" className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 resize-none" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Penanggung Jawab</label>
+                    <input type="text" defaultValue="dr. H. Bambang Suryadi, Sp.PD" className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                    <p className="text-xs text-gray-400 mt-1">Nama lengkap penanggung jawab sistem</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Jabatan Penanggung Jawab</label>
+                    <input type="text" defaultValue="Kepala Instalasi Rawat Inap" className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Jumlah Channel Nurse Call</label>
+                  <input type="number" defaultValue={64} min={1} max={512} className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                  <p className="text-xs text-gray-400 mt-1">Total channel yang tersedia pada sistem Commax (maksimal sesuai kapasitas gateway)</p>
+                </div>
+                <div>
                   <label className="text-sm font-medium text-gray-700">Zona Waktu</label>
                   <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                     <option>Asia/Jakarta (WIB, UTC+7)</option>
