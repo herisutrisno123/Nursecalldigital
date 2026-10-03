@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Types
 interface LayoutElement {
@@ -213,6 +213,7 @@ export default function RoomLayoutEditor() {
   // Handle element selection and movement
   const handleElementClick = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     setSelectedElement(id);
   };
 
@@ -221,7 +222,10 @@ export default function RoomLayoutEditor() {
   };
 
   const handleElementDrag = (e: React.MouseEvent, id: string) => {
-    if (selectedElement !== id) return;
+    e.stopPropagation();
+    
+    // Select the element first
+    setSelectedElement(id);
 
     const startX = e.clientX;
     const startY = e.clientY;
@@ -229,14 +233,16 @@ export default function RoomLayoutEditor() {
     if (!element) return;
 
     const GRID_SIZE = 10; // Snap to 10px grid
+    const startElementX = element.x;
+    const startElementY = element.y;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const dx = moveEvent.clientX - startX;
       const dy = moveEvent.clientY - startY;
 
       // Snap to grid
-      const newX = Math.round((element.x + dx) / GRID_SIZE) * GRID_SIZE;
-      const newY = Math.round((element.y + dy) / GRID_SIZE) * GRID_SIZE;
+      const newX = Math.round((startElementX + dx) / GRID_SIZE) * GRID_SIZE;
+      const newY = Math.round((startElementY + dy) / GRID_SIZE) * GRID_SIZE;
 
       setEditorLayout({
         ...editorLayout,
@@ -259,7 +265,19 @@ export default function RoomLayoutEditor() {
 
   // Handle element deletion
   const handleDeleteElement = () => {
-    if (selectedElement) {
+    if (!selectedElement) {
+      alert('Silakan pilih elemen yang ingin dihapus terlebih dahulu');
+      return;
+    }
+
+    const elementToDelete = editorLayout.elements.find(el => el.id === selectedElement);
+    if (!elementToDelete) return;
+
+    const confirmDelete = window.confirm(
+      `Apakah Anda yakin ingin menghapus ${elementToDelete.type} ini?`
+    );
+
+    if (confirmDelete) {
       setEditorLayout({
         ...editorLayout,
         elements: editorLayout.elements.filter(el => el.id !== selectedElement),
@@ -270,16 +288,19 @@ export default function RoomLayoutEditor() {
 
   // Handle element rotation
   const handleRotateElement = () => {
-    if (selectedElement) {
-      setEditorLayout({
-        ...editorLayout,
-        elements: editorLayout.elements.map(el =>
-          el.id === selectedElement
-            ? { ...el, rotation: ((el.rotation || 0) + 90) % 360 }
-            : el
-        ),
-      });
+    if (!selectedElement) {
+      alert('Silakan pilih elemen yang ingin diputar terlebih dahulu');
+      return;
     }
+
+    setEditorLayout({
+      ...editorLayout,
+      elements: editorLayout.elements.map(el =>
+        el.id === selectedElement
+          ? { ...el, rotation: ((el.rotation || 0) + 90) % 360 }
+          : el
+      ),
+    });
   };
 
   // Save layout
@@ -301,6 +322,42 @@ export default function RoomLayoutEditor() {
     setLayoutName('');
     setActiveTab('saved');
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (activeTab !== 'editor') return;
+      
+      // Delete or Backspace to delete selected element
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElement) {
+        // Prevent default behavior for form inputs
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+          return;
+        }
+        e.preventDefault();
+        handleDeleteElement();
+      }
+      
+      // Escape to deselect
+      if (e.key === 'Escape') {
+        setSelectedElement(null);
+      }
+      
+      // R to rotate
+      if (e.key === 'r' || e.key === 'R') {
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+          return;
+        }
+        if (selectedElement) {
+          e.preventDefault();
+          handleRotateElement();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, selectedElement, editorLayout]);
 
   // Render element based on type - Architectural Style
   const renderElement = (element: LayoutElement, isSelected: boolean) => {
@@ -623,21 +680,39 @@ export default function RoomLayoutEditor() {
               <h4 className="font-semibold text-gray-800 mb-2">Properti</h4>
               {selectedElement ? (
                 <div className="space-y-2">
+                  <div className="p-2 bg-blue-50 border border-blue-200 rounded-lg mb-2">
+                    <p className="text-xs text-blue-700 font-medium">
+                      <i className="fas fa-check-circle mr-1"></i>
+                      Elemen terpilih
+                    </p>
+                  </div>
                   <button
                     onClick={handleRotateElement}
-                    className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200"
+                    className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors"
+                    title="Shortcut: R"
                   >
                     <i className="fas fa-rotate-right mr-2"></i>Rotasi 90°
+                    <span className="ml-2 text-xs opacity-60">(R)</span>
                   </button>
                   <button
                     onClick={handleDeleteElement}
-                    className="w-full px-3 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200"
+                    className="w-full px-3 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
+                    title="Shortcut: Delete"
                   >
                     <i className="fas fa-trash mr-2"></i>Hapus
+                    <span className="ml-2 text-xs opacity-60">(Del)</span>
                   </button>
                 </div>
               ) : (
-                <p className="text-xs text-gray-500">Klik elemen untuk memilih</p>
+                <div className="text-xs text-gray-500 space-y-1">
+                  <p><i className="fas fa-info-circle mr-1 text-indigo-500"></i>Klik elemen untuk memilih</p>
+                  <p className="text-[10px] text-gray-400 mt-2">
+                    <strong>Shortcuts:</strong><br/>
+                    • Delete/Backspace: Hapus elemen<br/>
+                    • R: Rotasi 90°<br/>
+                    • Esc: Batal pilih
+                  </p>
+                </div>
               )}
             </div>
           </div>
