@@ -332,7 +332,7 @@ export default function Settings() {
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-gray-500">Penerbit</span>
-                    <span className="font-medium text-gray-800">PT. Nurse Digital Indonesia</span>
+                    <span className="font-medium text-gray-800">PT Wisnu Rahadian Jaya</span>
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-gray-500">Dilaporkan ke</span>
