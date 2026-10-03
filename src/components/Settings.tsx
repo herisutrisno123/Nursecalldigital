@@ -3,7 +3,6 @@ import { useState } from 'react';
 export default function Settings() {
   const [activeSection, setActiveSection] = useState('general');
   const [showActivateModal, setShowActivateModal] = useState(false);
-  const [showRenewModal, setShowRenewModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [activationSuccess, setActivationSuccess] = useState(false);
 
@@ -376,15 +375,6 @@ export default function Settings() {
                 >
                   <i className="fas fa-key mr-2"></i>Aktivasikan Lisensi Baru
                 </button>
-                <button 
-                  onClick={() => setShowRenewModal(true)}
-                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
-                >
-                  <i className="fas fa-sync-alt mr-2"></i>Perbarui Lisensi
-                </button>
-                <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
-                  <i className="fas fa-file-export mr-2"></i>Ekspor File Lisensi
-                </button>
               </div>
 
               {/* Success Notification */}
@@ -562,97 +552,6 @@ export default function Settings() {
         </div>
       )}
 
-      {/* Renew License Modal */}
-      {showRenewModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-            <div className="p-6 border-b">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-sync-alt text-green-600"></i>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800">Perbarui Lisensi</h3>
-                </div>
-                <button 
-                  onClick={() => setShowRenewModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800">
-                <i className="fas fa-exclamation-triangle mr-1"></i>
-                Perbarui lisensi akan memperpanjang masa berlaku support dan update tanpa mengubah fitur yang tersedia.
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Lisensi Saat Ini</label>
-                <div className="mt-1 p-3 bg-gray-50 rounded-lg text-sm">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-500">Nomor:</span>
-                    <span className="font-mono text-gray-800">NDM-ENT-2026-001234</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Support s/d:</span>
-                    <span className="font-medium text-gray-800">31 Desember 2026</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Kunci Perpanjangan</label>
-                <input 
-                  type="text" 
-                  placeholder="Masukkan kunci perpanjangan"
-                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 font-mono" 
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Durasi Perpanjangan</label>
-                <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                  <option>1 Tahun</option>
-                  <option>2 Tahun</option>
-                  <option>3 Tahun</option>
-                </select>
-              </div>
-            </div>
-            <div className="p-6 border-t bg-gray-50 flex gap-3 justify-end">
-              <button 
-                onClick={() => setShowRenewModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
-              >
-                Batal
-              </button>
-              <button 
-                onClick={() => {
-                  setIsProcessing(true);
-                  setTimeout(() => {
-                    setIsProcessing(false);
-                    setShowRenewModal(false);
-                    setActivationSuccess(true);
-                    setTimeout(() => setActivationSuccess(false), 5000);
-                  }, 2000);
-                }}
-                disabled={isProcessing}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {isProcessing ? (
-                  <>
-                    <i className="fas fa-spinner fa-spin"></i>
-                    Memproses...
-                  </>
-                ) : (
-                  <>
-                    <i className="fas fa-check"></i>
-                    Perbarui
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
