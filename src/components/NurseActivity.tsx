@@ -32,15 +32,6 @@ export default function NurseActivity() {
           >
             Semua Perawat
           </button>
-          {nurses.map(nurse => (
-            <button
-              key={nurse.id}
-              onClick={() => setSelectedNurse(nurse.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${selectedNurse === nurse.id ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-            >
-              {nurse.avatar} {nurse.name.split(' ').slice(0, 2).join(' ')}
-            </button>
-          ))}
         </div>
         <button
           onClick={() => setShowAddNurseModal(true)}
