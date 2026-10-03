@@ -41,6 +41,76 @@ export default function RoomMap() {
     }
   };
 
+  // Render detailed room layout
+  const renderRoomLayout = (room: any) => {
+    const bedCount = room.bed_count;
+    const hasBathroom = true; // All rooms have bathroom
+    const isVIP = room.room_type === 'VIP';
+    const isICU = room.room_type === 'ICU' || room.room_type === 'NICU';
+    
+    return (
+      <div className="relative w-full h-full min-h-[120px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-300 overflow-hidden">
+        {/* Room Number Label */}
+        <div className="absolute top-1 left-1 bg-white px-2 py-0.5 rounded text-xs font-bold shadow-sm z-10">
+          {room.room_number}
+        </div>
+
+        {/* Door */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-2 bg-amber-600 rounded-t"></div>
+
+        {/* Beds */}
+        <div className={`absolute top-6 left-2 right-2 grid gap-1 ${
+          bedCount === 1 ? 'grid-cols-1' : 'grid-cols-2'
+        }`}>
+          {Array.from({ length: bedCount }).map((_, i) => (
+            <div key={i} className="flex flex-col items-center">
+              {/* Bed */}
+              <div className={`w-full h-12 rounded border-2 ${
+                isICU ? 'bg-blue-100 border-blue-400' :
+                isVIP ? 'bg-purple-100 border-purple-400' :
+                'bg-white border-gray-400'
+              } flex items-center justify-center relative`}>
+                {/* Pillow */}
+                <div className="absolute top-1 left-1 right-1 h-2 bg-gray-200 rounded"></div>
+                {/* Bed icon */}
+                <i className={`fas fa-bed text-xs ${
+                  isICU ? 'text-blue-600' :
+                  isVIP ? 'text-purple-600' :
+                  'text-gray-600'
+                }`}></i>
+                {/* Bed number */}
+                <span className="absolute bottom-0.5 right-1 text-[8px] font-bold text-gray-500">
+                  {String.fromCharCode(65 + i)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bathroom */}
+        {hasBathroom && (
+          <div className="absolute bottom-3 right-1 w-10 h-10 bg-blue-50 border-2 border-blue-300 rounded flex items-center justify-center">
+            <i className="fas fa-bath text-blue-500 text-xs"></i>
+          </div>
+        )}
+
+        {/* Wardrobe */}
+        <div className="absolute top-6 right-1 w-6 h-12 bg-amber-100 border border-amber-400 rounded flex items-center justify-center">
+          <i className="fas fa-archive text-amber-600 text-[8px]"></i>
+        </div>
+
+        {/* VIP/ICU Badge */}
+        {(isVIP || isICU) && (
+          <div className={`absolute top-1 right-1 px-1.5 py-0.5 rounded text-[8px] font-bold ${
+            isVIP ? 'bg-purple-500 text-white' : 'bg-blue-500 text-white'
+          }`}>
+            {room.room_type}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const selectedRoomData = selectedRoom ? rooms.find(r => r.id === selectedRoom) : null;
   const selectedRoomDevices = selectedRoom ? devices.filter(d => d.room_id === selectedRoom) : [];
   const selectedRoomEvents = selectedRoom ? callEvents.filter(e => e.room_id === selectedRoom) : [];
@@ -98,18 +168,23 @@ export default function RoomMap() {
                 <button
                   key={room.id}
                   onClick={() => setSelectedRoom(room.id)}
-                  className={`p-4 rounded-xl border-2 transition-all ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  className={`relative p-2 rounded-xl border-2 transition-all ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-bold">{room.room_number}</span>
+                  {/* Status indicator */}
+                  <div className="absolute top-2 right-2 z-10">
                     <i className={`fas ${getRoomIcon(status)}`}></i>
                   </div>
-                  <p className="text-xs opacity-75">{room.room_type}</p>
-                  <p className="text-xs opacity-75">{room.bed_count} Bed</p>
+                  
+                  {/* Room layout */}
+                  {renderRoomLayout(room)}
+                  
+                  {/* Active call overlay */}
                   {status === 'active-call' && (
-                    <div className="mt-2 flex items-center gap-1 text-[10px] font-medium text-red-600">
-                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                      PANGGILAN AKTIF
+                    <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                      <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
+                        <span className="w-2 h-2 bg-white rounded-full"></span>
+                        PANGGILAN AKTIF
+                      </div>
                     </div>
                   )}
                 </button>
@@ -130,18 +205,23 @@ export default function RoomMap() {
                 <button
                   key={room.id}
                   onClick={() => setSelectedRoom(room.id)}
-                  className={`p-4 rounded-xl border-2 transition-all ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  className={`relative p-2 rounded-xl border-2 transition-all ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-bold">{room.room_number}</span>
+                  {/* Status indicator */}
+                  <div className="absolute top-2 right-2 z-10">
                     <i className={`fas ${getRoomIcon(status)}`}></i>
                   </div>
-                  <p className="text-xs opacity-75">{room.room_type}</p>
-                  <p className="text-xs opacity-75">{room.bed_count} Bed</p>
+                  
+                  {/* Room layout */}
+                  {renderRoomLayout(room)}
+                  
+                  {/* Active call overlay */}
                   {status === 'active-call' && (
-                    <div className="mt-2 flex items-center gap-1 text-[10px] font-medium text-red-600">
-                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                      PANGGILAN AKTIF
+                    <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                      <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
+                        <span className="w-2 h-2 bg-white rounded-full"></span>
+                        PANGGILAN AKTIF
+                      </div>
                     </div>
                   )}
                 </button>
