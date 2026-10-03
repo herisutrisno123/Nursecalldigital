@@ -238,8 +238,8 @@ export default function RoomMap() {
       {/* Add Room Modal */}
       {showAddRoomModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
-            <div className="p-6 border-b">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="p-4 border-b flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -255,8 +255,8 @@ export default function RoomMap() {
                 </button>
               </div>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 space-y-3 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-sm font-medium text-gray-700">Nomor Kamar</label>
                   <input 
@@ -279,15 +279,15 @@ export default function RoomMap() {
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Gedung</label>
-                <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                  <option>Gedung A</option>
-                  <option>Gedung B</option>
-                  <option>Gedung C</option>
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Gedung</label>
+                  <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option>Gedung A</option>
+                    <option>Gedung B</option>
+                    <option>Gedung C</option>
+                  </select>
+                </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700">Tipe Kamar</label>
                   <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
@@ -298,6 +298,8 @@ export default function RoomMap() {
                     <option>HCU</option>
                   </select>
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-sm font-medium text-gray-700">Jumlah Bed</label>
                   <input 
@@ -308,21 +310,21 @@ export default function RoomMap() {
                     className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500" 
                   />
                 </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Status</label>
-                <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                  <option value="active">Aktif</option>
-                  <option value="inactive">Tidak Aktif</option>
-                  <option value="maintenance">Maintenance</option>
-                </select>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Status</label>
+                  <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="active">Aktif</option>
+                    <option value="inactive">Tidak Aktif</option>
+                    <option value="maintenance">Maintenance</option>
+                  </select>
+                </div>
               </div>
               <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
                 <i className="fas fa-info-circle mr-1"></i>
                 Setelah kamar ditambahkan, Anda dapat mengkonfigurasi perangkat Commax untuk kamar ini di menu Status Perangkat.
               </div>
             </div>
-            <div className="p-6 border-t bg-gray-50 flex gap-3 justify-end">
+            <div className="p-4 border-t bg-gray-50 flex gap-3 justify-end flex-shrink-0">
               <button 
                 onClick={() => setShowAddRoomModal(false)}
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
