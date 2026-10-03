@@ -29,7 +29,8 @@ const menuItems: { id: Page; label: string; icon: string; section?: string }[] =
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(256); // 256px = w-64
+  const [isResizing, setIsResizing] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update time every second
@@ -37,6 +38,33 @@ function App() {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Handle sidebar resize
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      const newWidth = e.clientX;
+      const minWidth = 64; // w-16
+      const maxWidth = 400;
+      if (newWidth >= minWidth && newWidth <= maxWidth) {
+        setSidebarWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -62,20 +90,26 @@ function App() {
     return { ...item, showSection };
   });
 
+  // Determine if sidebar should show text based on width
+  const showSidebarText = sidebarWidth >= 150;
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 flex flex-col shadow-xl`}>
+      <aside 
+        className={`relative bg-gradient-to-b from-slate-900 to-slate-800 text-white flex flex-col shadow-xl ${isResizing ? '' : 'transition-all duration-300'}`}
+        style={{ width: `${sidebarWidth}px` }}
+      >
         {/* Logo */}
         <div className="p-4 border-b border-slate-700">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
               <i className="fas fa-hospital text-white text-sm"></i>
             </div>
-            {sidebarOpen && (
-              <div>
-                <h1 className="font-bold text-sm leading-tight">Nurse Digital</h1>
-                <p className="text-[10px] text-slate-400">Commax Monitor System</p>
+            {showSidebarText && (
+              <div className="overflow-hidden">
+                <h1 className="font-bold text-sm leading-tight whitespace-nowrap">Nurse Digital</h1>
+                <p className="text-[10px] text-slate-400 whitespace-nowrap">Commax Monitor System</p>
               </div>
             )}
           </div>
@@ -85,8 +119,8 @@ function App() {
         <nav className="flex-1 overflow-y-auto py-4">
           {menuWithSections.map((item) => (
             <div key={item.id}>
-              {item.showSection && sidebarOpen && (
-                <p className="px-4 pt-4 pb-1 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">{item.section}</p>
+              {item.showSection && showSidebarText && (
+                <p className="px-4 pt-4 pb-1 text-[10px] uppercase tracking-wider text-slate-500 font-semibold whitespace-nowrap overflow-hidden">{item.section}</p>
               )}
               <button
                 onClick={() => setCurrentPage(item.id)}
@@ -97,21 +131,30 @@ function App() {
                 }`}
               >
                 <i className={`fas ${item.icon} w-5 text-center flex-shrink-0`}></i>
-                {sidebarOpen && <span>{item.label}</span>}
+                {showSidebarText && <span className="whitespace-nowrap overflow-hidden text-ellipsis">{item.label}</span>}
               </button>
             </div>
           ))}
         </nav>
 
         {/* Sidebar Footer */}
-        {sidebarOpen && (
+        {showSidebarText && (
           <div className="p-4 border-t border-slate-700">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>System Online</span>
+              <span className="whitespace-nowrap">System Online</span>
             </div>
           </div>
         )}
+
+        {/* Resize Handle */}
+        <div
+          className={`absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500/50 active:bg-blue-500/70 z-10 ${isResizing ? 'bg-blue-500/70' : ''}`}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setIsResizing(true);
+          }}
+        />
       </aside>
 
       {/* Main Content */}
@@ -120,10 +163,11 @@ function App() {
         <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              onClick={() => setSidebarWidth(sidebarWidth <= 100 ? 256 : 64)}
               className="text-gray-500 hover:text-gray-700 p-1"
+              title={sidebarWidth <= 100 ? 'Perbesar Sidebar' : 'Perkecil Sidebar'}
             >
-              <i className="fas fa-bars text-lg"></i>
+              <i className={`fas ${sidebarWidth <= 100 ? 'fa-angles-right' : 'fa-angles-left'} text-lg`}></i>
             </button>
             <div>
               <h2 className="text-lg font-semibold text-gray-800">
