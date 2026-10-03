@@ -316,7 +316,7 @@ export default function Settings() {
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-gray-500">Nomor Lisensi</span>
-                    <span className="font-mono text-gray-800">NDM-ENT-2026-001234</span>
+                    <span className="font-mono text-gray-800">NCM-PK2K-3A5A-B004-4G3E</span>
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-gray-500">Tanggal Aktivasi</span>
@@ -490,9 +490,10 @@ export default function Settings() {
                 <label className="text-sm font-medium text-gray-700">Nomor Lisensi</label>
                 <input 
                   type="text" 
-                  placeholder="Contoh: NDM-ENT-2026-XXXXXX"
-                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 font-mono" 
+                  placeholder="NCM-XXXX-XXXX-XXXX-XXXX"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 font-mono tracking-wider uppercase" 
                 />
+                <p className="text-xs text-gray-400 mt-1">Format: NCM-XXXX-XXXX-XXXX-XXXX</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700">Tipe Lisensi</label>
@@ -504,7 +505,7 @@ export default function Settings() {
               </div>
               <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
                 <i className="fas fa-info-circle mr-1"></i>
-                Pastikan nomor lisensi sesuai dengan yang diberikan oleh distributor resmi.
+                Pastikan nomor lisensi sesuai dengan yang diberikan oleh distributor resmi. Contoh format: <span className="font-mono font-semibold">NCM-PK2K-3A5A-B004-4G3E</span>
               </div>
             </div>
             <div className="p-6 border-t bg-gray-50 flex gap-3 justify-end">
