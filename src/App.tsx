@@ -4,6 +4,7 @@ import CallEvents from './components/CallEvents';
 import DeviceStatus from './components/DeviceStatus';
 import NurseActivity from './components/NurseActivity';
 import RoomMap from './components/RoomMap';
+import RoomLayoutEditor from './components/RoomLayoutEditor';
 import Statistics from './components/Statistics';
 import Integration from './components/Integration';
 import Accounts from './components/Accounts';
@@ -11,7 +12,7 @@ import Trash from './components/Trash';
 import Settings from './components/Settings';
 import DatabaseView from './components/DatabaseView';
 
-type Page = 'dashboard' | 'call-events' | 'device-status' | 'nurse-activity' | 'room-map' | 'statistics' | 'integration' | 'database' | 'accounts' | 'trash' | 'settings';
+type Page = 'dashboard' | 'call-events' | 'device-status' | 'nurse-activity' | 'room-map' | 'room-layout' | 'statistics' | 'integration' | 'database' | 'accounts' | 'trash' | 'settings';
 
 const menuItems: { id: Page; label: string; icon: string; section?: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'fa-gauge-high', section: 'Monitoring' },
@@ -19,6 +20,7 @@ const menuItems: { id: Page; label: string; icon: string; section?: string }[] =
   { id: 'device-status', label: 'Status Perangkat', icon: 'fa-microchip' },
   { id: 'nurse-activity', label: 'Aktivitas Perawat', icon: 'fa-user-nurse' },
   { id: 'room-map', label: 'Peta Kamar', icon: 'fa-map-location-dot', section: 'Peta & Visualisasi' },
+  { id: 'room-layout', label: 'Editor Denah', icon: 'fa-drafting-compass' },
   { id: 'statistics', label: 'Statistik Operasional', icon: 'fa-chart-line' },
   { id: 'integration', label: 'Integrasi Gateway', icon: 'fa-network-wired' },
   { id: 'database', label: 'Struktur Database', icon: 'fa-database', section: 'Sistem' },
@@ -73,6 +75,7 @@ function App() {
       case 'device-status': return <DeviceStatus />;
       case 'nurse-activity': return <NurseActivity />;
       case 'room-map': return <RoomMap />;
+      case 'room-layout': return <RoomLayoutEditor />;
       case 'statistics': return <Statistics />;
       case 'integration': return <Integration />;
       case 'database': return <DatabaseView />;
