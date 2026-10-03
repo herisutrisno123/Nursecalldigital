@@ -122,7 +122,7 @@ export default function RoomMap() {
     <div className="space-y-6">
       {/* Floor Selector */}
       <div className="flex items-center gap-4 flex-wrap">
-        <span className="text-sm font-medium text-gray-700">Lantai:</span>
+        <span className="text-sm font-medium text-gray-700">Bangsal:</span>
         <div className="flex gap-2">
           {floors.map(floor => (
             <button
@@ -132,7 +132,7 @@ export default function RoomMap() {
                 selectedFloor === floor ? 'bg-blue-600 text-white shadow' : 'bg-white text-gray-600 border hover:bg-gray-50'
               }`}
             >
-              Lantai {floor}
+              Bangsal {floor}
             </button>
           ))}
         </div>
@@ -154,7 +154,7 @@ export default function RoomMap() {
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <div className="mb-4">
           <h3 className="font-semibold text-gray-800">
-            Peta Kamar - Lantai {selectedFloor}
+            Peta Kamar - Bangsal {selectedFloor}
             <span className="text-sm font-normal text-gray-500 ml-2">
               ({floorRooms.length} kamar)
             </span>
@@ -236,7 +236,7 @@ export default function RoomMap() {
           <div className="mt-6 flex justify-center">
             <div className="px-6 py-3 bg-blue-100 border-2 border-blue-300 rounded-xl text-center">
               <i className="fas fa-desktop text-blue-600 mr-2"></i>
-              <span className="text-sm font-medium text-blue-800">Nurse Station - Lantai {selectedFloor}</span>
+              <span className="text-sm font-medium text-blue-800">Nurse Station - Bangsal {selectedFloor}</span>
             </div>
           </div>
         </div>
@@ -349,16 +349,16 @@ export default function RoomMap() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Lantai</label>
+                  <label className="text-sm font-medium text-gray-700">Bangsal</label>
                   <select 
                     defaultValue={selectedFloor}
                     className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     {floors.map(floor => (
-                      <option key={floor} value={floor}>Lantai {floor}</option>
+                      <option key={floor} value={floor}>Bangsal {floor}</option>
                     ))}
-                    <option value={4}>Lantai 4</option>
-                    <option value={5}>Lantai 5</option>
+                    <option value={4}>Bangsal 4</option>
+                    <option value={5}>Bangsal 5</option>
                   </select>
                 </div>
               </div>
