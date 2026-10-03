@@ -495,14 +495,6 @@ export default function Settings() {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700">Kunci Aktivasi</label>
-                <input 
-                  type="text" 
-                  placeholder="Masukkan kunci aktivasi"
-                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 font-mono" 
-                />
-              </div>
-              <div>
                 <label className="text-sm font-medium text-gray-700">Tipe Lisensi</label>
                 <select className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                   <option>Enterprise (Perpetual)</option>
@@ -512,7 +504,7 @@ export default function Settings() {
               </div>
               <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
                 <i className="fas fa-info-circle mr-1"></i>
-                Pastikan nomor lisensi dan kunci aktivasi sesuai dengan yang diberikan oleh distributor resmi.
+                Pastikan nomor lisensi sesuai dengan yang diberikan oleh distributor resmi.
               </div>
             </div>
             <div className="p-6 border-t bg-gray-50 flex gap-3 justify-end">
