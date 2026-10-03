@@ -5,6 +5,7 @@ export default function RoomMap() {
   const [selectedFloor, setSelectedFloor] = useState<number>(1);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [showAddRoomModal, setShowAddRoomModal] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const floorRooms = rooms.filter(r => r.floor === selectedFloor);
   const floors = [...new Set(rooms.map(r => r.floor))].sort();
@@ -148,13 +149,19 @@ export default function RoomMap() {
 
       {/* Room Map Grid */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold text-gray-800">
             Peta Kamar - Bangsal {selectedFloor}
             <span className="text-sm font-normal text-gray-500 ml-2">
               ({floorRooms.length} kamar)
             </span>
           </h3>
+          <button
+            onClick={() => setIsFullScreen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm"
+          >
+            <i className="fas fa-expand mr-2"></i>Tampil
+          </button>
         </div>
 
         {/* Corridor representation */}
@@ -417,6 +424,118 @@ export default function RoomMap() {
                 <i className="fas fa-save"></i>
                 Simpan Kamar
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Full Screen Modal */}
+      {isFullScreen && (
+        <div className="fixed inset-0 bg-white z-50 overflow-auto">
+          {/* Header */}
+          <div className="sticky top-0 bg-white border-b shadow-sm p-4 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">
+              Peta Kamar - Bangsal {selectedFloor}
+              <span className="text-sm font-normal text-gray-500 ml-2">
+                ({floorRooms.length} kamar)
+              </span>
+            </h2>
+            <button
+              onClick={() => setIsFullScreen(false)}
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700 transition shadow-sm"
+            >
+              <i className="fas fa-arrow-left mr-2"></i>Kembali
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            {/* Legend */}
+            <div className="mb-6 flex gap-4 text-sm">
+              <span className="flex items-center gap-2"><span className="w-4 h-4 bg-green-100 border border-green-300 rounded"></span> Normal</span>
+              <span className="flex items-center gap-2"><span className="w-4 h-4 bg-red-100 border border-red-400 rounded"></span> Panggilan Aktif</span>
+              <span className="flex items-center gap-2"><span className="w-4 h-4 bg-orange-100 border border-orange-400 rounded"></span> Fault</span>
+              <span className="flex items-center gap-2"><span className="w-4 h-4 bg-yellow-100 border border-yellow-400 rounded"></span> Maintenance</span>
+            </div>
+
+            {/* Room Map */}
+            <div className="relative">
+              {/* Top rooms */}
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-8">
+                {floorRooms.filter((_, i) => i % 2 === 0).map(room => {
+                  const status = getRoomStatus(room.id);
+                  return (
+                    <button
+                      key={room.id}
+                      onClick={() => setSelectedRoom(room.id)}
+                      className={`relative p-3 rounded-xl border-2 transition-all ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                    >
+                      {/* Status indicator */}
+                      <div className="absolute top-2 right-2 z-10">
+                        <i className={`fas ${getRoomIcon(status)}`}></i>
+                      </div>
+                      
+                      {/* Room layout */}
+                      {renderRoomLayout(room)}
+                      
+                      {/* Active call overlay */}
+                      {status === 'active-call' && (
+                        <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                          <div className="bg-red-600 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse flex items-center gap-1">
+                            <span className="w-2 h-2 bg-white rounded-full"></span>
+                            PANGGILAN AKTIF
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Corridor */}
+              <div className="h-12 bg-gray-100 border-y border-dashed border-gray-300 flex items-center justify-center mb-8">
+                <span className="text-sm text-gray-400 tracking-widest uppercase">— Koridor —</span>
+              </div>
+
+              {/* Bottom rooms */}
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {floorRooms.filter((_, i) => i % 2 === 1).map(room => {
+                  const status = getRoomStatus(room.id);
+                  return (
+                    <button
+                      key={room.id}
+                      onClick={() => setSelectedRoom(room.id)}
+                      className={`relative p-3 rounded-xl border-2 transition-all ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                    >
+                      {/* Status indicator */}
+                      <div className="absolute top-2 right-2 z-10">
+                        <i className={`fas ${getRoomIcon(status)}`}></i>
+                      </div>
+                      
+                      {/* Room layout */}
+                      {renderRoomLayout(room)}
+                      
+                      {/* Active call overlay */}
+                      {status === 'active-call' && (
+                        <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                          <div className="bg-red-600 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse flex items-center gap-1">
+                            <span className="w-2 h-2 bg-white rounded-full"></span>
+                            PANGGILAN AKTIF
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Nurse Station */}
+              <div className="mt-8 flex justify-center">
+                <div className="px-8 py-4 bg-blue-100 border-2 border-blue-300 rounded-xl text-center">
+                  <i className="fas fa-desktop text-blue-600 mr-2 text-lg"></i>
+                  <span className="text-base font-medium text-blue-800">Nurse Station - Bangsal {selectedFloor}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
