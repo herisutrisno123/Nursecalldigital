@@ -53,6 +53,8 @@ export default function RoomLayoutEditor() {
   const [roomType, setRoomType] = useState('Reguler');
   const [is3DView, setIs3DView] = useState(false);
   const [resizingElement, setResizingElement] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingLayoutId, setEditingLayoutId] = useState<string | null>(null);
   const resizeStartRef = useRef<{ x: number; y: number; width: number; height: number; elementId: string } | null>(null);
 
   // Handle drag from toolbox
@@ -284,20 +286,44 @@ export default function RoomLayoutEditor() {
       return;
     }
 
-    // Buat layout baru
-    const newLayout: RoomLayout = {
-      id: `layout-${Date.now()}`,
-      name: layoutName.trim(),
-      roomType: roomType,
-      elements: [...editorLayout.elements],
-      createdAt: new Date().toISOString(),
-    };
+    // Cek apakah sedang edit layout yang sudah ada
+    if (isEditing && editingLayoutId) {
+      // Update layout yang sudah ada
+      setSavedLayouts(prevLayouts => 
+        prevLayouts.map(layout => 
+          layout.id === editingLayoutId
+            ? {
+                ...layout,
+                name: layoutName.trim(),
+                roomType: roomType,
+                elements: [...editorLayout.elements],
+              }
+            : layout
+        )
+      );
+      
+      // Feedback sukses
+      alert(`✅ Layout "${layoutName.trim()}" berhasil diupdate!\n\nTotal elemen: ${editorLayout.elements.length}`);
+      
+      // Reset editing state
+      setIsEditing(false);
+      setEditingLayoutId(null);
+    } else {
+      // Buat layout baru
+      const newLayout: RoomLayout = {
+        id: `layout-${Date.now()}`,
+        name: layoutName.trim(),
+        roomType: roomType,
+        elements: [...editorLayout.elements],
+        createdAt: new Date().toISOString(),
+      };
 
-    // Simpan ke state
-    setSavedLayouts(prevLayouts => [...prevLayouts, newLayout]);
-    
-    // Feedback sukses
-    alert(`✅ Layout "${newLayout.name}" berhasil disimpan!\n\nTotal elemen: ${newLayout.elements.length}`);
+      // Simpan ke state
+      setSavedLayouts(prevLayouts => [...prevLayouts, newLayout]);
+      
+      // Feedback sukses
+      alert(`✅ Layout "${newLayout.name}" berhasil disimpan!\n\nTotal elemen: ${newLayout.elements.length}`);
+    }
     
     // Reset form
     setLayoutName('');
@@ -309,6 +335,8 @@ export default function RoomLayoutEditor() {
       createdAt: new Date().toISOString(),
     });
     setSelectedElement(null);
+    setIsEditing(false);
+    setEditingLayoutId(null);
     
     // Pindah ke tab saved
     setActiveTab('saved');
@@ -1365,6 +1393,8 @@ export default function RoomLayoutEditor() {
                           setEditorLayout(layout);
                           setLayoutName(layout.name);
                           setRoomType(layout.roomType);
+                          setIsEditing(true);
+                          setEditingLayoutId(layout.id);
                           setActiveTab('editor');
                         }}
                         className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
