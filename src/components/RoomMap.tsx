@@ -309,9 +309,9 @@ export default function RoomMap() {
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
-        // SOLUSI SEDERHANA: Fixed size, pasti berhasil
-        const containerWidth = 200;
-        const containerHeight = 180;
+        // Ukuran container awal
+        const containerWidth = 280;
+        const containerHeight = 220;
         
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
