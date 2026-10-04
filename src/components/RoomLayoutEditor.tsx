@@ -300,6 +300,9 @@ export default function RoomLayoutEditor() {
   const [layoutName, setLayoutName] = useState('');
   const [roomType, setRoomType] = useState('Reguler');
   const [is3DView, setIs3DView] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [imageOpacity, setImageOpacity] = useState(0.3);
+  const [showImage, setShowImage] = useState(true);
 
   // Handle preset selection
   const handlePresetSelect = (preset: RoomLayout) => {
@@ -827,6 +830,25 @@ export default function RoomLayoutEditor() {
     );
   };
 
+  // Handle image upload
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setBackgroundImage(event.target?.result as string);
+        setShowImage(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Clear background image
+  const clearBackgroundImage = () => {
+    setBackgroundImage(null);
+    setShowImage(true);
+  };
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1297,6 +1319,77 @@ export default function RoomLayoutEditor() {
               ))}
             </div>
 
+            {/* Background Image Controls */}
+            <div className="mt-4 pt-4 border-t">
+              <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                <i className="fas fa-image text-purple-600"></i>
+                Background Denah
+              </h4>
+              <div className="space-y-3">
+                {/* Upload Button */}
+                <label className="block w-full px-3 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors cursor-pointer text-center">
+                  <i className="fas fa-upload mr-2"></i>
+                  {backgroundImage ? 'Ganti Gambar' : 'Upload Gambar'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
+
+                {/* Image Controls (only show if image exists) */}
+                {backgroundImage && (
+                  <>
+                    {/* Toggle Show/Hide */}
+                    <button
+                      onClick={() => setShowImage(!showImage)}
+                      className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        showImage
+                          ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <i className={`fas ${showImage ? 'fa-eye' : 'fa-eye-slash'} mr-2`}></i>
+                      {showImage ? 'Sembunyikan' : 'Tampilkan'} Gambar
+                    </button>
+
+                    {/* Opacity Slider */}
+                    <div>
+                      <label className="text-xs text-gray-600 mb-1 block">
+                        Opacity: {Math.round(imageOpacity * 100)}%
+                      </label>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="1"
+                        step="0.1"
+                        value={imageOpacity}
+                        onChange={(e) => setImageOpacity(parseFloat(e.target.value))}
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                      />
+                    </div>
+
+                    {/* Clear Button */}
+                    <button
+                      onClick={clearBackgroundImage}
+                      className="w-full px-3 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
+                    >
+                      <i className="fas fa-times mr-2"></i>Hapus Gambar
+                    </button>
+                  </>
+                )}
+
+                {/* Help Text */}
+                {!backgroundImage && (
+                  <p className="text-[10px] text-gray-400 mt-2">
+                    <i className="fas fa-info-circle mr-1"></i>
+                    Upload denah asli sebagai background untuk trace
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div className="mt-4 pt-4 border-t">
               <h4 className="font-semibold text-gray-800 mb-2">Properti</h4>
               {selectedElement ? (
@@ -1406,13 +1499,24 @@ export default function RoomLayoutEditor() {
                   style={{
                     perspective: is3DView ? '1000px' : 'none',
                     perspectiveOrigin: 'center center',
-                    backgroundImage: `
-                      linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px),
-                      linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '10px 10px, 10px 10px, 50px 50px, 50px 50px'
+                    backgroundImage: backgroundImage && showImage
+                      ? `url(${backgroundImage}),
+                         linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px),
+                         linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`
+                      : `
+                         linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px),
+                         linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)
+                       `,
+                    backgroundSize: backgroundImage && showImage
+                      ? 'contain, 10px 10px, 10px 10px, 50px 50px, 50px 50px'
+                      : '10px 10px, 10px 10px, 50px 50px, 50px 50px',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    opacity: backgroundImage && showImage ? imageOpacity : 1
                   }}
                 >
                 {/* Scale Indicator */}
