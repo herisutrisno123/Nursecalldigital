@@ -238,6 +238,7 @@ export default function RoomMap() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      e.preventDefault();
                       if (window.confirm(`Hapus Kamar ${room.room_number}?`)) {
                         setRoomList(prev => prev.filter(r => r.id !== room.id));
                         if (selectedRoom === room.id) {
@@ -245,10 +246,11 @@ export default function RoomMap() {
                         }
                       }
                     }}
-                    className="absolute bottom-2 right-2 z-20 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+                    className="absolute bottom-2 right-2 z-50 w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-125 border-4 border-white cursor-pointer"
                     title="Hapus Kamar"
+                    style={{ pointerEvents: 'auto' }}
                   >
-                    <i className="fas fa-trash text-xs"></i>
+                    <i className="fas fa-trash text-sm"></i>
                   </button>
                 </div>
               );
@@ -291,6 +293,7 @@ export default function RoomMap() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      e.preventDefault();
                       if (window.confirm(`Hapus Kamar ${room.room_number}?`)) {
                         setRoomList(prev => prev.filter(r => r.id !== room.id));
                         if (selectedRoom === room.id) {
@@ -298,10 +301,11 @@ export default function RoomMap() {
                         }
                       }
                     }}
-                    className="absolute bottom-2 right-2 z-20 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+                    className="absolute bottom-2 right-2 z-50 w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-125 border-4 border-white cursor-pointer"
                     title="Hapus Kamar"
+                    style={{ pointerEvents: 'auto' }}
                   >
-                    <i className="fas fa-trash text-xs"></i>
+                    <i className="fas fa-trash text-sm"></i>
                   </button>
                 </div>
               );

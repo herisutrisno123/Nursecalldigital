@@ -1433,9 +1433,10 @@ export default function RoomLayoutEditor() {
                             ));
                           }
                         }}
-                        className="px-3 py-2 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 transition-all hover:scale-105 shadow-lg border-2 border-red-800 cursor-pointer"
+                        style={{ pointerEvents: 'auto' }}
                       >
-                        <i className="fas fa-trash mr-1"></i>Hapus
+                        <i className="fas fa-trash mr-2"></i>Hapus
                       </button>
                     </div>
                   </div>
