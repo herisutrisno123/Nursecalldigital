@@ -315,10 +315,10 @@ export default function RoomMap() {
         const targetWidth = 280; // px - ukuran kartu kamar
         const targetHeight = 200; // px - ukuran kartu kamar
         
-        // Hitung scale agar denah mengisi PENUH container, lalu dikali 5
+        // Hitung scale agar denah mengisi PENUH container, lalu dikali 2
         const scaleX = targetWidth / layoutWidth;
         const scaleY = targetHeight / layoutHeight;
-        const scale = Math.min(scaleX, scaleY) * 5; // 5x lebih besar
+        const scale = Math.min(scaleX, scaleY) * 2; // 2x lebih besar
         
         return (
           <div className="relative w-full h-full min-h-[200px] bg-white border-4 border-gray-700 overflow-hidden">
