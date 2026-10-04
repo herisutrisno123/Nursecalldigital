@@ -407,7 +407,7 @@ export default function RoomLayoutEditor() {
             style={{
               ...baseStyle,
               backgroundColor: 'transparent',
-              border: isSelected ? '3px dashed #2563eb' : '3px dashed #6b7280',
+              border: isSelected ? '3px solid #2563eb' : '3px solid #6b7280',
               boxShadow: isSelected ? '0 0 0 3px rgba(37, 99, 235, 0.3)' : 'none',
             }}
             className="relative"
@@ -1200,37 +1200,6 @@ export default function RoomLayoutEditor() {
                     perspectiveOrigin: 'center center'
                   }}
                 >
-                {/* Scale Indicator */}
-                <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded shadow text-[10px] font-bold text-gray-700 border border-gray-400 z-10">
-                  Skala 1:50 • Grid 10px
-                </div>
-
-                {/* Dimension Lines - Top */}
-                <div className="absolute top-0 left-0 right-0 h-6 flex items-center justify-center pointer-events-none">
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-0.5 bg-gray-600"></div>
-                    <div className="flex-1 h-0.5 bg-gray-600 relative">
-                      <div className="absolute left-0 top-0 w-0.5 h-2 bg-gray-600 -translate-y-1"></div>
-                      <div className="absolute right-0 top-0 w-0.5 h-2 bg-gray-600 -translate-y-1"></div>
-                    </div>
-                    <div className="w-2 h-0.5 bg-gray-600"></div>
-                    <span className="text-[9px] font-bold text-gray-700 bg-white px-1">4.0m</span>
-                  </div>
-                </div>
-
-                {/* Dimension Lines - Left */}
-                <div className="absolute top-0 left-0 bottom-0 w-6 flex items-center justify-center pointer-events-none">
-                  <div className="flex flex-col items-center gap-1 h-full justify-center">
-                    <div className="h-2 w-0.5 bg-gray-600"></div>
-                    <div className="flex-1 w-0.5 bg-gray-600 relative">
-                      <div className="absolute top-0 left-0 h-0.5 w-2 bg-gray-600 -translate-x-1"></div>
-                      <div className="absolute bottom-0 left-0 h-0.5 w-2 bg-gray-600 -translate-x-1"></div>
-                    </div>
-                    <div className="h-2 w-0.5 bg-gray-600"></div>
-                    <span className="text-[9px] font-bold text-gray-700 bg-white px-1 -rotate-90">3.5m</span>
-                  </div>
-                </div>
-
                 {/* Elements */}
                 {editorLayout.elements.map(element => renderElement(element, selectedElement === element.id))}
 
