@@ -38,8 +38,6 @@ export default function RoomMap() {
   const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>([]);
   const [selectedLayout, setSelectedLayout] = useState<string>('');
   const [roomList, setRoomList] = useState<Room[]>(initialRooms);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
   
   // State untuk form tambah kamar
   const [newRoomNumber, setNewRoomNumber] = useState('');
@@ -91,20 +89,7 @@ export default function RoomMap() {
     }
   }, [showAddRoomModal]);
 
-  // Ukur ukuran container yang sebenarnya
-  useEffect(() => {
-    const updateContainerSize = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setContainerSize({ width: rect.width, height: rect.height });
-        console.log('Container size:', rect.width, 'x', rect.height);
-      }
-    };
 
-    updateContainerSize();
-    window.addEventListener('resize', updateContainerSize);
-    return () => window.removeEventListener('resize', updateContainerSize);
-  }, []);
 
   const floorRooms = roomList.filter(r => r.floor === selectedFloor);
   const floors = [...new Set(roomList.map(r => r.floor))].sort();
@@ -319,72 +304,79 @@ export default function RoomMap() {
     }
   };
 
+  // Komponen RoomLayoutCard yang mengukur ukurannya sendiri
+  const RoomLayoutCard = ({ room, layout }: { room: Room; layout: SavedLayout }) => {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
+
+    useEffect(() => {
+      const updateSize = () => {
+        if (cardRef.current) {
+          const rect = cardRef.current.getBoundingClientRect();
+          setCardSize({ width: rect.width, height: rect.height });
+        }
+      };
+
+      updateSize();
+      
+      const resizeObserver = new ResizeObserver(updateSize);
+      if (cardRef.current) {
+        resizeObserver.observe(cardRef.current);
+      }
+
+      return () => resizeObserver.disconnect();
+    }, []);
+
+    // Hitung ukuran asli denah dari layout
+    const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
+    const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
+    
+    // Gunakan ukuran container yang sebenarnya
+    const containerWidth = cardSize.width || 280;
+    const containerHeight = cardSize.height || 220;
+    
+    // Hitung scale agar denah mengisi PENUH container (cover)
+    const scaleX = containerWidth / layoutWidth;
+    const scaleY = containerHeight / layoutHeight;
+    const scale = Math.max(scaleX, scaleY);
+    
+    // Hitung offset untuk memusatkan denah
+    const scaledWidth = layoutWidth * scale;
+    const scaledHeight = layoutHeight * scale;
+    const offsetX = (containerWidth - scaledWidth) / 2;
+    const offsetY = (containerHeight - scaledHeight) / 2;
+    
+    return (
+      <div ref={cardRef} className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
+        <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
+          {room.room_number}
+        </div>
+        
+        {/* Container denah yang mengisi penuh */}
+        <div 
+          style={{
+            position: 'absolute',
+            left: `${offsetX}px`,
+            top: `${offsetY}px`,
+            width: `${layoutWidth}px`,
+            height: `${layoutHeight}px`,
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left'
+          }}
+        >
+          {/* Render elemen dengan scale = 1 (ukuran asli) */}
+          {layout.elements.map((element) => renderElement(element, 1))}
+        </div>
+      </div>
+    );
+  };
+
   const renderRoomLayout = (room: Room) => {
     // Jika kamar punya layout_id, tampilkan denah dari SavedLayout
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
-        // Hitung ukuran asli denah dari layout
-        const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
-        const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
-        
-        // Gunakan ukuran container yang sebenarnya
-        const containerWidth = containerSize.width || 280; // Fallback jika belum terukur
-        const containerHeight = containerSize.height || 220;
-        
-        console.log('Layout size:', layoutWidth, 'x', layoutHeight);
-        console.log('Container size:', containerWidth, 'x', containerHeight);
-        
-        // Hitung scale agar denah mengisi PENUH container (cover)
-        const scaleX = containerWidth / layoutWidth;
-        const scaleY = containerHeight / layoutHeight;
-        const scale = Math.max(scaleX, scaleY); // Gunakan max agar mengisi penuh
-        
-        console.log('Scale:', scale, 'scaleX:', scaleX, 'scaleY:', scaleY);
-        
-        // Hitung offset untuk memusatkan denah
-        const scaledWidth = layoutWidth * scale;
-        const scaledHeight = layoutHeight * scale;
-        const offsetX = (containerWidth - scaledWidth) / 2;
-        const offsetY = (containerHeight - scaledHeight) / 2;
-        
-        console.log('Offset:', offsetX, offsetY);
-        
-        return (
-          <div ref={containerRef} className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
-            <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
-              {room.room_number}
-            </div>
-            
-            {/* Info Ukuran - Tampilan Visual */}
-            <div className="absolute bottom-2 left-2 right-2 bg-black/80 text-white text-[10px] p-2 rounded z-30 font-mono">
-              <div className="flex justify-between">
-                <span>📦 Container: {Math.round(containerSize.width)} x {Math.round(containerSize.height)} px</span>
-                <span>🏠 Denah: {Math.round(layoutWidth)} x {Math.round(layoutHeight)} px</span>
-              </div>
-              <div className="flex justify-between mt-1">
-                <span>📏 Scale: {scale.toFixed(2)}x</span>
-                <span>📍 Offset: {Math.round(offsetX)}, {Math.round(offsetY)} px</span>
-              </div>
-            </div>
-            
-            {/* Container denah yang mengisi penuh */}
-            <div 
-              style={{
-                position: 'absolute',
-                left: `${offsetX}px`,
-                top: `${offsetY}px`,
-                width: `${layoutWidth}px`,
-                height: `${layoutHeight}px`,
-                transform: `scale(${scale})`,
-                transformOrigin: 'top left'
-              }}
-            >
-              {/* Render elemen dengan scale = 1 (ukuran asli) */}
-              {layout.elements.map((element) => renderElement(element, 1))}
-            </div>
-          </div>
-        );
+        return <RoomLayoutCard room={room} layout={layout} />;
       }
     }
 
