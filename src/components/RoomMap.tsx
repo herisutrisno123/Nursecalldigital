@@ -24,6 +24,13 @@ export default function RoomMap() {
     keterangan: string;
     template: string;
   } | null>(null);
+  const [selectedBangsalId, setSelectedBangsalId] = useState<number | null>(null);
+  const [kamarList, setKamarList] = useState<Array<{
+    id: number;
+    nomor: string;
+    tipe: string;
+    status: string;
+  }>>([]);
 
   return (
     <div className="space-y-6">
@@ -554,7 +561,156 @@ export default function RoomMap() {
           <h3 className="font-semibold text-gray-800 mb-4">
             Peta Ruang
           </h3>
-          <p className="text-gray-600">Konten peta ruang akan ditampilkan di sini.</p>
+          
+          {/* Dropdown Pilihan Bangsal */}
+          <div className="mb-6">
+            <label className="text-sm font-medium text-gray-700 mb-2 block">Pilih Bangsal:</label>
+            <select
+              value={selectedBangsalId || ''}
+              onChange={(e) => {
+                const bangsalId = Number(e.target.value);
+                setSelectedBangsalId(bangsalId);
+                // Load kamar dari bangsal yang dipilih
+                const bangsal = daftarBangsal.find(b => b.id === bangsalId);
+                if (bangsal) {
+                  // Generate kamar berdasarkan template
+                  const templateKamarCount = {
+                    'vvip': 1,
+                    'vip': 2,
+                    'template1': 4,
+                    'template2': 6,
+                    'template3': 8,
+                    'template4': 10
+                  };
+                  const count = templateKamarCount[bangsal.template as keyof typeof templateKamarCount] || 0;
+                  const newKamarList = Array.from({ length: count }, (_, i) => ({
+                    id: Date.now() + i,
+                    nomor: `${i + 1}`,
+                    tipe: bangsal.template === 'vvip' ? 'VVIP' : bangsal.template === 'vip' ? 'VIP' : 'Reguler',
+                    status: 'Tersedia'
+                  }));
+                  setKamarList(newKamarList);
+                }
+              }}
+              className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">-- Pilih Bangsal --</option>
+              {daftarBangsal.map(bangsal => (
+                <option key={bangsal.id} value={bangsal.id}>
+                  {bangsal.nama} - {bangsal.lantai}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tampilan Template Bangsal */}
+          {selectedBangsalId && (() => {
+            const selectedBangsal = daftarBangsal.find(b => b.id === selectedBangsalId);
+            if (!selectedBangsal) return null;
+
+            const templateConfig = {
+              'vvip': { left: 1, right: 0 },
+              'vip': { left: 1, right: 1 },
+              'template1': { left: 2, right: 2 },
+              'template2': { left: 3, right: 3 },
+              'template3': { left: 4, right: 4 },
+              'template4': { left: 5, right: 5 }
+            };
+
+            const config = templateConfig[selectedBangsal.template as keyof typeof templateConfig];
+            if (!config) return null;
+
+            return (
+              <div className="border-2 border-gray-300 rounded-lg p-6 mb-6">
+                <h4 className="font-semibold text-gray-800 mb-4">
+                  Template: {selectedBangsal.nama}
+                </h4>
+                <div className="flex gap-2 h-64">
+                  {/* Kamar Kiri */}
+                  <div className="flex-1 grid gap-2" style={{ gridTemplateRows: `repeat(${config.left}, 1fr)` }}>
+                    {kamarList.slice(0, config.left).map((kamar, idx) => (
+                      <div 
+                        key={kamar.id}
+                        className="bg-blue-100 border-2 border-blue-400 rounded p-2 flex flex-col justify-center cursor-pointer hover:bg-blue-200 transition"
+                        onClick={() => {
+                          const nomor = prompt(`Edit nomor kamar:`, kamar.nomor);
+                          if (nomor) {
+                            setKamarList(kamarList.map(k => 
+                              k.id === kamar.id ? { ...k, nomor } : k
+                            ));
+                          }
+                        }}
+                      >
+                        <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
+                        <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Koridor */}
+                  <div className="w-20 bg-gray-200 border-2 border-gray-400 rounded flex items-center justify-center">
+                    <span className="text-xs font-semibold text-gray-600 transform -rotate-90">KORIDOR</span>
+                  </div>
+                  {/* Kamar Kanan */}
+                  <div className="flex-1 grid gap-2" style={{ gridTemplateRows: `repeat(${config.right}, 1fr)` }}>
+                    {kamarList.slice(config.left, config.left + config.right).map((kamar, idx) => (
+                      <div 
+                        key={kamar.id}
+                        className="bg-blue-100 border-2 border-blue-400 rounded p-2 flex flex-col justify-center cursor-pointer hover:bg-blue-200 transition"
+                        onClick={() => {
+                          const nomor = prompt(`Edit nomor kamar:`, kamar.nomor);
+                          if (nomor) {
+                            setKamarList(kamarList.map(k => 
+                              k.id === kamar.id ? { ...k, nomor } : k
+                            ));
+                          }
+                        }}
+                      >
+                        <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
+                        <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Tombol Tambah Kamar */}
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => {
+                      const newKamar = {
+                        id: Date.now(),
+                        nomor: String(kamarList.length + 1),
+                        tipe: 'Reguler',
+                        status: 'Tersedia'
+                      };
+                      setKamarList([...kamarList, newKamar]);
+                    }}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
+                  >
+                    <i className="fas fa-plus mr-2"></i>
+                    Tambah Kamar
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm('Simpan perubahan bangsal ini?')) {
+                        alert('Bangsal berhasil disimpan!');
+                      }
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                  >
+                    <i className="fas fa-save mr-2"></i>
+                    Simpan
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
+          {!selectedBangsalId && (
+            <div className="text-center py-12 text-gray-500">
+              <i className="fas fa-map text-4xl mb-3 text-gray-300"></i>
+              <p>Pilih bangsal untuk melihat dan mengedit peta ruang</p>
+            </div>
+          )}
         </div>
       )}
     </div>
