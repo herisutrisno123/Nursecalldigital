@@ -27,6 +27,7 @@ export default function RoomMap() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>([]);
   const [selectedLayout, setSelectedLayout] = useState<string>('');
+  const [roomList, setRoomList] = useState(rooms);
 
   // Load saved layouts from localStorage
   useEffect(() => {
@@ -41,8 +42,19 @@ export default function RoomMap() {
     }
   }, [showAddRoomModal]); // Reload when modal opens
 
-  const floorRooms = rooms.filter(r => r.floor === selectedFloor);
-  const floors = [...new Set(rooms.map(r => r.floor))].sort();
+  const floorRooms = roomList.filter(r => r.floor === selectedFloor);
+  const floors = [...new Set(roomList.map(r => r.floor))].sort();
+
+  // Handle delete room
+  const handleDeleteRoom = (roomId: string) => {
+    const room = roomList.find(r => r.id === roomId);
+    if (!room) return;
+
+    if (window.confirm(`Apakah Anda yakin ingin menghapus Kamar ${room.room_number}?\n\nPerangkat dan event terkait juga akan dihapus.`)) {
+      setRoomList(prev => prev.filter(r => r.id !== roomId));
+      setSelectedRoom(null);
+    }
+  };
 
   const getRoomStatus = (roomId: string) => {
     const activeCall = callSessions.find(s => s.room_id === roomId && s.status === 'active');
@@ -50,7 +62,7 @@ export default function RoomMap() {
     const roomDevice = devices.filter(d => d.room_id === roomId);
     const hasFault = roomDevice.some(d => d.status === 'fault');
     if (hasFault) return 'fault';
-    const room = rooms.find(r => r.id === roomId);
+    const room = roomList.find(r => r.id === roomId);
     if (room?.status === 'maintenance') return 'maintenance';
     if (room?.status === 'inactive') return 'inactive';
     return 'normal';
@@ -180,7 +192,7 @@ export default function RoomMap() {
     );
   };
 
-  const selectedRoomData = selectedRoom ? rooms.find(r => r.id === selectedRoom) : null;
+  const selectedRoomData = selectedRoom ? roomList.find(r => r.id === selectedRoom) : null;
   const selectedRoomDevices = selectedRoom ? devices.filter(d => d.room_id === selectedRoom) : [];
   const selectedRoomEvents = selectedRoom ? callEvents.filter(e => e.room_id === selectedRoom) : [];
 
@@ -317,9 +329,18 @@ export default function RoomMap() {
             <h3 className="font-semibold text-gray-800">
               Detail Kamar {selectedRoomData.room_number}
             </h3>
-            <button onClick={() => setSelectedRoom(null)} className="text-gray-400 hover:text-gray-600">
-              <i className="fas fa-times"></i>
-            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => handleDeleteRoom(selectedRoom)}
+                className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors"
+                title="Hapus Kamar"
+              >
+                <i className="fas fa-trash mr-1"></i>Hapus
+              </button>
+              <button onClick={() => setSelectedRoom(null)} className="text-gray-400 hover:text-gray-600">
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
