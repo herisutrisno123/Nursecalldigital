@@ -307,27 +307,42 @@ export default function RoomMap() {
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
+        // Hitung ukuran asli denah dari layout
+        const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
+        const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
+        
+        // Ukuran target container (kartu kamar di peta)
+        // Ini harus sama dengan ukuran yang ditampilkan
+        const targetWidth = 280; // px - ukuran kartu kamar
+        const targetHeight = 200; // px - ukuran kartu kamar
+        
         // Hitung scale agar denah mengisi PENUH container
-        const containerWidth = 300; // Lebar container
-        const containerHeight = 220; // Tinggi container
-        
-        const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
-        const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
-        
-        // Scale tanpa padding - denah mengisi penuh
-        const scaleX = containerWidth / maxX;
-        const scaleY = containerHeight / maxY;
+        const scaleX = targetWidth / layoutWidth;
+        const scaleY = targetHeight / layoutHeight;
         const scale = Math.min(scaleX, scaleY);
-
+        
         return (
-          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
-            <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-10">
+          <div className="relative w-full h-full min-h-[200px] bg-white border-4 border-gray-700 overflow-hidden">
+            <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
               {room.room_number}
             </div>
-            {/* Container untuk denah - mengisi penuh */}
-            <div className="absolute inset-0">
-              {/* Render elemen dari layout menggunakan fungsi yang sama dengan editor */}
-              {layout.elements.map((element) => renderElement(element, scale))}
+            {/* Wrapper yang akan di-scale untuk mengisi container */}
+            <div 
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              {/* Container dengan ukuran asli denah, di-scale agar pas */}
+              <div 
+                style={{
+                  width: `${layoutWidth}px`,
+                  height: `${layoutHeight}px`,
+                  position: 'relative',
+                  transform: `scale(${scale})`,
+                  transformOrigin: 'center center'
+                }}
+              >
+                {/* Render elemen dengan scale = 1 (ukuran asli) */}
+                {layout.elements.map((element) => renderElement(element, 1))}
+              </div>
             </div>
           </div>
         );
