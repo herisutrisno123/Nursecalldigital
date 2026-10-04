@@ -306,21 +306,45 @@ export default function RoomLayoutEditor() {
 
   // Save layout
   const handleSaveLayout = () => {
-    if (!layoutName.trim()) {
-      alert('Silakan masukkan nama layout');
+    // Validasi nama layout
+    if (!layoutName || layoutName.trim() === '') {
+      alert('⚠️ Silakan masukkan nama layout terlebih dahulu');
       return;
     }
 
+    // Validasi elemen
+    if (editorLayout.elements.length === 0) {
+      alert('⚠️ Layout kosong! Silakan tambahkan minimal 1 elemen dari toolbox');
+      return;
+    }
+
+    // Buat layout baru
     const newLayout: RoomLayout = {
-      ...editorLayout,
-      name: layoutName,
+      id: `layout-${Date.now()}`,
+      name: layoutName.trim(),
       roomType: roomType,
+      elements: [...editorLayout.elements],
       createdAt: new Date().toISOString(),
     };
 
-    setSavedLayouts([...savedLayouts, newLayout]);
-    alert('Layout berhasil disimpan!');
+    // Simpan ke state
+    setSavedLayouts(prevLayouts => [...prevLayouts, newLayout]);
+    
+    // Feedback sukses
+    alert(`✅ Layout "${newLayout.name}" berhasil disimpan!\n\nTotal elemen: ${newLayout.elements.length}`);
+    
+    // Reset form
     setLayoutName('');
+    setEditorLayout({
+      id: 'new-layout',
+      name: 'Layout Baru',
+      roomType: 'Reguler',
+      elements: [],
+      createdAt: new Date().toISOString(),
+    });
+    setSelectedElement(null);
+    
+    // Pindah ke tab saved
     setActiveTab('saved');
   };
 
@@ -921,8 +945,12 @@ export default function RoomLayoutEditor() {
                     type="text"
                     placeholder="Nama Layout"
                     value={layoutName}
-                    onChange={(e) => setLayoutName(e.target.value)}
-                    className="px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm font-medium focus:border-indigo-500 focus:outline-none"
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      setLayoutName(e.target.value);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm font-medium focus:border-indigo-500 focus:outline-none cursor-text"
                   />
                   <select
                     value={roomType}
@@ -936,8 +964,13 @@ export default function RoomLayoutEditor() {
                     <option>HCU</option>
                   </select>
                   <button
-                    onClick={handleSaveLayout}
-                    className="px-4 py-1.5 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 shadow-md"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleSaveLayout();
+                    }}
+                    className="px-4 py-1.5 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 shadow-md cursor-pointer transition-all active:scale-95 z-50 relative"
                   >
                     <i className="fas fa-save mr-2"></i>Simpan
                   </button>
