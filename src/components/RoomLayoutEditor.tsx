@@ -1372,12 +1372,20 @@ export default function RoomLayoutEditor() {
                         <i className="fas fa-edit mr-1"></i>Edit
                       </button>
                       <button
-                        onClick={() => {
-                          if (confirm('Hapus layout ini?')) {
-                            setSavedLayouts(savedLayouts.filter(l => l.id !== layout.id));
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          const layoutName = layout.name;
+                          if (window.confirm(`Apakah Anda yakin ingin menghapus layout "${layoutName}"?`)) {
+                            setSavedLayouts(prevLayouts => {
+                              const newLayouts = prevLayouts.filter(l => l.id !== layout.id);
+                              console.log('Layout deleted:', layoutName, 'Remaining layouts:', newLayouts.length);
+                              return newLayouts;
+                            });
                           }
                         }}
-                        className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors"
+                        className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors cursor-pointer relative z-10"
                       >
                         <i className="fas fa-trash"></i>
                       </button>
