@@ -1424,29 +1424,18 @@ export default function RoomLayoutEditor() {
                       </button>
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          console.log('Delete button clicked for layout:', layout.id, layout.name);
-                          
+                        onClick={() => {
                           const layoutName = layout.name;
-                          const confirmed = window.confirm(`Apakah Anda yakin ingin menghapus layout "${layoutName}"?`);
-                          console.log('User confirmed deletion:', confirmed);
-                          
-                          if (confirmed) {
-                            setSavedLayouts(prevLayouts => {
-                              const newLayouts = prevLayouts.filter(l => l.id !== layout.id);
-                              // Simpan ke localStorage
-                              localStorage.setItem('savedLayouts', JSON.stringify(newLayouts));
-                              console.log('Layout deleted successfully:', layoutName, 'Remaining layouts:', newLayouts.length);
-                              return newLayouts;
-                            });
+                          if (window.confirm(`Hapus layout "${layoutName}"?`)) {
+                            setSavedLayouts(prev => prev.filter(l => l.id !== layout.id));
+                            localStorage.setItem('savedLayouts', JSON.stringify(
+                              savedLayouts.filter(l => l.id !== layout.id)
+                            ));
                           }
                         }}
-                        className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors cursor-pointer relative z-10"
-                        style={{ pointerEvents: 'auto' }}
+                        className="px-3 py-2 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
                       >
-                        <i className="fas fa-trash"></i>
+                        <i className="fas fa-trash mr-1"></i>Hapus
                       </button>
                     </div>
                   </div>

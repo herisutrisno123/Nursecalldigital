@@ -210,26 +210,47 @@ export default function RoomMap() {
             {floorRooms.filter((_, i) => i % 2 === 0).map(room => {
               const status = getRoomStatus(room.id);
               return (
-                <button
+                <div
                   key={room.id}
-                  onClick={() => setSelectedRoom(room.id)}
-                  className={`relative p-4 rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  className={`relative rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
-                  <div className="absolute top-2 right-2 z-10">
-                    <i className={`fas ${getRoomIcon(status)}`}></i>
-                  </div>
-                  
-                  {renderRoomLayout(room)}
-                  
-                  {status === 'active-call' && (
-                    <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
-                      <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
-                        <span className="w-2 h-2 bg-white rounded-full"></span>
-                        PANGGILAN AKTIF
-                      </div>
+                  <button
+                    onClick={() => setSelectedRoom(room.id)}
+                    className="w-full h-full"
+                  >
+                    <div className="absolute top-2 right-2 z-10">
+                      <i className={`fas ${getRoomIcon(status)}`}></i>
                     </div>
-                  )}
-                </button>
+                    
+                    {renderRoomLayout(room)}
+                    
+                    {status === 'active-call' && (
+                      <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                        <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
+                          <span className="w-2 h-2 bg-white rounded-full"></span>
+                          PANGGILAN AKTIF
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                  
+                  {/* Tombol Hapus di Kartu Kamar */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm(`Hapus Kamar ${room.room_number}?`)) {
+                        setRoomList(prev => prev.filter(r => r.id !== room.id));
+                        if (selectedRoom === room.id) {
+                          setSelectedRoom(null);
+                        }
+                      }
+                    }}
+                    className="absolute bottom-2 right-2 z-20 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+                    title="Hapus Kamar"
+                  >
+                    <i className="fas fa-trash text-xs"></i>
+                  </button>
+                </div>
               );
             })}
           </div>
@@ -242,26 +263,47 @@ export default function RoomMap() {
             {floorRooms.filter((_, i) => i % 2 === 1).map(room => {
               const status = getRoomStatus(room.id);
               return (
-                <button
+                <div
                   key={room.id}
-                  onClick={() => setSelectedRoom(room.id)}
-                  className={`relative p-4 rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  className={`relative rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
-                  <div className="absolute top-2 right-2 z-10">
-                    <i className={`fas ${getRoomIcon(status)}`}></i>
-                  </div>
-                  
-                  {renderRoomLayout(room)}
-                  
-                  {status === 'active-call' && (
-                    <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
-                      <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
-                        <span className="w-2 h-2 bg-white rounded-full"></span>
-                        PANGGILAN AKTIF
-                      </div>
+                  <button
+                    onClick={() => setSelectedRoom(room.id)}
+                    className="w-full h-full"
+                  >
+                    <div className="absolute top-2 right-2 z-10">
+                      <i className={`fas ${getRoomIcon(status)}`}></i>
                     </div>
-                  )}
-                </button>
+                    
+                    {renderRoomLayout(room)}
+                    
+                    {status === 'active-call' && (
+                      <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                        <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
+                          <span className="w-2 h-2 bg-white rounded-full"></span>
+                          PANGGILAN AKTIF
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                  
+                  {/* Tombol Hapus di Kartu Kamar */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm(`Hapus Kamar ${room.room_number}?`)) {
+                        setRoomList(prev => prev.filter(r => r.id !== room.id));
+                        if (selectedRoom === room.id) {
+                          setSelectedRoom(null);
+                        }
+                      }
+                    }}
+                    className="absolute bottom-2 right-2 z-20 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+                    title="Hapus Kamar"
+                  >
+                    <i className="fas fa-trash text-xs"></i>
+                  </button>
+                </div>
               );
             })}
           </div>
