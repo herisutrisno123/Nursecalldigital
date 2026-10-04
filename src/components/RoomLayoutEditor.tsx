@@ -314,7 +314,7 @@ export default function RoomLayoutEditor() {
   };
 
   // Render cartoon-style mini preview for saved/preset layouts
-  const renderArchitecturalPreview = (elements: LayoutElement[], previewWidth: number, previewHeight: number, scale: number) => {
+  const renderArchitecturalPreview = (elements: LayoutElement[], previewWidth: number, previewHeight: number, scale: number, offsetX: number = 0, offsetY: number = 0) => {
     return (
       <div 
         className="relative bg-yellow-50 border-4 border-gray-900 rounded-2xl overflow-hidden mx-auto shadow-lg"
@@ -340,8 +340,8 @@ export default function RoomLayoutEditor() {
             key={`win-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -353,14 +353,30 @@ export default function RoomLayoutEditor() {
           </div>
         ))}
 
+        {/* Room with cartoon style */}
+        {elements.filter(e => e.type === 'room').map((element, idx) => (
+          <div
+            key={`room-${idx}`}
+            className="absolute"
+            style={{
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
+              width: `${element.width * scale}px`,
+              height: `${element.height * scale}px`,
+            }}
+          >
+            <div className="w-full h-full border-4 border-dashed border-gray-600 bg-white opacity-30 rounded-lg"></div>
+          </div>
+        ))}
+
         {/* Bathroom with cartoon style */}
         {elements.filter(e => e.type === 'bathroom').map((element, idx) => (
           <div
             key={`bath-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -383,8 +399,8 @@ export default function RoomLayoutEditor() {
             key={`bed-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
               transform: `rotate(${element.rotation || 0}deg)`,
@@ -410,8 +426,8 @@ export default function RoomLayoutEditor() {
             key={`door-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
               transform: `rotate(${element.rotation || 0}deg)`,
@@ -430,8 +446,8 @@ export default function RoomLayoutEditor() {
             key={`codeblue-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -448,8 +464,8 @@ export default function RoomLayoutEditor() {
             key={`presence-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -466,8 +482,8 @@ export default function RoomLayoutEditor() {
             key={`mon-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -485,8 +501,8 @@ export default function RoomLayoutEditor() {
             key={`iv-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -504,8 +520,8 @@ export default function RoomLayoutEditor() {
             key={`sofa-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -523,8 +539,8 @@ export default function RoomLayoutEditor() {
             key={`tv-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -542,8 +558,8 @@ export default function RoomLayoutEditor() {
             key={`ward-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
-              left: `${element.x * scale}px`,
-              top: `${element.y * scale}px`,
+              left: `${(element.x - offsetX) * scale}px`,
+              top: `${(element.y - offsetY) * scale}px`,
               width: `${element.width * scale}px`,
               height: `${element.height * scale}px`,
             }}
@@ -1542,18 +1558,34 @@ export default function RoomLayoutEditor() {
                 const bedCount = layout.elements.filter(e => e.type === 'bed').length;
                 const hasBathroom = layout.elements.some(e => e.type === 'bathroom');
                 
-                // Calculate bounds
-                const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
-                const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
+                // Find room element to use as reference
+                const roomElement = layout.elements.find(e => e.type === 'room');
                 
                 // Preview container size
                 const previewWidth = 280;
                 const previewHeight = 180;
                 
-                // Calculate scale to fit content with padding
-                const scaleX = (previewWidth - 20) / maxX;
-                const scaleY = (previewHeight - 20) / maxY;
-                const scale = Math.min(scaleX, scaleY, 0.6);
+                // Calculate scale based on room size if exists, otherwise use all elements
+                let scale: number;
+                let offsetX = 0;
+                let offsetY = 0;
+                
+                if (roomElement) {
+                  // Use room dimensions as reference
+                  const scaleX = (previewWidth - 40) / roomElement.width;
+                  const scaleY = (previewHeight - 40) / roomElement.height;
+                  scale = Math.min(scaleX, scaleY);
+                  // Use room position as offset
+                  offsetX = roomElement.x;
+                  offsetY = roomElement.y;
+                } else {
+                  // Fallback: use all elements bounds
+                  const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
+                  const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
+                  const scaleX = (previewWidth - 20) / maxX;
+                  const scaleY = (previewHeight - 20) / maxY;
+                  scale = Math.min(scaleX, scaleY, 0.6);
+                }
 
                 return (
                   <div key={layout.id} className="bg-white rounded-xl border-2 border-gray-200 p-4 hover:border-indigo-300 hover:shadow-lg transition-all">
@@ -1572,7 +1604,7 @@ export default function RoomLayoutEditor() {
                     
                     {/* Mini Preview - Architectural Style */}
                     <div className="mb-3">
-                      {renderArchitecturalPreview(layout.elements, previewWidth, previewHeight, scale)}
+                      {renderArchitecturalPreview(layout.elements, previewWidth, previewHeight, scale, offsetX, offsetY)}
                     </div>
 
                     {/* Stats */}
