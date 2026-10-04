@@ -319,7 +319,8 @@ export default function RoomMap() {
         // Scale terpisah untuk X dan Y agar mengisi penuh container
         const scaleX = containerWidth / layoutWidth;
         const scaleY = containerHeight / layoutHeight;
-        const scale = Math.min(scaleX, scaleY);
+        const baseScale = Math.min(scaleX, scaleY);
+        const scale = baseScale * 1.5; // Perbesar denah 1.5x
         
         return (
           <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden flex items-center justify-center">
