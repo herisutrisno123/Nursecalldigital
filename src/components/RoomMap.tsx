@@ -309,9 +309,9 @@ export default function RoomMap() {
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
-        // Ukuran container (sesuai dengan CSS)
-        const containerWidth = 200;
-        const containerHeight = 120;
+        // Ukuran container: lebar ditambah, tinggi dikurangi
+        const containerWidth = 280;
+        const containerHeight = 90;
         
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
@@ -322,7 +322,7 @@ export default function RoomMap() {
         const scale = Math.min(scaleX, scaleY);
         
         return (
-          <div className="relative w-full h-full min-h-[120px] max-w-[200px] bg-white border-4 border-gray-700 overflow-hidden flex items-center justify-center">
+          <div className="relative w-full h-full min-h-[90px] max-w-[280px] bg-white border-4 border-gray-700 overflow-hidden flex items-center justify-center">
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
               {room.room_number}
             </div>
