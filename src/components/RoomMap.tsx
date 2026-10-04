@@ -2,6 +2,13 @@ import { useState } from 'react';
 
 export default function RoomMap() {
   const [activeTab, setActiveTab] = useState<'template' | 'bangsal' | 'peta'>('template');
+  const [showAddBangsalModal, setShowAddBangsalModal] = useState(false);
+  const [newBangsal, setNewBangsal] = useState({
+    nama: '',
+    lantai: '',
+    keterangan: '',
+    template: ''
+  });
 
   return (
     <div className="space-y-6">
@@ -212,10 +219,105 @@ export default function RoomMap() {
 
       {activeTab === 'bangsal' && (
         <div className="bg-white rounded-xl shadow-sm border p-6">
-          <h3 className="font-semibold text-gray-800 mb-4">
-            Bangsal
-          </h3>
-          <p className="text-gray-600">Konten bangsal akan ditampilkan di sini.</p>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-gray-800">
+              Bangsal
+            </h3>
+            <button
+              onClick={() => setShowAddBangsalModal(true)}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
+            >
+              <i className="fas fa-plus mr-2"></i>
+              Tambah Bangsal
+            </button>
+          </div>
+          <p className="text-gray-600">Daftar bangsal akan ditampilkan di sini.</p>
+        </div>
+      )}
+
+      {/* Modal Tambah Bangsal */}
+      {showAddBangsalModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div className="p-6 border-b">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">Tambah Bangsal Baru</h3>
+                <button
+                  onClick={() => setShowAddBangsalModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Nama Bangsal</label>
+                <input
+                  type="text"
+                  value={newBangsal.nama}
+                  onChange={(e) => setNewBangsal({ ...newBangsal, nama: e.target.value })}
+                  placeholder="Contoh: Bangsal A"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Nama Lantai</label>
+                <input
+                  type="text"
+                  value={newBangsal.lantai}
+                  onChange={(e) => setNewBangsal({ ...newBangsal, lantai: e.target.value })}
+                  placeholder="Contoh: Lantai 1"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Keterangan</label>
+                <textarea
+                  value={newBangsal.keterangan}
+                  onChange={(e) => setNewBangsal({ ...newBangsal, keterangan: e.target.value })}
+                  placeholder="Deskripsi bangsal..."
+                  rows={3}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Template Ruang</label>
+                <select
+                  value={newBangsal.template}
+                  onChange={(e) => setNewBangsal({ ...newBangsal, template: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">-- Pilih Template --</option>
+                  <option value="template1">Template 1 - 4 Kamar</option>
+                  <option value="template2">Template 2 - 6 Kamar</option>
+                  <option value="template3">Template 3 - 8 Kamar</option>
+                  <option value="template4">Template 4 - 10 Kamar</option>
+                </select>
+              </div>
+            </div>
+            <div className="p-6 border-t bg-gray-50 flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setShowAddBangsalModal(false);
+                  setNewBangsal({ nama: '', lantai: '', keterangan: '', template: '' });
+                }}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  console.log('Bangsal baru:', newBangsal);
+                  setShowAddBangsalModal(false);
+                  setNewBangsal({ nama: '', lantai: '', keterangan: '', template: '' });
+                }}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+              >
+                Simpan
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
