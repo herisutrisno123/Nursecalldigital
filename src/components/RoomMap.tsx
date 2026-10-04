@@ -140,10 +140,10 @@ export default function RoomMap() {
                   isSelected ? 'ring-2 ring-blue-500' : ''
                 }`}
               >
-                {/* Area untuk klik select room */}
+                {/* Area untuk klik select room - TIDAK menutupi tombol hapus */}
                 <div
                   onClick={() => setSelectedRoom(room.id)}
-                  className="cursor-pointer p-4 h-full"
+                  className="cursor-pointer p-4 pb-16"
                 >
                   {renderRoomLayout(room)}
                 </div>
@@ -151,7 +151,7 @@ export default function RoomMap() {
                 {/* TOMBOL HAPUS - TERPISAH DAN JELAS */}
                 <button
                   onClick={() => handleDeleteRoom(room.id, room.room_number)}
-                  className="absolute bottom-3 right-3 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white font-bold text-lg"
+                  className="absolute bottom-3 right-3 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white font-bold text-lg z-50"
                   title={`Hapus Kamar ${room.room_number}`}
                 >
                   <i className="fas fa-trash"></i>
