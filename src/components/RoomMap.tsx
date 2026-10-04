@@ -316,28 +316,22 @@ export default function RoomMap() {
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
-        // Scale agar denah MUAT UTUH tapi lebih besar (contain dengan multiplier)
-        const baseScale = Math.min(containerWidth / layoutWidth, containerHeight / layoutHeight);
-        const scale = baseScale * 1.1; // Perbesar 10% untuk mengurangi ruang kosong
-        
-        // Offset untuk memusatkan
-        const offsetX = (containerWidth - layoutWidth * scale) / 2;
-        const offsetY = (containerHeight - layoutHeight * scale) / 2;
+        // Scale terpisah untuk X dan Y agar mengisi penuh container
+        const scaleX = containerWidth / layoutWidth;
+        const scaleY = containerHeight / layoutHeight;
+        const scale = Math.min(scaleX, scaleY);
         
         return (
-          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
+          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden flex items-center justify-center">
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
               {room.room_number}
             </div>
             <div 
               style={{
-                position: 'absolute',
-                left: `${offsetX}px`,
-                top: `${offsetY}px`,
                 width: `${layoutWidth}px`,
                 height: `${layoutHeight}px`,
                 transform: `scale(${scale})`,
-                transformOrigin: 'top left'
+                transformOrigin: 'center center'
               }}
             >
               {layout.elements.map((element) => renderElement(element, 1))}
