@@ -1427,18 +1427,24 @@ export default function RoomLayoutEditor() {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
+                          console.log('Delete button clicked for layout:', layout.id, layout.name);
+                          
                           const layoutName = layout.name;
-                          if (window.confirm(`Apakah Anda yakin ingin menghapus layout "${layoutName}"?`)) {
+                          const confirmed = window.confirm(`Apakah Anda yakin ingin menghapus layout "${layoutName}"?`);
+                          console.log('User confirmed deletion:', confirmed);
+                          
+                          if (confirmed) {
                             setSavedLayouts(prevLayouts => {
                               const newLayouts = prevLayouts.filter(l => l.id !== layout.id);
                               // Simpan ke localStorage
                               localStorage.setItem('savedLayouts', JSON.stringify(newLayouts));
-                              console.log('Layout deleted:', layoutName, 'Remaining layouts:', newLayouts.length);
+                              console.log('Layout deleted successfully:', layoutName, 'Remaining layouts:', newLayouts.length);
                               return newLayouts;
                             });
                           }
                         }}
                         className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors cursor-pointer relative z-10"
+                        style={{ pointerEvents: 'auto' }}
                       >
                         <i className="fas fa-trash"></i>
                       </button>

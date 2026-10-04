@@ -47,12 +47,29 @@ export default function RoomMap() {
 
   // Handle delete room
   const handleDeleteRoom = (roomId: string) => {
+    console.log('Delete room clicked:', roomId);
     const room = roomList.find(r => r.id === roomId);
-    if (!room) return;
+    if (!room) {
+      console.error('Room not found:', roomId);
+      return;
+    }
 
-    if (window.confirm(`Apakah Anda yakin ingin menghapus Kamar ${room.room_number}?\n\nPerangkat dan event terkait juga akan dihapus.`)) {
-      setRoomList(prev => prev.filter(r => r.id !== roomId));
-      setSelectedRoom(null);
+    try {
+      const confirmed = window.confirm(`Apakah Anda yakin ingin menghapus Kamar ${room.room_number}?\n\nPerangkat dan event terkait juga akan dihapus.`);
+      console.log('User confirmed:', confirmed);
+      
+      if (confirmed) {
+        setRoomList(prev => {
+          const newList = prev.filter(r => r.id !== roomId);
+          console.log('Room deleted. New list length:', newList.length);
+          return newList;
+        });
+        setSelectedRoom(null);
+        console.log('Room deletion complete');
+      }
+    } catch (error) {
+      console.error('Error deleting room:', error);
+      alert('Terjadi kesalahan saat menghapus kamar. Silakan coba lagi.');
     }
   };
 
@@ -331,13 +348,20 @@ export default function RoomMap() {
             </h3>
             <div className="flex gap-2">
               <button 
-                onClick={() => handleDeleteRoom(selectedRoom)}
-                className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  console.log('Delete room button clicked');
+                  handleDeleteRoom(selectedRoom);
+                }}
+                className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors cursor-pointer relative z-10"
                 title="Hapus Kamar"
+                style={{ pointerEvents: 'auto' }}
               >
                 <i className="fas fa-trash mr-1"></i>Hapus
               </button>
-              <button onClick={() => setSelectedRoom(null)} className="text-gray-400 hover:text-gray-600">
+              <button type="button" onClick={() => setSelectedRoom(null)} className="text-gray-400 hover:text-gray-600">
                 <i className="fas fa-times"></i>
               </button>
             </div>
