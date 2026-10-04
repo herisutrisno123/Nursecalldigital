@@ -1408,7 +1408,7 @@ export default function RoomLayoutEditor() {
                     </div>
 
                     {/* Actions */}
-                    <div>
+                    <div className="flex gap-2">
                       <button
                         onClick={() => {
                           setEditorLayout(layout);
@@ -1418,10 +1418,32 @@ export default function RoomLayoutEditor() {
                           setEditingLayoutId(layout.id);
                           setActiveTab('editor');
                         }}
-                        className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
+                        className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
                       >
-                        <i className="fas fa-edit mr-1"></i>Edit Layout Ini
+                        <i className="fas fa-edit mr-1"></i>Edit
                       </button>
+                      <a
+                        href="#delete-layout"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setSavedLayouts(savedLayouts.filter(l => l.id !== layout.id));
+                          localStorage.setItem('savedLayouts', JSON.stringify(
+                            savedLayouts.filter(l => l.id !== layout.id)
+                          ));
+                        }}
+                        style={{
+                          padding: '8px 12px',
+                          backgroundColor: '#ef4444',
+                          color: 'white',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          display: 'inline-block'
+                        }}
+                      >
+                        Hapus
+                      </a>
                     </div>
                   </div>
                 );

@@ -164,9 +164,31 @@ export default function RoomMap() {
 
       {selectedRoom && selectedRoomData && (
         <div className="bg-white rounded-xl shadow-sm border p-5">
-          <h3 className="font-semibold text-gray-800 mb-4">
-            Detail Kamar {selectedRoomData.room_number}
-          </h3>
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="font-semibold text-gray-800">
+              Detail Kamar {selectedRoomData.room_number}
+            </h3>
+            <a
+              href="#delete"
+              onClick={(e) => {
+                e.preventDefault();
+                setRoomList(roomList.filter(r => r.id !== selectedRoom));
+                setSelectedRoom(null);
+              }}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#ef4444',
+                color: 'white',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                display: 'inline-block'
+              }}
+            >
+              Hapus Kamar
+            </a>
+          </div>
           <div className="grid grid-cols-2 gap-6 text-sm">
             <div>
               <p><strong>Tipe:</strong> {selectedRoomData.room_type}</p>
