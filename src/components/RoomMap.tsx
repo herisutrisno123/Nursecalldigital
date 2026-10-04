@@ -65,6 +65,50 @@ export default function RoomMap() {
           <p className="text-gray-600 mb-6">Pilih template ruang yang sesuai dengan kebutuhan Anda:</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Template VVIP: 1 Kamar */}
+            <div className="border-2 border-gray-300 rounded-lg p-4 hover:border-indigo-500 cursor-pointer transition">
+              <h4 className="font-semibold text-gray-800 mb-3">Template VVIP - 1 Kamar</h4>
+              <div className="flex gap-2 h-48">
+                {/* Kamar Kiri */}
+                <div className="flex-1 grid grid-rows-1 gap-2">
+                  <div className="bg-purple-100 border-2 border-purple-400 rounded flex items-center justify-center text-xs font-semibold">
+                    Kamar VVIP
+                  </div>
+                </div>
+                {/* Koridor */}
+                <div className="w-16 bg-gray-200 border-2 border-gray-400 rounded flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-600 transform -rotate-90">KORIDOR</span>
+                </div>
+                {/* Kamar Kanan */}
+                <div className="flex-1"></div>
+              </div>
+              <p className="text-sm text-gray-600 mt-3">1 kamar di kiri</p>
+            </div>
+
+            {/* Template VIP: 2 Kamar */}
+            <div className="border-2 border-gray-300 rounded-lg p-4 hover:border-indigo-500 cursor-pointer transition">
+              <h4 className="font-semibold text-gray-800 mb-3">Template VIP - 2 Kamar</h4>
+              <div className="flex gap-2 h-48">
+                {/* Kamar Kiri */}
+                <div className="flex-1 grid grid-rows-1 gap-2">
+                  <div className="bg-indigo-100 border-2 border-indigo-400 rounded flex items-center justify-center text-xs font-semibold">
+                    Kamar VIP 1
+                  </div>
+                </div>
+                {/* Koridor */}
+                <div className="w-16 bg-gray-200 border-2 border-gray-400 rounded flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-600 transform -rotate-90">KORIDOR</span>
+                </div>
+                {/* Kamar Kanan */}
+                <div className="flex-1 grid grid-rows-1 gap-2">
+                  <div className="bg-indigo-100 border-2 border-indigo-400 rounded flex items-center justify-center text-xs font-semibold">
+                    Kamar VIP 2
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-3">1 kamar di kiri, 1 kamar di kanan</p>
+            </div>
+
             {/* Template 1: 4 Kamar */}
             <div className="border-2 border-gray-300 rounded-lg p-4 hover:border-indigo-500 cursor-pointer transition">
               <h4 className="font-semibold text-gray-800 mb-3">Template 1 - 4 Kamar</h4>
@@ -269,7 +313,14 @@ export default function RoomMap() {
                     </div>
                     <div>
                       <span className="text-gray-500">Template:</span>
-                      <span className="ml-2 font-medium text-gray-700">{bangsal.template}</span>
+                      <span className="ml-2 font-medium text-gray-700">
+                        {bangsal.template === 'vvip' && 'Template VVIP - 1 Kamar'}
+                        {bangsal.template === 'vip' && 'Template VIP - 2 Kamar'}
+                        {bangsal.template === 'template1' && 'Template 1 - 4 Kamar'}
+                        {bangsal.template === 'template2' && 'Template 2 - 6 Kamar'}
+                        {bangsal.template === 'template3' && 'Template 3 - 8 Kamar'}
+                        {bangsal.template === 'template4' && 'Template 4 - 10 Kamar'}
+                      </span>
                     </div>
                     {bangsal.keterangan && (
                       <div>
@@ -339,6 +390,8 @@ export default function RoomMap() {
                   className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">-- Pilih Template --</option>
+                  <option value="vvip">Template VVIP - 1 Kamar</option>
+                  <option value="vip">Template VIP - 2 Kamar</option>
                   <option value="template1">Template 1 - 4 Kamar</option>
                   <option value="template2">Template 2 - 6 Kamar</option>
                   <option value="template3">Template 3 - 8 Kamar</option>
