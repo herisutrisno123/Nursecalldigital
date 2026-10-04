@@ -304,90 +304,45 @@ export default function RoomMap() {
     }
   };
 
-  // Komponen RoomLayoutCard yang mengukur ukurannya sendiri
-  const RoomLayoutCard = ({ room, layout }: { room: Room; layout: SavedLayout }) => {
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [cardSize, setCardSize] = useState({ width: 280, height: 220 });
-
-    useEffect(() => {
-      const updateSize = () => {
-        if (cardRef.current) {
-          const rect = cardRef.current.getBoundingClientRect();
-          if (rect.width > 0 && rect.height > 0) {
-            setCardSize({ width: rect.width, height: rect.height });
-          }
-        }
-      };
-
-      // Update awal setelah render
-      setTimeout(updateSize, 100);
-      
-      // Observer untuk perubahan ukuran
-      const resizeObserver = new ResizeObserver(updateSize);
-      if (cardRef.current) {
-        resizeObserver.observe(cardRef.current);
-      }
-
-      // Update saat window resize
-      window.addEventListener('resize', updateSize);
-
-      return () => {
-        resizeObserver.disconnect();
-        window.removeEventListener('resize', updateSize);
-      };
-    }, []);
-
-    // Hitung ukuran asli denah dari layout
-    const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
-    const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
-    
-    // Gunakan ukuran container yang sebenarnya
-    const containerWidth = cardSize.width || 280;
-    const containerHeight = cardSize.height || 220;
-    
-    // Hitung scale agar denah MUAT UTUH dalam container (contain)
-    // Gunakan MIN agar seluruh denah terlihat, tidak ada yang terpotong
-    const scaleX = containerWidth / layoutWidth;
-    const scaleY = containerHeight / layoutHeight;
-    const scale = Math.min(scaleX, scaleY);
-    
-    // Hitung offset untuk memusatkan denah
-    const scaledWidth = layoutWidth * scale;
-    const scaledHeight = layoutHeight * scale;
-    const offsetX = (containerWidth - scaledWidth) / 2;
-    const offsetY = (containerHeight - scaledHeight) / 2;
-    
-    return (
-      <div ref={cardRef} className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
-        <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
-          {room.room_number}
-        </div>
-        
-        {/* Container denah yang mengisi penuh */}
-        <div 
-          style={{
-            position: 'absolute',
-            left: `${offsetX}px`,
-            top: `${offsetY}px`,
-            width: `${layoutWidth}px`,
-            height: `${layoutHeight}px`,
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left'
-          }}
-        >
-          {/* Render elemen dengan scale = 1 (ukuran asli) */}
-          {layout.elements.map((element) => renderElement(element, 1))}
-        </div>
-      </div>
-    );
-  };
-
   const renderRoomLayout = (room: Room) => {
     // Jika kamar punya layout_id, tampilkan denah dari SavedLayout
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
-        return <RoomLayoutCard room={room} layout={layout} />;
+        // SOLUSI SEDERHANA: Fixed size, pasti berhasil
+        const containerWidth = 280;
+        const containerHeight = 220;
+        
+        const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
+        const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
+        
+        // Scale agar denah MUAT UTUH (contain)
+        const scale = Math.min(containerWidth / layoutWidth, containerHeight / layoutHeight);
+        
+        // Offset untuk memusatkan
+        const offsetX = (containerWidth - layoutWidth * scale) / 2;
+        const offsetY = (containerHeight - layoutHeight * scale) / 2;
+        
+        return (
+          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
+            <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
+              {room.room_number}
+            </div>
+            <div 
+              style={{
+                position: 'absolute',
+                left: `${offsetX}px`,
+                top: `${offsetY}px`,
+                width: `${layoutWidth}px`,
+                height: `${layoutHeight}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left'
+              }}
+            >
+              {layout.elements.map((element) => renderElement(element, 1))}
+            </div>
+          </div>
+        );
       }
     }
 
