@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 // Types
 interface LayoutElement {
   id: string;
-  type: 'bed' | 'bathroom' | 'door' | 'window' | 'nurse_call' | 'iv_stand' | 'monitor' | 'sofa' | 'tv' | 'wardrobe';
+  type: 'room' | 'bed' | 'bathroom' | 'door' | 'window' | 'nurse_call' | 'iv_stand' | 'monitor' | 'sofa' | 'tv' | 'wardrobe';
   x: number;
   y: number;
   width: number;
@@ -23,6 +23,7 @@ interface RoomLayout {
 
 // Toolbox items for drag & drop
 const toolboxItems = [
+  { type: 'room', label: 'Kotak Kamar', icon: '📐', defaultWidth: 300, defaultHeight: 350 },
   { type: 'bed', label: 'Tempat Tidur', icon: '🛏️', defaultWidth: 60, defaultHeight: 100 },
   { type: 'bathroom', label: 'Kamar Mandi', icon: '🚿', defaultWidth: 80, defaultHeight: 80 },
   { type: 'door', label: 'Pintu', icon: '🚪', defaultWidth: 60, defaultHeight: 20 },
@@ -50,6 +51,8 @@ export default function RoomLayoutEditor() {
   const [layoutName, setLayoutName] = useState('');
   const [roomType, setRoomType] = useState('Reguler');
   const [is3DView, setIs3DView] = useState(false);
+  const [resizingElement, setResizingElement] = useState<string | null>(null);
+  const [resizeStart, setResizeStart] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
 
   // Handle drag from toolbox
   const handleDragStart = (type: string) => {
@@ -167,6 +170,52 @@ export default function RoomLayoutEditor() {
       });
       setSelectedElement(null);
     }
+  };
+
+  // Handle resize for room element
+  const handleResizeStart = (e: React.MouseEvent, elementId: string) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    const element = editorLayout.elements.find(el => el.id === elementId);
+    if (!element) return;
+
+    setResizingElement(elementId);
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: element.width,
+      height: element.height,
+    });
+
+    const handleResizeMove = (moveEvent: MouseEvent) => {
+      if (!resizeStart) return;
+
+      const dx = moveEvent.clientX - resizeStart.x;
+      const dy = moveEvent.clientY - resizeStart.y;
+
+      const newWidth = Math.max(100, resizeStart.width + dx);
+      const newHeight = Math.max(100, resizeStart.height + dy);
+
+      setEditorLayout({
+        ...editorLayout,
+        elements: editorLayout.elements.map(el =>
+          el.id === elementId
+            ? { ...el, width: newWidth, height: newHeight }
+            : el
+        ),
+      });
+    };
+
+    const handleResizeEnd = () => {
+      setResizingElement(null);
+      setResizeStart(null);
+      document.removeEventListener('mousemove', handleResizeMove);
+      document.removeEventListener('mouseup', handleResizeEnd);
+    };
+
+    document.addEventListener('mousemove', handleResizeMove);
+    document.addEventListener('mouseup', handleResizeEnd);
   };
 
   // Handle element rotation
@@ -522,6 +571,57 @@ export default function RoomLayoutEditor() {
     };
 
     switch (element.type) {
+      case 'room':
+        return (
+          <div 
+            key={element.id} 
+            style={{
+              ...baseStyle,
+              backgroundColor: 'transparent',
+              border: isSelected ? '3px dashed #2563eb' : '3px dashed #6b7280',
+              boxShadow: isSelected ? '0 0 0 3px rgba(37, 99, 235, 0.3)' : 'none',
+            }}
+            className="relative"
+            onClick={(e) => handleElementClick(element.id, e)}
+            onMouseDown={(e) => handleElementDrag(e, element.id)}
+          >
+            {/* Room Label */}
+            <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap">
+              Kamar ({element.width} x {element.height})
+            </div>
+            
+            {/* Resize Handles - Corners */}
+            {isSelected && (
+              <>
+                {/* Top-Left */}
+                <div
+                  className="absolute -top-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hover:bg-blue-600"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                {/* Top-Right */}
+                <div
+                  className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nesw-resize hover:bg-blue-600"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                {/* Bottom-Left */}
+                <div
+                  className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nesw-resize hover:bg-blue-600"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                {/* Bottom-Right */}
+                <div
+                  className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hover:bg-blue-600"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+              </>
+            )}
+          </div>
+        );
+
       case 'bed':
         return (
           <div 
