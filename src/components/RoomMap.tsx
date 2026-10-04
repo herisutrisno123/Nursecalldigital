@@ -146,10 +146,19 @@ export default function RoomMap() {
           {selectedRoom && (
             <button
               onClick={() => {
+                console.log('Tombol hapus diklik!');
+                console.log('Selected room:', selectedRoom);
                 const room = roomList.find(r => r.id === selectedRoom);
-                if (room && window.confirm('Hapus Kamar ' + room.room_number + '?')) {
-                  setRoomList(roomList.filter(r => r.id !== selectedRoom));
+                console.log('Room data:', room);
+                
+                if (room) {
+                  const newRoomList = roomList.filter(r => r.id !== selectedRoom);
+                  console.log('New room list length:', newRoomList.length);
+                  
+                  setRoomList(newRoomList);
                   setSelectedRoom(null);
+                  
+                  alert('Kamar ' + room.room_number + ' berhasil dihapus!');
                 }
               }}
               style={{
