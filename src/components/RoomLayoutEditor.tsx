@@ -50,7 +50,6 @@ export default function RoomLayoutEditor() {
   const [layoutName, setLayoutName] = useState('');
   const [roomType, setRoomType] = useState('Reguler');
   const [is3DView, setIs3DView] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
 
   // Handle drag from toolbox
   const handleDragStart = (type: string) => {
@@ -464,23 +463,6 @@ export default function RoomLayoutEditor() {
     );
   };
 
-  // Handle image upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setBackgroundImage(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Clear background image
-  const clearBackgroundImage = () => {
-    setBackgroundImage(null);
-  };
-
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -816,37 +798,7 @@ export default function RoomLayoutEditor() {
 
       {/* Drag & Drop Editor Tab */}
       {activeTab === 'editor' && (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-          {/* Reference Image Panel (if uploaded) */}
-          {backgroundImage && (
-            <div className="bg-white rounded-xl border-2 border-purple-300 p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="font-bold text-gray-800 flex items-center gap-2">
-                  <i className="fas fa-image text-purple-600"></i>
-                  Gambar Referensi
-                </h4>
-                <button
-                  onClick={clearBackgroundImage}
-                  className="text-xs text-red-600 hover:text-red-800"
-                  title="Hapus gambar referensi"
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-              </div>
-              <div className="relative bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-300">
-                <img 
-                  src={backgroundImage} 
-                  alt="Referensi Denah"
-                  className="w-full h-auto"
-                />
-              </div>
-              <div className="mt-3 p-2 bg-purple-50 border border-purple-200 rounded text-xs text-purple-700">
-                <i className="fas fa-lightbulb mr-1"></i>
-                <strong>Tips:</strong> Lihat gambar ini sebagai acuan, lalu buat layout di canvas sebelah kanan
-              </div>
-            </div>
-          )}
-
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Toolbox */}
           <div className="bg-white rounded-xl border p-4">
             <h4 className="font-semibold text-gray-800 mb-3">Toolbox</h4>
@@ -862,32 +814,6 @@ export default function RoomLayoutEditor() {
                   <span className="text-sm text-gray-700">{item.label}</span>
                 </div>
               ))}
-            </div>
-
-
-
-            {/* Upload Reference Image */}
-            <div className="mt-4 pt-4 border-t">
-              <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <i className="fas fa-image text-purple-600"></i>
-                Gambar Referensi
-              </h4>
-              <label className="block w-full px-3 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors cursor-pointer text-center">
-                <i className="fas fa-upload mr-2"></i>
-                {backgroundImage ? 'Ganti Gambar' : 'Upload Gambar'}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </label>
-              {!backgroundImage && (
-                <p className="text-[10px] text-gray-400 mt-2">
-                  <i className="fas fa-info-circle mr-1"></i>
-                  Upload denah contoh sebagai acuan
-                </p>
-              )}
             </div>
 
             <div className="mt-4 pt-4 border-t">
@@ -932,7 +858,7 @@ export default function RoomLayoutEditor() {
           </div>
 
           {/* Canvas */}
-          <div className={`space-y-3 ${backgroundImage ? 'lg:col-span-3' : 'lg:col-span-4'}`}>
+          <div className="lg:col-span-3 space-y-3">
             <div className="bg-white rounded-xl border-2 border-gray-300 shadow-lg">
               <div className="bg-gradient-to-r from-gray-100 to-gray-200 px-4 py-3 border-b-2 border-gray-300 flex items-center justify-between">
                 <h4 className="font-bold text-gray-800 flex items-center gap-2">
@@ -1048,9 +974,6 @@ export default function RoomLayoutEditor() {
                     <div className="text-center">
                       <i className="fas fa-mouse-pointer text-4xl mb-2"></i>
                       <p className="text-sm">Drag elemen dari toolbox ke sini</p>
-                      {backgroundImage && (
-                        <p className="text-xs mt-1 text-purple-600">Lihat gambar referensi di panel kiri</p>
-                      )}
                     </div>
                   </div>
                 )}
