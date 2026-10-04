@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { rooms as initialRooms, devices, callEvents, callSessions } from '../data/mockData';
 
 interface LayoutElement {
@@ -38,6 +38,8 @@ export default function RoomMap() {
   const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>([]);
   const [selectedLayout, setSelectedLayout] = useState<string>('');
   const [roomList, setRoomList] = useState<Room[]>(initialRooms);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
   
   // State untuk form tambah kamar
   const [newRoomNumber, setNewRoomNumber] = useState('');
@@ -88,6 +90,21 @@ export default function RoomMap() {
       }
     }
   }, [showAddRoomModal]);
+
+  // Ukur ukuran container yang sebenarnya
+  useEffect(() => {
+    const updateContainerSize = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setContainerSize({ width: rect.width, height: rect.height });
+        console.log('Container size:', rect.width, 'x', rect.height);
+      }
+    };
+
+    updateContainerSize();
+    window.addEventListener('resize', updateContainerSize);
+    return () => window.removeEventListener('resize', updateContainerSize);
+  }, []);
 
   const floorRooms = roomList.filter(r => r.floor === selectedFloor);
   const floors = [...new Set(roomList.map(r => r.floor))].sort();
@@ -311,14 +328,19 @@ export default function RoomMap() {
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
-        // Ukuran container (kartu kamar)
-        const containerWidth = 280;
-        const containerHeight = 220;
+        // Gunakan ukuran container yang sebenarnya
+        const containerWidth = containerSize.width || 280; // Fallback jika belum terukur
+        const containerHeight = containerSize.height || 220;
+        
+        console.log('Layout size:', layoutWidth, 'x', layoutHeight);
+        console.log('Container size:', containerWidth, 'x', containerHeight);
         
         // Hitung scale agar denah mengisi PENUH container (cover)
         const scaleX = containerWidth / layoutWidth;
         const scaleY = containerHeight / layoutHeight;
         const scale = Math.max(scaleX, scaleY); // Gunakan max agar mengisi penuh
+        
+        console.log('Scale:', scale, 'scaleX:', scaleX, 'scaleY:', scaleY);
         
         // Hitung offset untuk memusatkan denah
         const scaledWidth = layoutWidth * scale;
@@ -326,8 +348,10 @@ export default function RoomMap() {
         const offsetX = (containerWidth - scaledWidth) / 2;
         const offsetY = (containerHeight - scaledHeight) / 2;
         
+        console.log('Offset:', offsetX, offsetY);
+        
         return (
-          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
+          <div ref={containerRef} className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
               {room.room_number}
             </div>
