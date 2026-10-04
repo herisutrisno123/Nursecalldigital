@@ -312,14 +312,13 @@ export default function RoomMap() {
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
         // Ukuran target container (kartu kamar di peta)
-        // Ini harus sama dengan ukuran yang ditampilkan
         const targetWidth = 280; // px - ukuran kartu kamar
         const targetHeight = 200; // px - ukuran kartu kamar
         
-        // Hitung scale agar denah mengisi PENUH container
+        // Hitung scale agar denah mengisi PENUH container, lalu dikali 5
         const scaleX = targetWidth / layoutWidth;
         const scaleY = targetHeight / layoutHeight;
-        const scale = Math.min(scaleX, scaleY);
+        const scale = Math.min(scaleX, scaleY) * 5; // 5x lebih besar
         
         return (
           <div className="relative w-full h-full min-h-[200px] bg-white border-4 border-gray-700 overflow-hidden">
@@ -330,7 +329,7 @@ export default function RoomMap() {
             <div 
               className="absolute inset-0 flex items-center justify-center"
             >
-              {/* Container dengan ukuran asli denah, di-scale agar pas */}
+              {/* Container dengan ukuran asli denah, di-scale 5x lebih besar */}
               <div 
                 style={{
                   width: `${layoutWidth}px`,
