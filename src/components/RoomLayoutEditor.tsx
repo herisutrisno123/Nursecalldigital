@@ -21,21 +21,170 @@ interface RoomLayout {
   createdAt: string;
 }
 
-// Preset Layouts - Optimized for Professional Architectural Look
+// Preset Layouts - Standar Rumah Sakit Indonesia
 const presetLayouts: RoomLayout[] = [
+  // ===== KELAS 1 (VIP) =====
   {
-    id: 'preset-reguler-1',
-    name: 'Reguler 1 Bed',
+    id: 'preset-vip-1bed',
+    name: 'Kelas 1 - VIP 1 Bed',
+    roomType: 'VIP',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 40, y: 60, width: 80, height: 120, label: 'A' },
+      { id: 'sofa-1', type: 'sofa', x: 160, y: 60, width: 70, height: 35 },
+      { id: 'tv-1', type: 'tv', x: 180, y: 20, width: 50, height: 10 },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 220, width: 70, height: 70 },
+      { id: 'wardrobe-1', type: 'wardrobe', x: 210, y: 120, width: 30, height: 80 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 100, width: 15, height: 90 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 90, y: 45, width: 15, height: 15 },
+    ]
+  },
+  
+  // ===== KELAS 2 (UTAMA) =====
+  {
+    id: 'preset-class2-1bed',
+    name: 'Kelas 2 - Utama 1 Bed',
     roomType: 'Reguler',
     isPreset: true,
     createdAt: '2026-01-01',
     elements: [
-      { id: 'bed-1', type: 'bed', x: 30, y: 50, width: 70, height: 110, label: 'A' },
-      { id: 'bathroom-1', type: 'bathroom', x: 220, y: 30, width: 70, height: 70 },
-      { id: 'door-1', type: 'door', x: 150, y: 320, width: 60, height: 15 },
+      { id: 'bed-1', type: 'bed', x: 40, y: 60, width: 75, height: 115, label: 'A' },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 40, width: 70, height: 70 },
+      { id: 'wardrobe-1', type: 'wardrobe', x: 210, y: 130, width: 30, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 110, width: 15, height: 80 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 85, y: 45, width: 15, height: 15 },
+    ]
+  },
+  
+  // ===== KELAS 3 (STANDAR) =====
+  {
+    id: 'preset-class3-2bed',
+    name: 'Kelas 3 - Standar 2 Bed',
+    roomType: 'Reguler',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 30, y: 60, width: 70, height: 110, label: 'A' },
+      { id: 'bed-2', type: 'bed', x: 120, y: 60, width: 70, height: 110, label: 'B' },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 40, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
       { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 70 },
-      { id: 'nurse-call-1', type: 'nurse_call', x: 110, y: 40, width: 15, height: 15 },
-      { id: 'wardrobe-1', type: 'wardrobe', x: 220, y: 120, width: 30, height: 60 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 70, y: 45, width: 15, height: 15 },
+      { id: 'nurse-call-2', type: 'nurse_call', x: 160, y: 45, width: 15, height: 15 },
+    ]
+  },
+  
+  {
+    id: 'preset-class3-3bed',
+    name: 'Kelas 3 - Standar 3 Bed',
+    roomType: 'Reguler',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 20, y: 60, width: 65, height: 105, label: 'A' },
+      { id: 'bed-2', type: 'bed', x: 100, y: 60, width: 65, height: 105, label: 'B' },
+      { id: 'bed-3', type: 'bed', x: 180, y: 60, width: 65, height: 105, label: 'C' },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 220, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 70 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 55, y: 45, width: 15, height: 15 },
+      { id: 'nurse-call-2', type: 'nurse_call', x: 135, y: 45, width: 15, height: 15 },
+      { id: 'nurse-call-3', type: 'nurse_call', x: 215, y: 45, width: 15, height: 15 },
+    ]
+  },
+  
+  {
+    id: 'preset-class3-4bed',
+    name: 'Kelas 3 - Standar 4 Bed',
+    roomType: 'Reguler',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 20, y: 50, width: 60, height: 100, label: 'A' },
+      { id: 'bed-2', type: 'bed', x: 95, y: 50, width: 60, height: 100, label: 'B' },
+      { id: 'bed-3', type: 'bed', x: 20, y: 170, width: 60, height: 100, label: 'C' },
+      { id: 'bed-4', type: 'bed', x: 95, y: 170, width: 60, height: 100, label: 'D' },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 40, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 70 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 50, y: 35, width: 15, height: 15 },
+      { id: 'nurse-call-2', type: 'nurse_call', x: 125, y: 35, width: 15, height: 15 },
+      { id: 'nurse-call-3', type: 'nurse_call', x: 50, y: 155, width: 15, height: 15 },
+      { id: 'nurse-call-4', type: 'nurse_call', x: 125, y: 155, width: 15, height: 15 },
+    ]
+  },
+  
+  // ===== ICU =====
+  {
+    id: 'preset-icu-1bed',
+    name: 'ICU - Critical Care 1 Bed',
+    roomType: 'ICU',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 80, y: 80, width: 80, height: 120, label: 'A' },
+      { id: 'monitor-1', type: 'monitor', x: 180, y: 90, width: 45, height: 55 },
+      { id: 'iv-stand-1', type: 'iv_stand', x: 170, y: 70, width: 10, height: 40 },
+      { id: 'iv-stand-2', type: 'iv_stand', x: 70, y: 70, width: 10, height: 40 },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 220, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 100, width: 15, height: 90 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 120, y: 65, width: 15, height: 15 },
+    ]
+  },
+  
+  // ===== NICU =====
+  {
+    id: 'preset-nicu-incubator',
+    name: 'NICU - Neonatal Incubator',
+    roomType: 'NICU',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 90, y: 100, width: 70, height: 90, label: 'A' },
+      { id: 'monitor-1', type: 'monitor', x: 180, y: 100, width: 50, height: 60 },
+      { id: 'iv-stand-1', type: 'iv_stand', x: 170, y: 80, width: 10, height: 40 },
+      { id: 'iv-stand-2', type: 'iv_stand', x: 80, y: 80, width: 10, height: 40 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 120, width: 15, height: 80 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 125, y: 85, width: 15, height: 15 },
+    ]
+  },
+  
+  // ===== HCU =====
+  {
+    id: 'preset-hcu-1bed',
+    name: 'HCU - High Care Unit',
+    roomType: 'HCU',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 80, y: 90, width: 75, height: 115, label: 'A' },
+      { id: 'monitor-1', type: 'monitor', x: 175, y: 100, width: 45, height: 55 },
+      { id: 'iv-stand-1', type: 'iv_stand', x: 165, y: 80, width: 10, height: 40 },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 220, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 110, width: 15, height: 80 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 115, y: 75, width: 15, height: 15 },
+    ]
+  },
+  
+  // ===== ISOLASI =====
+  {
+    id: 'preset-isolation-1bed',
+    name: 'Kamar Isolasi - Negative Pressure',
+    roomType: 'Reguler',
+    isPreset: true,
+    createdAt: '2026-01-01',
+    elements: [
+      { id: 'bed-1', type: 'bed', x: 80, y: 90, width: 75, height: 115, label: 'A' },
+      { id: 'bathroom-1', type: 'bathroom', x: 210, y: 40, width: 70, height: 70 },
+      { id: 'door-1', type: 'door', x: 130, y: 320, width: 60, height: 15 },
+      { id: 'window-1', type: 'window', x: 10, y: 110, width: 15, height: 80 },
+      { id: 'nurse-call-1', type: 'nurse_call', x: 115, y: 75, width: 15, height: 15 },
     ]
   },
   {
