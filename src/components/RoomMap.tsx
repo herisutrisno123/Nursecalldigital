@@ -326,16 +326,16 @@ export default function RoomMap() {
               {room.room_number}
             </div>
             {/* Wrapper yang akan di-scale untuk mengisi container */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              {/* Container dengan ukuran asli denah, di-scale 2x lebih besar dan dipusatkan */}
+            <div className="absolute inset-0 flex items-center justify-start">
+              {/* Container dengan ukuran asli denah, di-scale 2x lebih besar dan diposisikan ke kiri */}
               <div 
                 style={{
                   width: `${layoutWidth}px`,
                   height: `${layoutHeight}px`,
                   position: 'relative',
-                  transform: `translate(-50%, -50%) scale(${scale})`,
-                  transformOrigin: 'center center',
-                  left: '50%',
+                  transform: `translate(0%, -50%) scale(${scale})`,
+                  transformOrigin: 'left center',
+                  left: '0',
                   top: '50%'
                 }}
               >
