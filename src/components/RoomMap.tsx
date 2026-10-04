@@ -307,24 +307,34 @@ export default function RoomMap() {
   // Komponen RoomLayoutCard yang mengukur ukurannya sendiri
   const RoomLayoutCard = ({ room, layout }: { room: Room; layout: SavedLayout }) => {
     const cardRef = useRef<HTMLDivElement>(null);
-    const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
+    const [cardSize, setCardSize] = useState({ width: 280, height: 220 });
 
     useEffect(() => {
       const updateSize = () => {
         if (cardRef.current) {
           const rect = cardRef.current.getBoundingClientRect();
-          setCardSize({ width: rect.width, height: rect.height });
+          if (rect.width > 0 && rect.height > 0) {
+            setCardSize({ width: rect.width, height: rect.height });
+          }
         }
       };
 
-      updateSize();
+      // Update awal setelah render
+      setTimeout(updateSize, 100);
       
+      // Observer untuk perubahan ukuran
       const resizeObserver = new ResizeObserver(updateSize);
       if (cardRef.current) {
         resizeObserver.observe(cardRef.current);
       }
 
-      return () => resizeObserver.disconnect();
+      // Update saat window resize
+      window.addEventListener('resize', updateSize);
+
+      return () => {
+        resizeObserver.disconnect();
+        window.removeEventListener('resize', updateSize);
+      };
     }, []);
 
     // Hitung ukuran asli denah dari layout
@@ -335,10 +345,11 @@ export default function RoomMap() {
     const containerWidth = cardSize.width || 280;
     const containerHeight = cardSize.height || 220;
     
-    // Hitung scale agar denah mengisi PENUH container (cover)
+    // Hitung scale agar denah MUAT UTUH dalam container (contain)
+    // Gunakan MIN agar seluruh denah terlihat, tidak ada yang terpotong
     const scaleX = containerWidth / layoutWidth;
     const scaleY = containerHeight / layoutHeight;
-    const scale = Math.max(scaleX, scaleY);
+    const scale = Math.min(scaleX, scaleY);
     
     // Hitung offset untuk memusatkan denah
     const scaledWidth = layoutWidth * scale;
