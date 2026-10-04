@@ -1425,18 +1425,25 @@ export default function RoomLayoutEditor() {
                       <button
                         type="button"
                         onClick={() => {
-                          const layoutName = layout.name;
-                          if (window.confirm(`Hapus layout "${layoutName}"?`)) {
-                            setSavedLayouts(prev => prev.filter(l => l.id !== layout.id));
+                          if (window.confirm('Hapus layout "' + layout.name + '"?')) {
+                            setSavedLayouts(savedLayouts.filter(l => l.id !== layout.id));
                             localStorage.setItem('savedLayouts', JSON.stringify(
                               savedLayouts.filter(l => l.id !== layout.id)
                             ));
                           }
                         }}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 transition-all hover:scale-105 shadow-lg border-2 border-red-800 cursor-pointer"
-                        style={{ pointerEvents: 'auto' }}
+                        style={{
+                          padding: '8px 16px',
+                          backgroundColor: '#dc2626',
+                          color: 'white',
+                          borderRadius: '8px',
+                          border: '2px solid #991b1b',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}
                       >
-                        <i className="fas fa-trash mr-2"></i>Hapus
+                        🗑️ Hapus
                       </button>
                     </div>
                   </div>

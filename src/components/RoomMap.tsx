@@ -148,13 +148,34 @@ export default function RoomMap() {
                   {renderRoomLayout(room)}
                 </div>
 
-                {/* TOMBOL HAPUS - TERPISAH DAN JELAS */}
+                {/* TOMBOL HAPUS - INLINE LANGSUNG */}
                 <button
-                  onClick={() => handleDeleteRoom(room.id, room.room_number)}
-                  className="absolute bottom-3 right-3 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white font-bold text-lg z-50"
-                  title={`Hapus Kamar ${room.room_number}`}
+                  onClick={() => {
+                    if (window.confirm('Hapus Kamar ' + room.room_number + '?')) {
+                      setRoomList(roomList.filter(r => r.id !== room.id));
+                      if (selectedRoom === room.id) setSelectedRoom(null);
+                    }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    bottom: '12px',
+                    right: '12px',
+                    width: '48px',
+                    height: '48px',
+                    backgroundColor: '#dc2626',
+                    color: 'white',
+                    borderRadius: '50%',
+                    border: '4px solid white',
+                    cursor: 'pointer',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 10px 15px rgba(0,0,0,0.3)'
+                  }}
+                  title={'Hapus Kamar ' + room.room_number}
                 >
-                  <i className="fas fa-trash"></i>
+                  🗑️
                 </button>
               </div>
             );
@@ -178,10 +199,25 @@ export default function RoomMap() {
             </div>
             <div>
               <button
-                onClick={() => handleDeleteRoom(selectedRoom, selectedRoomData.room_number)}
-                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700"
+                onClick={() => {
+                  if (window.confirm('Hapus Kamar ' + selectedRoomData.room_number + '?')) {
+                    setRoomList(roomList.filter(r => r.id !== selectedRoom));
+                    setSelectedRoom(null);
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: '#dc2626',
+                  color: 'white',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold'
+                }}
               >
-                <i className="fas fa-trash mr-2"></i>Hapus Kamar Ini
+                🗑️ Hapus Kamar Ini
               </button>
             </div>
           </div>
