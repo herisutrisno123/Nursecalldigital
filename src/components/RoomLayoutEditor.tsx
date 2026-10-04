@@ -498,31 +498,32 @@ export default function RoomLayoutEditor() {
     setActiveTab('saved');
   };
 
-  // Render architectural mini preview for saved/preset layouts
+  // Render cartoon-style mini preview for saved/preset layouts
   const renderArchitecturalPreview = (elements: LayoutElement[], previewWidth: number, previewHeight: number, scale: number) => {
     return (
       <div 
-        className="relative bg-white border-[3px] border-gray-800 rounded-sm overflow-hidden mx-auto"
+        className="relative bg-yellow-50 border-4 border-gray-900 rounded-2xl overflow-hidden mx-auto shadow-lg"
         style={{ 
           width: `${previewWidth}px`, 
           height: `${previewHeight}px`,
         }}
       >
-        {/* Floor pattern */}
+        {/* Cartoon floor pattern */}
         <div 
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-20"
           style={{
             backgroundImage: `
-              repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(139,92,246,0.05) 8px, rgba(139,92,246,0.05) 9px)
-            `
+              radial-gradient(circle, #fbbf24 1px, transparent 1px)
+            `,
+            backgroundSize: '20px 20px'
           }}
         ></div>
 
-        {/* Windows on walls */}
+        {/* Windows with cartoon style */}
         {elements.filter(e => e.type === 'window').map((element, idx) => (
           <div
             key={`win-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -530,22 +531,18 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-gradient-to-br from-cyan-200 to-blue-300 border-2 border-gray-700 relative">
-              <div className="absolute inset-0 grid grid-cols-2 gap-px">
-                <div className="bg-cyan-100 border border-cyan-400"></div>
-                <div className="bg-cyan-100 border border-cyan-400"></div>
-              </div>
-              {/* Window sill */}
-              <div className="absolute -bottom-0.5 left-0 right-0 h-1 bg-gray-600"></div>
+            <div className="w-full h-full bg-gradient-to-br from-cyan-300 to-cyan-400 border-4 border-gray-900 rounded-lg relative shadow-xl flex items-center justify-center">
+              {/* Window emoji */}
+              <span className="text-2xl">🪟</span>
             </div>
           </div>
         ))}
 
-        {/* Bathroom with architectural details */}
+        {/* Bathroom with cartoon style */}
         {elements.filter(e => e.type === 'bathroom').map((element, idx) => (
           <div
             key={`bath-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -553,51 +550,23 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-gray-700 relative overflow-hidden">
-              {/* Tile pattern */}
-              <div className="absolute inset-0 opacity-20" style={{
-                backgroundImage: `
-                  linear-gradient(to right, #000 1px, transparent 1px),
-                  linear-gradient(to bottom, #000 1px, transparent 1px)
-                `,
-                backgroundSize: '8px 8px'
-              }}></div>
-              
-              {/* Toilet */}
-              <div className="absolute top-1 left-1" style={{ width: `${element.width * scale * 0.3}px`, height: `${element.height * scale * 0.35}px` }}>
-                <div className="w-full h-full bg-white border-2 border-gray-600 rounded-t-full relative">
-                  <div className="absolute top-0.5 left-0.5 right-0.5 h-1.5 bg-blue-200 rounded-t-full"></div>
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-300"></div>
-                </div>
-              </div>
-              
-              {/* Sink */}
-              <div className="absolute top-1 right-1" style={{ width: `${element.width * scale * 0.25}px`, height: `${element.height * scale * 0.2}px` }}>
-                <div className="w-full h-full bg-white border-2 border-gray-600 rounded-sm relative">
-                  <div className="absolute top-0.5 left-1/2 w-0.5 h-1 bg-gray-500 transform -translate-x-1/2"></div>
-                </div>
-              </div>
-              
-              {/* Shower area */}
-              <div className="absolute bottom-1 left-1 right-1" style={{ height: `${element.height * scale * 0.3}px` }}>
-                <div className="w-full h-full bg-blue-100 border border-blue-400 rounded-sm relative">
-                  <div className="absolute top-0.5 left-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full transform -translate-x-1/2"></div>
-                </div>
-              </div>
+            <div className="w-full h-full bg-gradient-to-br from-blue-300 to-blue-400 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
+              {/* Bathroom emoji */}
+              <span className="text-3xl">🚿</span>
               
               {/* KM Label */}
-              <div className="absolute bottom-0.5 right-0.5 text-[7px] font-black text-blue-800 bg-white px-0.5 rounded-sm border border-blue-300">
+              <div className="absolute bottom-1 right-1 bg-white px-1.5 py-0.5 rounded-full text-[10px] font-black text-blue-700 border-2 border-gray-900">
                 KM
               </div>
             </div>
           </div>
         ))}
 
-        {/* Beds with architectural details */}
+        {/* Beds with cartoon style */}
         {elements.filter(e => e.type === 'bed').map((element, idx) => (
           <div
             key={`bed-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -606,32 +575,13 @@ export default function RoomLayoutEditor() {
               transform: `rotate(${element.rotation || 0}deg)`,
             }}
           >
-            <div className="w-full h-full bg-white border-2 border-gray-800 relative shadow-md">
-              {/* Headboard */}
-              <div className="absolute top-0 left-0 right-0 h-[12%] bg-gradient-to-b from-amber-800 to-amber-900 border-b-2 border-amber-950"></div>
-              
-              {/* Pillow */}
-              <div className="absolute left-[8%] right-[8%] top-[14%] h-[12%] bg-white border-2 border-gray-400 rounded-sm shadow-sm">
-                <div className="absolute inset-0.5 bg-gradient-to-br from-white to-gray-50 rounded-sm"></div>
-              </div>
-              
-              {/* Mattress */}
-              <div className="absolute left-[5%] right-[5%] top-[28%] bottom-[12%] bg-gradient-to-br from-white to-gray-50 border border-gray-300 rounded-sm">
-                {/* Sheet fold */}
-                <div className="absolute top-0 left-0 right-0 h-[30%] bg-gradient-to-b from-blue-50 to-white border-b border-blue-100"></div>
-              </div>
-              
-              {/* Blanket */}
-              <div className="absolute left-[5%] right-[5%] bottom-[12%] h-[35%] bg-gradient-to-t from-indigo-100 to-indigo-50 border border-indigo-200 rounded-sm">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-200"></div>
-              </div>
-              
-              {/* Footboard */}
-              <div className="absolute bottom-0 left-0 right-0 h-[8%] bg-gradient-to-t from-amber-800 to-amber-900 border-t-2 border-amber-950"></div>
+            <div className="w-full h-full bg-gradient-to-br from-pink-200 to-pink-300 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
+              {/* Bed emoji */}
+              <span className="text-3xl">🛏️</span>
               
               {/* Bed Label */}
               {element.label && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded text-[8px] font-black text-gray-800 border-2 border-gray-700 shadow-sm z-10">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 px-2 py-0.5 rounded-full text-xs font-black text-gray-900 border-3 border-gray-900 shadow-md z-10">
                   {element.label}
                 </div>
               )}
@@ -639,46 +589,31 @@ export default function RoomLayoutEditor() {
           </div>
         ))}
 
-        {/* Doors with swing arc */}
+        {/* Doors with cartoon style */}
         {elements.filter(e => e.type === 'door').map((element, idx) => (
           <div
             key={`door-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
               width: `${element.width * scale}px`,
-              height: `${element.height * scale + 30}px`,
+              height: `${element.height * scale}px`,
               transform: `rotate(${element.rotation || 0}deg)`,
             }}
           >
-            {/* Door swing arc */}
-            <div 
-              className="absolute bottom-0 left-0 border-2 border-dashed border-gray-500 rounded-tl-full opacity-50"
-              style={{ 
-                width: `${element.width * scale}px`, 
-                height: `${element.width * scale}px`,
-              }}
-            ></div>
-            
-            {/* Door frame */}
-            <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-r from-amber-100 to-amber-200 border-2 border-gray-800">
-              {/* Door panel */}
-              <div className="absolute inset-0.5 bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-600">
-                {/* Door handle */}
-                <div className="absolute top-1/2 right-1 w-1 h-1 bg-gray-800 rounded-full transform -translate-y-1/2"></div>
-                {/* Panel lines */}
-                <div className="absolute top-1 left-1 right-1 bottom-1 border border-amber-400 rounded-sm"></div>
-              </div>
+            <div className="w-full h-full bg-gradient-to-br from-amber-400 to-amber-500 border-4 border-gray-900 rounded-lg relative shadow-xl flex items-center justify-center">
+              {/* Door emoji */}
+              <span className="text-2xl">🚪</span>
             </div>
           </div>
         ))}
 
-        {/* Nurse call buttons */}
+        {/* Nurse call with cartoon style */}
         {elements.filter(e => e.type === 'nurse_call').map((element, idx) => (
           <div
             key={`call-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -686,20 +621,18 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 border-2 border-red-800 rounded-full shadow-lg relative">
-              <div className="absolute inset-1 bg-gradient-to-br from-red-300 to-red-500 rounded-full"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-1 h-1 bg-white rounded-full"></div>
-              </div>
+            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-500 border-4 border-gray-900 rounded-full shadow-xl flex items-center justify-center animate-pulse">
+              {/* Nurse call emoji */}
+              <span className="text-xl">🔴</span>
             </div>
           </div>
         ))}
 
-        {/* Monitors */}
+        {/* Monitors with cartoon style */}
         {elements.filter(e => e.type === 'monitor').map((element, idx) => (
           <div
             key={`mon-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -707,28 +640,18 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-gray-900 border-2 border-gray-800 rounded-sm shadow-lg relative overflow-hidden">
-              {/* Screen */}
-              <div className="absolute inset-0.5 bg-black rounded-sm">
-                {/* ECG line */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="none">
-                  <path d="M0,25 L20,25 L25,10 L30,40 L35,25 L100,25" stroke="#00ff00" strokeWidth="1" fill="none"/>
-                </svg>
-                {/* Vitals */}
-                <div className="absolute top-0.5 right-0.5 text-[6px] text-green-400 font-bold">88</div>
-                <div className="absolute bottom-0.5 left-0.5 text-[6px] text-cyan-400 font-bold">98%</div>
-              </div>
-              {/* Stand */}
-              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-1 bg-gray-700"></div>
+            <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
+              {/* Monitor emoji */}
+              <span className="text-2xl">📺</span>
             </div>
           </div>
         ))}
 
-        {/* IV Stands */}
+        {/* IV Stands with cartoon style */}
         {elements.filter(e => e.type === 'iv_stand').map((element, idx) => (
           <div
             key={`iv-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -736,24 +659,18 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full relative">
-              {/* Pole */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-700"></div>
-              {/* Base */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-3 h-0.5 bg-gray-700 rounded-full"></div>
-              {/* IV Bag */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-gradient-to-b from-blue-200 to-blue-400 border border-blue-500 rounded-t-sm">
-                <div className="absolute top-0.5 left-0.5 right-0.5 h-0.5 bg-blue-300"></div>
-              </div>
+            <div className="w-full h-full bg-gradient-to-br from-green-300 to-green-400 border-4 border-gray-900 rounded-lg relative shadow-xl flex items-center justify-center">
+              {/* IV emoji */}
+              <span className="text-2xl">💉</span>
             </div>
           </div>
         ))}
 
-        {/* Sofas */}
+        {/* Sofas with cartoon style */}
         {elements.filter(e => e.type === 'sofa').map((element, idx) => (
           <div
             key={`sofa-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -761,26 +678,18 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full relative">
-              {/* Back */}
-              <div className="absolute top-0 left-0 right-0 h-[30%] bg-gradient-to-b from-purple-400 to-purple-500 border-2 border-purple-700 rounded-t-sm"></div>
-              {/* Seat */}
-              <div className="absolute top-[30%] left-0 right-0 bottom-0 bg-gradient-to-b from-purple-200 to-purple-300 border-2 border-purple-600 rounded-b-sm">
-                {/* Cushions */}
-                <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
-                  <div className="bg-purple-100 border border-purple-400 rounded-sm"></div>
-                  <div className="bg-purple-100 border border-purple-400 rounded-sm"></div>
-                </div>
-              </div>
+            <div className="w-full h-full bg-gradient-to-br from-purple-300 to-purple-400 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
+              {/* Sofa emoji */}
+              <span className="text-2xl">🛋️</span>
             </div>
           </div>
         ))}
 
-        {/* TVs */}
+        {/* TVs with cartoon style */}
         {elements.filter(e => e.type === 'tv').map((element, idx) => (
           <div
             key={`tv-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -788,20 +697,18 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-black border-2 border-gray-900 rounded-sm shadow-lg relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black">
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-blue-900/10 to-transparent"></div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-700"></div>
+            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
+              {/* TV emoji */}
+              <span className="text-2xl">📺</span>
             </div>
           </div>
         ))}
 
-        {/* Wardrobes */}
+        {/* Wardrobes with cartoon style */}
         {elements.filter(e => e.type === 'wardrobe').map((element, idx) => (
           <div
             key={`ward-${idx}`}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
               top: `${element.y * scale}px`,
@@ -809,20 +716,16 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-800 rounded-sm relative overflow-hidden grid grid-cols-2 gap-px p-0.5">
-              <div className="bg-amber-50 border border-amber-600 rounded-sm relative">
-                <div className="absolute top-1/2 right-0.5 w-0.5 h-2 bg-amber-900 transform -translate-y-1/2"></div>
-              </div>
-              <div className="bg-amber-50 border border-amber-600 rounded-sm relative">
-                <div className="absolute top-1/2 left-0.5 w-0.5 h-2 bg-amber-900 transform -translate-y-1/2"></div>
-              </div>
+            <div className="w-full h-full bg-gradient-to-br from-amber-300 to-amber-400 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
+              {/* Wardrobe emoji */}
+              <span className="text-2xl">🗄️</span>
             </div>
           </div>
         ))}
 
-        {/* Room number label */}
-        <div className="absolute top-1 left-1 bg-white px-1.5 py-0.5 rounded-sm text-[9px] font-black text-gray-800 border-2 border-gray-700 shadow-sm z-20">
-          {elements.find(e => e.type === 'bed')?.label || 'RM'}
+        {/* Room number label with cartoon style */}
+        <div className="absolute top-2 left-2 bg-yellow-300 px-2 py-1 rounded-full text-xs font-black text-gray-900 border-4 border-gray-900 shadow-lg z-20">
+          🏥 {elements.find(e => e.type === 'bed')?.label || 'RM'}
         </div>
       </div>
     );
