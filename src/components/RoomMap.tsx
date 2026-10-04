@@ -99,6 +99,21 @@ export default function RoomMap() {
     }
   };
 
+  // Keyboard shortcut untuk hapus
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Delete' && selectedRoom) {
+        const room = roomList.find(r => r.id === selectedRoom);
+        if (room && window.confirm('Hapus Kamar ' + room.room_number + '?')) {
+          setRoomList(roomList.filter(r => r.id !== selectedRoom));
+          setSelectedRoom(null);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedRoom, roomList]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4 flex-wrap">
@@ -124,9 +139,51 @@ export default function RoomMap() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h3 className="font-semibold text-gray-800 mb-4">
-          Peta Kamar - Bangsal {selectedFloor} ({floorRooms.length} kamar)
-        </h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold text-gray-800">
+            Peta Kamar - Bangsal {selectedFloor} ({floorRooms.length} kamar)
+          </h3>
+          {selectedRoom && (
+            <button
+              onClick={() => {
+                const room = roomList.find(r => r.id === selectedRoom);
+                if (room && window.confirm('Hapus Kamar ' + room.room_number + '?')) {
+                  setRoomList(roomList.filter(r => r.id !== selectedRoom));
+                  setSelectedRoom(null);
+                }
+              }}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#dc2626',
+                color: 'white',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              }}
+            >
+              🗑️ HAPUS KAMAR TERPILIH
+            </button>
+          )}
+        </div>
+
+        {!selectedRoom && (
+          <div style={{
+            padding: '12px',
+            backgroundColor: '#fef3c7',
+            border: '2px solid #f59e0b',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            fontSize: '14px'
+          }}>
+            <strong>ℹ️ CARA HAPUS KAMAR:</strong><br/>
+            1. Klik salah satu kamar untuk memilihnya<br/>
+            2. Tombol "HAPUS KAMAR TERPILIH" akan muncul di atas<br/>
+            3. Klik tombol tersebut atau tekan tombol <strong>DELETE</strong> di keyboard
+          </div>
+        )}
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {floorRooms.map(room => {
