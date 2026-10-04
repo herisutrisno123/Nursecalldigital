@@ -944,9 +944,6 @@ export default function RoomLayoutEditor() {
                 {/* 3D Door Side - Thickness */}
                 <div className="absolute top-0 left-0 h-full bg-gradient-to-l from-amber-900 to-amber-800 border-2 border-amber-950" style={{ transform: 'rotateY(-90deg)', transformOrigin: 'left center', width: '8px' }}></div>
                 
-                {/* Door Swing Arc - Vertical Opening */}
-                <div className="absolute top-0 left-full w-16 h-16 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-40 pointer-events-none" style={{ transform: 'translateZ(1px) rotate(-90deg)', transformOrigin: 'top left' }}></div>
-                
                 {/* Shadow */}
                 <div className="absolute inset-0 bg-black opacity-20 blur-md" style={{ transform: 'translateZ(-2px) translateY(4px)' }}></div>
               </>
@@ -962,8 +959,6 @@ export default function RoomLayoutEditor() {
                     <div className="absolute top-[45%] left-1 w-1.5 h-2 bg-gray-800 rounded-full"></div>
                   </div>
                 </div>
-                {/* Door Swing Arc - Vertical */}
-                <div className="absolute top-0 left-full w-12 h-12 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-40 pointer-events-none" style={{ transform: 'rotate(-90deg)', transformOrigin: 'top left' }}></div>
               </>
             )}
           </div>
