@@ -16,6 +16,14 @@ export default function RoomMap() {
     keterangan: string;
     template: string;
   }>>([]);
+  const [showEditBangsalModal, setShowEditBangsalModal] = useState(false);
+  const [editingBangsal, setEditingBangsal] = useState<{
+    id: number;
+    nama: string;
+    lantai: string;
+    keterangan: string;
+    template: string;
+  } | null>(null);
 
   return (
     <div className="space-y-6">
@@ -295,16 +303,29 @@ export default function RoomMap() {
                 <div key={bangsal.id} className="border-2 border-gray-200 rounded-lg p-4 hover:border-indigo-500 transition">
                   <div className="flex justify-between items-start mb-3">
                     <h4 className="font-semibold text-gray-800 text-lg">{bangsal.nama}</h4>
-                    <button
-                      onClick={() => {
-                        if (confirm(`Hapus bangsal ${bangsal.nama}?`)) {
-                          setDaftarBangsal(daftarBangsal.filter(b => b.id !== bangsal.id));
-                        }
-                      }}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingBangsal(bangsal);
+                          setShowEditBangsalModal(true);
+                        }}
+                        className="text-blue-500 hover:text-blue-700 text-sm"
+                        title="Edit"
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus bangsal ${bangsal.nama}?`)) {
+                            setDaftarBangsal(daftarBangsal.filter(b => b.id !== bangsal.id));
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                        title="Hapus"
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div>
@@ -425,6 +446,103 @@ export default function RoomMap() {
                 className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
               >
                 Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit Bangsal */}
+      {showEditBangsalModal && editingBangsal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div className="p-6 border-b">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">Edit Bangsal</h3>
+                <button
+                  onClick={() => {
+                    setShowEditBangsalModal(false);
+                    setEditingBangsal(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Nama Bangsal</label>
+                <input
+                  type="text"
+                  value={editingBangsal.nama}
+                  onChange={(e) => setEditingBangsal({ ...editingBangsal, nama: e.target.value })}
+                  placeholder="Contoh: Bangsal A"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Nama Lantai</label>
+                <input
+                  type="text"
+                  value={editingBangsal.lantai}
+                  onChange={(e) => setEditingBangsal({ ...editingBangsal, lantai: e.target.value })}
+                  placeholder="Contoh: Lantai 1"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Keterangan</label>
+                <textarea
+                  value={editingBangsal.keterangan}
+                  onChange={(e) => setEditingBangsal({ ...editingBangsal, keterangan: e.target.value })}
+                  placeholder="Deskripsi bangsal..."
+                  rows={3}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Template Ruang</label>
+                <select
+                  value={editingBangsal.template}
+                  onChange={(e) => setEditingBangsal({ ...editingBangsal, template: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">-- Pilih Template --</option>
+                  <option value="vvip">Template VVIP - 1 Kamar</option>
+                  <option value="vip">Template VIP - 2 Kamar</option>
+                  <option value="template1">Template 1 - 4 Kamar</option>
+                  <option value="template2">Template 2 - 6 Kamar</option>
+                  <option value="template3">Template 3 - 8 Kamar</option>
+                  <option value="template4">Template 4 - 10 Kamar</option>
+                </select>
+              </div>
+            </div>
+            <div className="p-6 border-t bg-gray-50 flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setShowEditBangsalModal(false);
+                  setEditingBangsal(null);
+                }}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  if (editingBangsal.nama && editingBangsal.lantai && editingBangsal.template) {
+                    setDaftarBangsal(daftarBangsal.map(b => 
+                      b.id === editingBangsal.id ? editingBangsal : b
+                    ));
+                    setShowEditBangsalModal(false);
+                    setEditingBangsal(null);
+                  } else {
+                    alert('Mohon lengkapi semua field yang wajib diisi');
+                  }
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+              >
+                Update
               </button>
             </div>
           </div>
