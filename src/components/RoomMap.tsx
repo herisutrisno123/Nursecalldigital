@@ -311,37 +311,40 @@ export default function RoomMap() {
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
-        // Ukuran target container (kartu kamar di peta)
-        const targetWidth = 280; // px - ukuran kartu kamar
-        const targetHeight = 200; // px - ukuran kartu kamar
+        // Ukuran container (kartu kamar)
+        const containerWidth = 280;
+        const containerHeight = 220;
         
-        // Hitung scale agar denah mengisi PENUH container, lalu dikali 2
-        const scaleX = targetWidth / layoutWidth;
-        const scaleY = targetHeight / layoutHeight;
-        const scale = Math.min(scaleX, scaleY) * 2; // 2x lebih besar
+        // Hitung scale agar denah mengisi PENUH container (cover)
+        const scaleX = containerWidth / layoutWidth;
+        const scaleY = containerHeight / layoutHeight;
+        const scale = Math.max(scaleX, scaleY); // Gunakan max agar mengisi penuh
+        
+        // Hitung offset untuk memusatkan denah
+        const scaledWidth = layoutWidth * scale;
+        const scaledHeight = layoutHeight * scale;
+        const offsetX = (containerWidth - scaledWidth) / 2;
+        const offsetY = (containerHeight - scaledHeight) / 2;
         
         return (
-          <div className="relative w-full h-full min-h-[200px] bg-white border-4 border-gray-700 overflow-hidden">
+          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
               {room.room_number}
             </div>
-            {/* Wrapper yang akan di-scale untuk mengisi container */}
-            <div className="absolute inset-0 overflow-hidden">
-              {/* Container dengan ukuran asli denah, di-scale 2x lebih besar dan diposisikan rata kiri */}
-              <div 
-                style={{
-                  width: `${layoutWidth}px`,
-                  height: `${layoutHeight}px`,
-                  position: 'absolute',
-                  left: '0',
-                  top: '0',
-                  transform: `scale(${scale})`,
-                  transformOrigin: 'top left'
-                }}
-              >
-                {/* Render elemen dengan scale = 1 (ukuran asli) */}
-                {layout.elements.map((element) => renderElement(element, 1))}
-              </div>
+            {/* Container denah yang mengisi penuh */}
+            <div 
+              style={{
+                position: 'absolute',
+                left: `${offsetX}px`,
+                top: `${offsetY}px`,
+                width: `${layoutWidth}px`,
+                height: `${layoutHeight}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left'
+              }}
+            >
+              {/* Render elemen dengan scale = 1 (ukuran asli) */}
+              {layout.elements.map((element) => renderElement(element, 1))}
             </div>
           </div>
         );
