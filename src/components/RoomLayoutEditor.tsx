@@ -26,7 +26,7 @@ const toolboxItems = [
   { type: 'room', label: 'Kotak Kamar', icon: '📐', defaultWidth: 300, defaultHeight: 350 },
   { type: 'bed', label: 'Tempat Tidur', icon: '🛏️', defaultWidth: 60, defaultHeight: 100 },
   { type: 'bathroom', label: 'Kamar Mandi', icon: '🚿', defaultWidth: 80, defaultHeight: 80 },
-  { type: 'door', label: 'Pintu', icon: '🚪', defaultWidth: 20, defaultHeight: 60 },
+  { type: 'door', label: 'Pintu', icon: '🚪', defaultWidth: 30, defaultHeight: 80 },
   { type: 'window', label: 'Jendela', icon: '🪟', defaultWidth: 10, defaultHeight: 60 },
   { type: 'code_blue', label: 'Code Blue', icon: '🔵', defaultWidth: 30, defaultHeight: 30 },
   { type: 'presence', label: 'Presence', icon: '👤', defaultWidth: 30, defaultHeight: 30 },
@@ -1002,22 +1002,38 @@ export default function RoomLayoutEditor() {
           <div key={element.id} style={is3DView ? { ...element3DStyle, border: 'none' } : { ...baseStyle, border: 'none' }} onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
             {is3DView ? (
               <>
-                {/* 3D Door - Vertical Standing Position */}
+                {/* 3D Door - Open Position with Frame */}
                 <div className="absolute inset-0" style={{ transform: 'translateZ(8px)', transformStyle: 'preserve-3d' }}>
-                  {/* Door Frame - Vertical */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-900 to-amber-800 border-2 border-amber-950 rounded-sm shadow-xl">
-                    {/* Door Panel - Vertical */}
-                    <div className="absolute inset-1 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 border-2 border-amber-800 rounded-sm">
-                      {/* Wood grain texture - vertical */}
+                  {/* Door Frame - Thick Frame */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-950 to-amber-900 border-4 border-amber-950 rounded-sm shadow-2xl">
+                    {/* Frame inner shadow */}
+                    <div className="absolute inset-1 bg-gradient-to-br from-amber-800 to-amber-900"></div>
+                    
+                    {/* Door Opening (dark interior) */}
+                    <div className="absolute inset-2 bg-gradient-to-br from-gray-900 to-black"></div>
+                    
+                    {/* Door Panel - Open Position (rotated) */}
+                    <div 
+                      className="absolute top-2 bottom-2 left-2 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 border-2 border-amber-800 rounded-sm shadow-xl"
+                      style={{ 
+                        width: '60%',
+                        transform: 'perspective(200px) rotateY(-45deg)',
+                        transformOrigin: 'left center'
+                      }}
+                    >
+                      {/* Wood grain texture */}
                       <div className="absolute inset-0 opacity-30" style={{
                         backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,0.2) 4px, rgba(0,0,0,0.2) 8px)'
                       }}></div>
+                      
                       {/* Upper panel */}
-                      <div className="absolute top-2 left-2 right-2 h-[35%] border-2 border-amber-700 rounded-sm bg-gradient-to-br from-amber-500 to-amber-600 opacity-80"></div>
+                      <div className="absolute top-2 left-2 right-2 h-[35%] border-2 border-amber-700 rounded-sm bg-gradient-to-br from-amber-500 to-amber-600 opacity-90"></div>
+                      
                       {/* Lower panel */}
-                      <div className="absolute bottom-2 left-2 right-2 h-[35%] border-2 border-amber-700 rounded-sm bg-gradient-to-br from-amber-500 to-amber-600 opacity-80"></div>
-                      {/* Door Handle - Realistic */}
-                      <div className="absolute top-[45%] left-2" style={{ transform: 'translateZ(3px)' }}>
+                      <div className="absolute bottom-2 left-2 right-2 h-[35%] border-2 border-amber-700 rounded-sm bg-gradient-to-br from-amber-500 to-amber-600 opacity-90"></div>
+                      
+                      {/* Door Handle */}
+                      <div className="absolute top-[45%] right-2" style={{ transform: 'translateZ(5px)' }}>
                         <div className="w-2 h-4 bg-gradient-to-br from-gray-300 to-gray-600 border border-gray-700 rounded-full shadow-lg"></div>
                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-gray-800 rounded-full"></div>
                       </div>
@@ -1025,22 +1041,36 @@ export default function RoomLayoutEditor() {
                   </div>
                 </div>
                 
-                {/* 3D Door Side - Thickness */}
-                <div className="absolute top-0 left-0 h-full bg-gradient-to-l from-amber-900 to-amber-800 border-2 border-amber-950" style={{ transform: 'rotateY(-90deg)', transformOrigin: 'left center', width: '8px' }}></div>
+                {/* 3D Frame Side - Thickness */}
+                <div className="absolute top-0 left-0 h-full bg-gradient-to-l from-amber-950 to-amber-900 border-2 border-amber-950" style={{ transform: 'rotateY(-90deg)', transformOrigin: 'left center', width: '10px' }}></div>
                 
                 {/* Shadow */}
-                <div className="absolute inset-0 bg-black opacity-20 blur-md" style={{ transform: 'translateZ(-2px) translateY(4px)' }}></div>
+                <div className="absolute inset-0 bg-black opacity-30 blur-lg" style={{ transform: 'translateZ(-2px) translateY(6px)' }}></div>
               </>
             ) : (
               <>
-                {/* 2D Door - Vertical Standing */}
-                <div className="absolute inset-0 border-2 border-gray-800 bg-amber-50">
-                  <div className="absolute inset-0.5 bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-700">
-                    {/* Door panels - vertical */}
-                    <div className="absolute top-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm"></div>
-                    <div className="absolute bottom-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm"></div>
-                    {/* Door Handle - vertical position */}
-                    <div className="absolute top-[45%] left-1 w-1.5 h-2 bg-gray-800 rounded-full"></div>
+                {/* 2D Door - Open Position with Frame */}
+                <div className="absolute inset-0 border-4 border-amber-950 bg-amber-100 rounded-sm shadow-lg">
+                  {/* Frame inner */}
+                  <div className="absolute inset-1 border-2 border-amber-800 bg-gradient-to-br from-amber-50 to-amber-100">
+                    {/* Door Opening (dark) */}
+                    <div className="absolute inset-1 bg-gradient-to-br from-gray-800 to-gray-900 rounded-sm">
+                      {/* Door Panel - Open (angled) */}
+                      <div 
+                        className="absolute top-1 bottom-1 left-1 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 border-2 border-amber-700 rounded-sm"
+                        style={{ 
+                          width: '55%',
+                          transform: 'skewY(-5deg)',
+                          transformOrigin: 'left center'
+                        }}
+                      >
+                        {/* Door panels */}
+                        <div className="absolute top-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm bg-amber-300 opacity-60"></div>
+                        <div className="absolute bottom-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm bg-amber-300 opacity-60"></div>
+                        {/* Door Handle */}
+                        <div className="absolute top-[45%] right-1 w-1.5 h-2.5 bg-gray-800 rounded-full shadow"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>
