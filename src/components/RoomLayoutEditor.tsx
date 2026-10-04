@@ -313,272 +313,6 @@ export default function RoomLayoutEditor() {
     setActiveTab('saved');
   };
 
-  // Render cartoon-style mini preview for saved/preset layouts
-  const renderArchitecturalPreview = (elements: LayoutElement[], previewWidth: number, previewHeight: number, scale: number, offsetX: number = 0, offsetY: number = 0) => {
-    return (
-      <div 
-        className="relative bg-yellow-50 border-4 border-gray-900 rounded-2xl overflow-hidden mx-auto shadow-lg"
-        style={{ 
-          width: `${previewWidth}px`, 
-          height: `${previewHeight}px`,
-        }}
-      >
-        {/* Cartoon floor pattern */}
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle, #fbbf24 1px, transparent 1px)
-            `,
-            backgroundSize: '20px 20px'
-          }}
-        ></div>
-
-        {/* Windows with cartoon style */}
-        {elements.filter(e => e.type === 'window').map((element, idx) => (
-          <div
-            key={`win-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-cyan-300 to-cyan-400 border-4 border-gray-900 rounded-lg relative shadow-xl flex items-center justify-center">
-              {/* Window emoji */}
-              <span className="text-2xl">🪟</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Room with cartoon style */}
-        {elements.filter(e => e.type === 'room').map((element, idx) => (
-          <div
-            key={`room-${idx}`}
-            className="absolute"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full border-4 border-dashed border-gray-600 bg-white opacity-30 rounded-lg"></div>
-          </div>
-        ))}
-
-        {/* Bathroom with cartoon style */}
-        {elements.filter(e => e.type === 'bathroom').map((element, idx) => (
-          <div
-            key={`bath-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-blue-300 to-blue-400 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
-              {/* Bathroom emoji */}
-              <span className="text-3xl">🚿</span>
-              
-              {/* KM Label */}
-              <div className="absolute bottom-1 right-1 bg-white px-1.5 py-0.5 rounded-full text-[10px] font-black text-blue-700 border-2 border-gray-900">
-                KM
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Beds with cartoon style */}
-        {elements.filter(e => e.type === 'bed').map((element, idx) => (
-          <div
-            key={`bed-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-              transform: `rotate(${element.rotation || 0}deg)`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-pink-200 to-pink-300 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
-              {/* Bed emoji */}
-              <span className="text-3xl">🛏️</span>
-              
-              {/* Bed Label */}
-              {element.label && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 px-2 py-0.5 rounded-full text-xs font-black text-gray-900 border-3 border-gray-900 shadow-md z-10">
-                  {element.label}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {/* Doors with cartoon style */}
-        {elements.filter(e => e.type === 'door').map((element, idx) => (
-          <div
-            key={`door-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-              transform: `rotate(${element.rotation || 0}deg)`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-amber-400 to-amber-500 border-4 border-gray-900 rounded-lg relative shadow-xl flex items-center justify-center">
-              {/* Door emoji */}
-              <span className="text-2xl">🚪</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Code Blue with cartoon style */}
-        {elements.filter(e => e.type === 'code_blue').map((element, idx) => (
-          <div
-            key={`codeblue-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 border-4 border-gray-900 rounded-full shadow-xl flex items-center justify-center animate-pulse">
-              <span className="text-xl">🔵</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Presence with cartoon style */}
-        {elements.filter(e => e.type === 'presence').map((element, idx) => (
-          <div
-            key={`presence-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 border-4 border-gray-900 rounded-full shadow-xl flex items-center justify-center">
-              <span className="text-xl">👤</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Monitors with cartoon style */}
-        {elements.filter(e => e.type === 'monitor').map((element, idx) => (
-          <div
-            key={`mon-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
-              {/* Monitor emoji */}
-              <span className="text-2xl">📺</span>
-            </div>
-          </div>
-        ))}
-
-        {/* IV Stands with cartoon style */}
-        {elements.filter(e => e.type === 'iv_stand').map((element, idx) => (
-          <div
-            key={`iv-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-green-300 to-green-400 border-4 border-gray-900 rounded-lg relative shadow-xl flex items-center justify-center">
-              {/* IV emoji */}
-              <span className="text-2xl">💉</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Sofas with cartoon style */}
-        {elements.filter(e => e.type === 'sofa').map((element, idx) => (
-          <div
-            key={`sofa-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-purple-300 to-purple-400 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
-              {/* Sofa emoji */}
-              <span className="text-2xl">🛋️</span>
-            </div>
-          </div>
-        ))}
-
-        {/* TVs with cartoon style */}
-        {elements.filter(e => e.type === 'tv').map((element, idx) => (
-          <div
-            key={`tv-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
-              {/* TV emoji */}
-              <span className="text-2xl">📺</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Wardrobes with cartoon style */}
-        {elements.filter(e => e.type === 'wardrobe').map((element, idx) => (
-          <div
-            key={`ward-${idx}`}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: `${(element.x - offsetX) * scale}px`,
-              top: `${(element.y - offsetY) * scale}px`,
-              width: `${element.width * scale}px`,
-              height: `${element.height * scale}px`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-amber-300 to-amber-400 border-4 border-gray-900 rounded-xl relative shadow-xl flex items-center justify-center">
-              {/* Wardrobe emoji */}
-              <span className="text-2xl">🗄️</span>
-            </div>
-          </div>
-        ))}
-
-        {/* Room number label with cartoon style */}
-        <div className="absolute top-2 left-2 bg-yellow-300 px-2 py-1 rounded-full text-xs font-black text-gray-900 border-4 border-gray-900 shadow-lg z-20">
-          🏥 {elements.find(e => e.type === 'bed')?.label || 'RM'}
-        </div>
-      </div>
-    );
-  };
-
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1269,6 +1003,37 @@ export default function RoomLayoutEditor() {
       default:
         return null;
     }
+  };
+
+  // Render preview using the SAME renderElement function as editor
+  const renderArchitecturalPreview = (elements: LayoutElement[], previewWidth: number, previewHeight: number, scale: number, offsetX: number = 0, offsetY: number = 0) => {
+    return (
+      <div 
+        className="relative bg-white border-4 border-gray-800 rounded-lg overflow-hidden mx-auto shadow-lg"
+        style={{ 
+          width: `${previewWidth}px`, 
+          height: `${previewHeight}px`,
+        }}
+      >
+        {/* Scaled container with same rendering as editor */}
+        <div
+          style={{
+            position: 'absolute',
+            left: `${-offsetX * scale}px`,
+            top: `${-offsetY * scale}px`,
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+          }}
+        >
+          {/* Render each element using the same renderElement function */}
+          {elements.map((element) => (
+            <div key={`preview-${element.id}`}>
+              {renderElement(element, false)}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
