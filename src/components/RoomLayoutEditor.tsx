@@ -57,6 +57,19 @@ export default function RoomLayoutEditor() {
   const [editingLayoutId, setEditingLayoutId] = useState<string | null>(null);
   const resizeStartRef = useRef<{ x: number; y: number; width: number; height: number; elementId: string } | null>(null);
 
+  // Load saved layouts from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('savedLayouts');
+    if (savedData) {
+      try {
+        const parsedLayouts = JSON.parse(savedData);
+        setSavedLayouts(parsedLayouts);
+      } catch (error) {
+        console.error('Error loading saved layouts:', error);
+      }
+    }
+  }, []);
+
   // Handle drag from toolbox
   const handleDragStart = (type: string) => {
     setDraggedItem(type);
@@ -289,8 +302,8 @@ export default function RoomLayoutEditor() {
     // Cek apakah sedang edit layout yang sudah ada
     if (isEditing && editingLayoutId) {
       // Update layout yang sudah ada
-      setSavedLayouts(prevLayouts => 
-        prevLayouts.map(layout => 
+      setSavedLayouts(prevLayouts => {
+        const updatedLayouts = prevLayouts.map(layout => 
           layout.id === editingLayoutId
             ? {
                 ...layout,
@@ -299,8 +312,11 @@ export default function RoomLayoutEditor() {
                 elements: [...editorLayout.elements],
               }
             : layout
-        )
-      );
+        );
+        // Simpan ke localStorage
+        localStorage.setItem('savedLayouts', JSON.stringify(updatedLayouts));
+        return updatedLayouts;
+      });
       
       // Feedback sukses
       alert(`✅ Layout "${layoutName.trim()}" berhasil diupdate!\n\nTotal elemen: ${editorLayout.elements.length}`);
@@ -319,7 +335,12 @@ export default function RoomLayoutEditor() {
       };
 
       // Simpan ke state
-      setSavedLayouts(prevLayouts => [...prevLayouts, newLayout]);
+      setSavedLayouts(prevLayouts => {
+        const newLayouts = [...prevLayouts, newLayout];
+        // Simpan ke localStorage
+        localStorage.setItem('savedLayouts', JSON.stringify(newLayouts));
+        return newLayouts;
+      });
       
       // Feedback sukses
       alert(`✅ Layout "${newLayout.name}" berhasil disimpan!\n\nTotal elemen: ${newLayout.elements.length}`);
@@ -1410,6 +1431,8 @@ export default function RoomLayoutEditor() {
                           if (window.confirm(`Apakah Anda yakin ingin menghapus layout "${layoutName}"?`)) {
                             setSavedLayouts(prevLayouts => {
                               const newLayouts = prevLayouts.filter(l => l.id !== layout.id);
+                              // Simpan ke localStorage
+                              localStorage.setItem('savedLayouts', JSON.stringify(newLayouts));
                               console.log('Layout deleted:', layoutName, 'Remaining layouts:', newLayouts.length);
                               return newLayouts;
                             });

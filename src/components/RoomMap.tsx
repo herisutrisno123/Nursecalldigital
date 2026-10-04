@@ -1,11 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { rooms, devices, callEvents, callSessions } from '../data/mockData';
+
+interface LayoutElement {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation?: number;
+  label?: string;
+}
+
+interface SavedLayout {
+  id: string;
+  name: string;
+  roomType: string;
+  elements: LayoutElement[];
+  createdAt: string;
+}
 
 export default function RoomMap() {
   const [selectedFloor, setSelectedFloor] = useState<number>(1);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [showAddRoomModal, setShowAddRoomModal] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>([]);
+  const [selectedLayout, setSelectedLayout] = useState<string>('');
+
+  // Load saved layouts from localStorage
+  useEffect(() => {
+    const savedData = localStorage.getItem('savedLayouts');
+    if (savedData) {
+      try {
+        const parsedLayouts = JSON.parse(savedData);
+        setSavedLayouts(parsedLayouts);
+      } catch (error) {
+        console.error('Error loading saved layouts:', error);
+      }
+    }
+  }, [showAddRoomModal]); // Reload when modal opens
 
   const floorRooms = rooms.filter(r => r.floor === selectedFloor);
   const floors = [...new Set(rooms.map(r => r.floor))].sort();
@@ -373,6 +407,45 @@ export default function RoomMap() {
               </div>
             </div>
             <div className="p-4 space-y-3 overflow-y-auto flex-1">
+              {/* Pilih Denah Kamar dari Editor Denah */}
+              {savedLayouts.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    <i className="fas fa-drafting-compass mr-1 text-indigo-600"></i>
+                    Pilih Denah Kamar (dari Editor Denah)
+                  </label>
+                  <select 
+                    value={selectedLayout}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedLayout(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">-- Pilih Denah Kamar --</option>
+                    {savedLayouts.map(layout => (
+                      <option key={layout.id} value={layout.id}>
+                        {layout.name} ({layout.roomType}) - {layout.elements.filter(el => el.type === 'bed').length} Bed
+                      </option>
+                    ))}
+                  </select>
+                  {selectedLayout && (
+                    <div className="mt-2 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
+                      <p className="text-xs text-indigo-700">
+                        <i className="fas fa-info-circle mr-1"></i>
+                        Denah kamar akan otomatis diterapkan saat menyimpan
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {savedLayouts.length === 0 && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-xs text-yellow-700">
+                    <i className="fas fa-exclamation-triangle mr-1"></i>
+                    Belum ada denah kamar yang dibuat. Silakan buat denah di menu <strong>Editor Denah</strong> terlebih dahulu.
+                  </p>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-sm font-medium text-gray-700">Nomor Kamar</label>
