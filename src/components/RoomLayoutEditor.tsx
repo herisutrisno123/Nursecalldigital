@@ -303,6 +303,8 @@ export default function RoomLayoutEditor() {
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [imageOpacity, setImageOpacity] = useState(0.3);
   const [showImage, setShowImage] = useState(true);
+  const [clickMode, setClickMode] = useState<string | null>(null); // Which element type to place on click
+  const [clickCount, setClickCount] = useState(0); // For labeling beds A, B, C...
 
   // Handle preset selection
   const handlePresetSelect = (preset: RoomLayout) => {
@@ -370,7 +372,43 @@ export default function RoomLayoutEditor() {
     setSelectedElement(id);
   };
 
-  const handleCanvasClick = () => {
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // If in click-to-place mode, add element at click position
+    if (clickMode) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const item = toolboxItems.find(i => i.type === clickMode);
+      if (!item) return;
+
+      const GRID_SIZE = 10;
+      const snappedX = Math.round((x - item.defaultWidth / 2) / GRID_SIZE) * GRID_SIZE;
+      const snappedY = Math.round((y - item.defaultHeight / 2) / GRID_SIZE) * GRID_SIZE;
+
+      let label: string | undefined;
+      if (clickMode === 'bed') {
+        const bedCount = editorLayout.elements.filter(e => e.type === 'bed').length;
+        label = String.fromCharCode(65 + bedCount);
+      }
+
+      const newElement: LayoutElement = {
+        id: `${clickMode}-${Date.now()}`,
+        type: clickMode as any,
+        x: Math.max(0, snappedX),
+        y: Math.max(0, snappedY),
+        width: item.defaultWidth,
+        height: item.defaultHeight,
+        label,
+      };
+
+      setEditorLayout({
+        ...editorLayout,
+        elements: [...editorLayout.elements, newElement],
+      });
+      return;
+    }
+    
     setSelectedElement(null);
   };
 
@@ -1319,6 +1357,49 @@ export default function RoomLayoutEditor() {
               ))}
             </div>
 
+            {/* Click-to-Place Mode */}
+            {backgroundImage && (
+              <div className="mt-4 pt-4 border-t">
+                <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  <i className="fas fa-mouse-pointer text-green-600"></i>
+                  Mode Klik
+                </h4>
+                <p className="text-[10px] text-gray-500 mb-2">
+                  Pilih elemen, lalu klik di atas gambar untuk tempatkan
+                </p>
+                <div className="grid grid-cols-2 gap-1">
+                  {toolboxItems.map(item => (
+                    <button
+                      key={item.type}
+                      onClick={() => setClickMode(clickMode === item.type ? null : item.type)}
+                      className={`flex items-center gap-1 p-1.5 rounded text-xs font-medium transition ${
+                        clickMode === item.type
+                          ? 'bg-green-500 text-white shadow'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span>{item.icon}</span>
+                      <span className="truncate">{item.label.split(' ')[0]}</span>
+                    </button>
+                  ))}
+                </div>
+                {clickMode && (
+                  <div className="mt-2 p-2 bg-green-50 border border-green-300 rounded text-xs text-green-700">
+                    <i className="fas fa-hand-pointer mr-1"></i>
+                    Mode aktif: <strong>{toolboxItems.find(i => i.type === clickMode)?.label}</strong>
+                    <br/>
+                    <span className="text-[10px]">Klik di atas gambar untuk tempatkan</span>
+                  </div>
+                )}
+                <button
+                  onClick={() => setClickMode(null)}
+                  className="mt-2 w-full px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
+                >
+                  <i className="fas fa-times mr-1"></i>Matikan Mode Klik
+                </button>
+              </div>
+            )}
+
             {/* Background Image Controls */}
             <div className="mt-4 pt-4 border-t">
               <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -1492,7 +1573,7 @@ export default function RoomLayoutEditor() {
 
               <div className="p-4">
                 <div
-                  className="relative w-full h-[500px] bg-white border-4 border-gray-800 rounded-lg overflow-hidden shadow-xl"
+                  className={`relative w-full h-[500px] bg-white border-4 border-gray-800 rounded-lg overflow-hidden shadow-xl ${clickMode ? 'cursor-crosshair' : ''}`}
                   onDrop={handleCanvasDrop}
                   onDragOver={handleDragOver}
                   onClick={handleCanvasClick}
@@ -1519,6 +1600,13 @@ export default function RoomLayoutEditor() {
                     opacity: backgroundImage && showImage ? imageOpacity : 1
                   }}
                 >
+                {/* Click Mode Indicator */}
+                {clickMode && (
+                  <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-30 animate-pulse">
+                    <i className="fas fa-hand-pointer mr-1"></i>
+                    KLIK untuk tempatkan: {toolboxItems.find(i => i.type === clickMode)?.label}
+                  </div>
+                )}
                 {/* Scale Indicator */}
                 <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded shadow text-[10px] font-bold text-gray-700 border border-gray-400 z-10">
                   Skala 1:50 • Grid 10px
@@ -1555,10 +1643,21 @@ export default function RoomLayoutEditor() {
 
                 {/* Empty State */}
                 {editorLayout.elements.length === 0 && (
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 pointer-events-none">
                     <div className="text-center">
-                      <i className="fas fa-mouse-pointer text-4xl mb-2"></i>
-                      <p className="text-sm">Drag elemen dari toolbox ke sini</p>
+                      {backgroundImage ? (
+                        <>
+                          <i className="fas fa-hand-pointer text-4xl mb-2 text-green-500"></i>
+                          <p className="text-sm font-medium text-green-700">Aktifkan "Mode Klik" di toolbox</p>
+                          <p className="text-xs mt-1">Lalu klik di atas gambar untuk tempatkan elemen</p>
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-mouse-pointer text-4xl mb-2"></i>
+                          <p className="text-sm">Drag elemen dari toolbox ke sini</p>
+                          <p className="text-xs mt-1">atau upload gambar denah sebagai background</p>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1568,14 +1667,21 @@ export default function RoomLayoutEditor() {
               <div className="px-4 py-3 bg-gray-50 border-t-2 border-gray-300">
                 <div className="flex items-center justify-between text-xs text-gray-600">
                   <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1">
-                      <i className="fas fa-info-circle text-indigo-500"></i>
-                      <span>Drag elemen dari toolbox, klik untuk memilih, drag untuk memindahkan</span>
-                    </span>
+                    {backgroundImage ? (
+                      <span className="flex items-center gap-1">
+                        <i className="fas fa-hand-pointer text-green-500"></i>
+                        <span>Aktifkan <strong>"Mode Klik"</strong> di toolbox, lalu klik di atas gambar untuk tempatkan elemen</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1">
+                        <i className="fas fa-info-circle text-indigo-500"></i>
+                        <span>Drag elemen dari toolbox, klik untuk memilih, drag untuk memindahkan</span>
+                      </span>
+                    )}
                     {is3DView && (
                       <span className="flex items-center gap-1 text-purple-600 font-medium">
                         <i className="fas fa-cube"></i>
-                        <span>Mode 3D Aktif - Bed tampil dengan kedalaman</span>
+                        <span>Mode 3D Aktif</span>
                       </span>
                     )}
                   </div>
