@@ -138,45 +138,45 @@ export default function RoomMap() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold text-gray-800">
-            Peta Kamar - Bangsal {selectedFloor} ({floorRooms.length} kamar)
-          </h3>
-          {selectedRoom && (
-            <button
-              onClick={() => {
-                console.log('Tombol hapus diklik!');
-                console.log('Selected room:', selectedRoom);
-                const room = roomList.find(r => r.id === selectedRoom);
-                console.log('Room data:', room);
-                
-                if (room) {
-                  const newRoomList = roomList.filter(r => r.id !== selectedRoom);
-                  console.log('New room list length:', newRoomList.length);
-                  
-                  setRoomList(newRoomList);
-                  setSelectedRoom(null);
-                  
-                  alert('Kamar ' + room.room_number + ' berhasil dihapus!');
-                }
-              }}
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#dc2626',
-                color: 'white',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-              }}
-            >
-              🗑️ HAPUS KAMAR TERPILIH
-            </button>
-          )}
+      {/* TOMBOL HAPUS RAKSASA DI TENGAH LAYAR */}
+      {selectedRoom && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 999999
+        }}>
+          <button
+            onClick={() => {
+              const room = roomList.find(r => r.id === selectedRoom);
+              if (room && window.confirm('HAPUS ' + room.room_number + '?')) {
+                setRoomList(roomList.filter(r => r.id !== selectedRoom));
+                setSelectedRoom(null);
+              }
+            }}
+            style={{
+              width: '300px',
+              height: '100px',
+              backgroundColor: '#dc2626',
+              color: 'white',
+              borderRadius: '20px',
+              border: '5px solid white',
+              cursor: 'pointer',
+              fontSize: '32px',
+              fontWeight: 'bold',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+            }}
+          >
+            🗑️ HAPUS
+          </button>
         </div>
+      )}
+
+      <div className="bg-white rounded-xl shadow-sm border p-6">
+        <h3 className="font-semibold text-gray-800 mb-4">
+          Peta Kamar - Bangsal {selectedFloor} ({floorRooms.length} kamar)
+        </h3>
 
         {!selectedRoom && (
           <div style={{
