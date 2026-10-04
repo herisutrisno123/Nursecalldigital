@@ -230,11 +230,12 @@ export default function RoomLayoutEditor() {
 
       const newWidth = Math.max(100, resizeStartRef.current.width + dx);
       const newHeight = Math.max(100, resizeStartRef.current.height + dy);
+      const elementId = resizeStartRef.current.elementId;
 
       setEditorLayout(prev => ({
         ...prev,
         elements: prev.elements.map(el =>
-          el.id === resizeStartRef.current!.elementId
+          el.id === elementId
             ? { ...el, width: newWidth, height: newHeight }
             : el
         ),
