@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 // Types
 interface LayoutElement {
   id: string;
-  type: 'room' | 'bed' | 'bathroom' | 'door' | 'window' | 'nurse_call' | 'iv_stand' | 'monitor' | 'sofa' | 'tv' | 'wardrobe';
+  type: 'room' | 'bed' | 'bathroom' | 'door' | 'window' | 'code_blue' | 'presence' | 'iv_stand' | 'monitor' | 'sofa' | 'tv' | 'wardrobe';
   x: number;
   y: number;
   width: number;
@@ -28,7 +28,8 @@ const toolboxItems = [
   { type: 'bathroom', label: 'Kamar Mandi', icon: '🚿', defaultWidth: 80, defaultHeight: 80 },
   { type: 'door', label: 'Pintu', icon: '🚪', defaultWidth: 20, defaultHeight: 60 },
   { type: 'window', label: 'Jendela', icon: '🪟', defaultWidth: 10, defaultHeight: 60 },
-  { type: 'nurse_call', label: 'Nurse Call', icon: '🔴', defaultWidth: 15, defaultHeight: 15 },
+  { type: 'code_blue', label: 'Code Blue', icon: '🔵', defaultWidth: 30, defaultHeight: 30 },
+  { type: 'presence', label: 'Presence', icon: '👤', defaultWidth: 30, defaultHeight: 30 },
   { type: 'iv_stand', label: 'Tiang Infus', icon: '💉', defaultWidth: 10, defaultHeight: 40 },
   { type: 'monitor', label: 'Monitor', icon: '📺', defaultWidth: 40, defaultHeight: 50 },
   { type: 'sofa', label: 'Sofa', icon: '🛋️', defaultWidth: 80, defaultHeight: 40 },
@@ -174,8 +175,10 @@ export default function RoomLayoutEditor() {
       ? 'Jendela'
       : elementToDelete.type === 'room'
       ? 'Kotak Kamar'
-      : elementToDelete.type === 'nurse_call'
-      ? 'Nurse Call'
+      : elementToDelete.type === 'code_blue'
+      ? 'Code Blue'
+      : elementToDelete.type === 'presence'
+      ? 'Presence'
       : elementToDelete.type === 'iv_stand'
       ? 'Tiang Infus'
       : elementToDelete.type === 'monitor'
@@ -421,10 +424,10 @@ export default function RoomLayoutEditor() {
           </div>
         ))}
 
-        {/* Nurse call with cartoon style */}
-        {elements.filter(e => e.type === 'nurse_call').map((element, idx) => (
+        {/* Code Blue with cartoon style */}
+        {elements.filter(e => e.type === 'code_blue').map((element, idx) => (
           <div
-            key={`call-${idx}`}
+            key={`codeblue-${idx}`}
             className="absolute flex items-center justify-center"
             style={{
               left: `${element.x * scale}px`,
@@ -433,9 +436,26 @@ export default function RoomLayoutEditor() {
               height: `${element.height * scale}px`,
             }}
           >
-            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-500 border-4 border-gray-900 rounded-full shadow-xl flex items-center justify-center animate-pulse">
-              {/* Nurse call emoji */}
-              <span className="text-xl">🔴</span>
+            <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 border-4 border-gray-900 rounded-full shadow-xl flex items-center justify-center animate-pulse">
+              <span className="text-xl">🔵</span>
+            </div>
+          </div>
+        ))}
+
+        {/* Presence with cartoon style */}
+        {elements.filter(e => e.type === 'presence').map((element, idx) => (
+          <div
+            key={`presence-${idx}`}
+            className="absolute flex items-center justify-center"
+            style={{
+              left: `${element.x * scale}px`,
+              top: `${element.y * scale}px`,
+              width: `${element.width * scale}px`,
+              height: `${element.height * scale}px`,
+            }}
+          >
+            <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 border-4 border-gray-900 rounded-full shadow-xl flex items-center justify-center">
+              <span className="text-xl">👤</span>
             </div>
           </div>
         ))}
@@ -1083,15 +1103,29 @@ export default function RoomLayoutEditor() {
             <DeleteButton />
           </div>
         );
-      case 'nurse_call':
+      case 'code_blue':
         return (
-          <div key={element.id} style={{...baseStyle, borderRadius: '50%'}} className="bg-red-500" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            {/* Nurse Call Button */}
-            <div className="absolute inset-0 rounded-full border-2 border-red-700 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center shadow-lg">
-              <div className="w-2 h-2 bg-white rounded-full shadow-inner"></div>
+          <div key={element.id} style={{...baseStyle, borderRadius: '50%'}} className="bg-blue-500" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Code Blue Button - Larger and Blue */}
+            <div className="absolute inset-0 rounded-full border-4 border-blue-800 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-700 flex items-center justify-center shadow-2xl animate-pulse">
+              <div className="w-4 h-4 bg-white rounded-full shadow-inner"></div>
             </div>
             {/* Label */}
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-[7px] font-bold text-red-700 whitespace-nowrap">CALL</div>
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-[9px] font-bold text-blue-800 whitespace-nowrap bg-white px-1 rounded">CODE BLUE</div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
+          </div>
+        );
+      case 'presence':
+        return (
+          <div key={element.id} style={{...baseStyle, borderRadius: '50%'}} className="bg-green-500" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {/* Presence Button - Same size as Code Blue */}
+            <div className="absolute inset-0 rounded-full border-4 border-green-800 bg-gradient-to-br from-green-400 via-green-500 to-green-700 flex items-center justify-center shadow-2xl">
+              <div className="w-4 h-4 bg-white rounded-full shadow-inner"></div>
+            </div>
+            {/* Label */}
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-[9px] font-bold text-green-800 whitespace-nowrap bg-white px-1 rounded">PRESENCE</div>
             
             {/* Delete Button */}
             <DeleteButton />
