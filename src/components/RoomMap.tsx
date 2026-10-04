@@ -310,15 +310,16 @@ export default function RoomMap() {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
         // SOLUSI SEDERHANA: Fixed size, pasti berhasil
-        // Container lebih besar agar denah mengisi penuh
-        const containerWidth = 350;
-        const containerHeight = 280;
+        const containerWidth = 280;
+        const containerHeight = 220;
         
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
         // Scale agar denah MUAT UTUH (contain)
-        const scale = Math.min(containerWidth / layoutWidth, containerHeight / layoutHeight);
+        // Tambahkan multiplier 1.3x agar denah lebih besar tapi tetap muat
+        const baseScale = Math.min(containerWidth / layoutWidth, containerHeight / layoutHeight);
+        const scale = baseScale * 1.3;
         
         // Offset untuk memusatkan
         const offsetX = (containerWidth - layoutWidth * scale) / 2;
