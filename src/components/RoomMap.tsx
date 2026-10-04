@@ -9,6 +9,13 @@ export default function RoomMap() {
     keterangan: '',
     template: ''
   });
+  const [daftarBangsal, setDaftarBangsal] = useState<Array<{
+    id: number;
+    nama: string;
+    lantai: string;
+    keterangan: string;
+    template: string;
+  }>>([]);
 
   return (
     <div className="space-y-6">
@@ -221,7 +228,7 @@ export default function RoomMap() {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-semibold text-gray-800">
-              Bangsal
+              Daftar Bangsal
             </h3>
             <button
               onClick={() => setShowAddBangsalModal(true)}
@@ -231,7 +238,50 @@ export default function RoomMap() {
               Tambah Bangsal
             </button>
           </div>
-          <p className="text-gray-600">Daftar bangsal akan ditampilkan di sini.</p>
+          
+          {daftarBangsal.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <i className="fas fa-building text-4xl mb-3 text-gray-300"></i>
+              <p>Belum ada bangsal yang dibuat</p>
+              <p className="text-sm mt-1">Klik tombol "Tambah Bangsal" untuk membuat bangsal baru</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {daftarBangsal.map((bangsal) => (
+                <div key={bangsal.id} className="border-2 border-gray-200 rounded-lg p-4 hover:border-indigo-500 transition">
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-semibold text-gray-800 text-lg">{bangsal.nama}</h4>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Hapus bangsal ${bangsal.nama}?`)) {
+                          setDaftarBangsal(daftarBangsal.filter(b => b.id !== bangsal.id));
+                        }
+                      }}
+                      className="text-red-500 hover:text-red-700 text-sm"
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      <span className="text-gray-500">Lantai:</span>
+                      <span className="ml-2 font-medium text-gray-700">{bangsal.lantai}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Template:</span>
+                      <span className="ml-2 font-medium text-gray-700">{bangsal.template}</span>
+                    </div>
+                    {bangsal.keterangan && (
+                      <div>
+                        <span className="text-gray-500">Keterangan:</span>
+                        <p className="mt-1 text-gray-600 text-xs">{bangsal.keterangan}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -308,9 +358,16 @@ export default function RoomMap() {
               </button>
               <button
                 onClick={() => {
-                  console.log('Bangsal baru:', newBangsal);
-                  setShowAddBangsalModal(false);
-                  setNewBangsal({ nama: '', lantai: '', keterangan: '', template: '' });
+                  if (newBangsal.nama && newBangsal.lantai && newBangsal.template) {
+                    setDaftarBangsal([...daftarBangsal, {
+                      id: Date.now(),
+                      ...newBangsal
+                    }]);
+                    setShowAddBangsalModal(false);
+                    setNewBangsal({ nama: '', lantai: '', keterangan: '', template: '' });
+                  } else {
+                    alert('Mohon lengkapi semua field yang wajib diisi');
+                  }
                 }}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
               >
