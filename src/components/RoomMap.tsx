@@ -20,13 +20,63 @@ interface SavedLayout {
   createdAt: string;
 }
 
+interface Room {
+  id: string;
+  room_number: string;
+  floor: number;
+  building: string;
+  bed_count: number;
+  room_type: string;
+  status: string;
+  layout_id?: string; // ID denah yang dipilih
+}
+
 export default function RoomMap() {
   const [selectedFloor, setSelectedFloor] = useState<number>(1);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [showAddRoomModal, setShowAddRoomModal] = useState(false);
   const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>([]);
   const [selectedLayout, setSelectedLayout] = useState<string>('');
-  const [roomList, setRoomList] = useState(initialRooms);
+  const [roomList, setRoomList] = useState<Room[]>(initialRooms);
+  
+  // State untuk form tambah kamar
+  const [newRoomNumber, setNewRoomNumber] = useState('');
+  const [newRoomFloor, setNewRoomFloor] = useState(selectedFloor);
+  const [newRoomBuilding, setNewRoomBuilding] = useState('Gedung A');
+  const [newRoomType, setNewRoomType] = useState('Reguler');
+  const [newRoomBedCount, setNewRoomBedCount] = useState(1);
+
+  // Fungsi untuk menyimpan kamar baru
+  const handleSaveNewRoom = () => {
+    if (!newRoomNumber.trim()) {
+      alert('Nomor kamar harus diisi!');
+      return;
+    }
+
+    const newRoom: Room = {
+      id: `R${Date.now()}`,
+      room_number: newRoomNumber,
+      floor: newRoomFloor,
+      building: newRoomBuilding,
+      bed_count: newRoomBedCount,
+      room_type: newRoomType,
+      status: 'active',
+      layout_id: selectedLayout || undefined
+    };
+
+    setRoomList([...roomList, newRoom]);
+    
+    // Reset form
+    setNewRoomNumber('');
+    setNewRoomFloor(selectedFloor);
+    setNewRoomBuilding('Gedung A');
+    setNewRoomType('Reguler');
+    setNewRoomBedCount(1);
+    setSelectedLayout('');
+    
+    // Tutup modal
+    setShowAddRoomModal(false);
+  };
 
   useEffect(() => {
     const savedData = localStorage.getItem('savedLayouts');
@@ -64,7 +114,121 @@ export default function RoomMap() {
     }
   };
 
-  const renderRoomLayout = (room: any) => {
+  const renderRoomLayout = (room: Room) => {
+    // Jika kamar punya layout_id, tampilkan denah dari SavedLayout
+    if (room.layout_id) {
+      const layout = savedLayouts.find(l => l.id === room.layout_id);
+      if (layout) {
+        // Hitung scale untuk menyesuaikan denah dengan ukuran kamar
+        const previewWidth = 200;
+        const previewHeight = 180;
+        const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
+        const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
+        const scaleX = (previewWidth - 20) / maxX;
+        const scaleY = (previewHeight - 20) / maxY;
+        const scale = Math.min(scaleX, scaleY, 0.5);
+
+        return (
+          <div className="relative w-full h-full min-h-[180px] bg-white border-4 border-gray-700 overflow-hidden">
+            <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-10">
+              {room.room_number}
+            </div>
+            {/* Render elemen dari layout */}
+            {layout.elements.map((element) => {
+              const elementStyle = {
+                position: 'absolute' as const,
+                left: `${element.x * scale}px`,
+                top: `${element.y * scale}px`,
+                width: `${element.width * scale}px`,
+                height: `${element.height * scale}px`,
+              };
+
+              switch (element.type) {
+                case 'bed':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-pink-200 to-pink-300 border-2 border-gray-900 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">🛏️</span>
+                      {element.label && (
+                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-yellow-400 px-1 rounded text-[8px] font-bold">
+                          {element.label}
+                        </div>
+                      )}
+                    </div>
+                  );
+                case 'bathroom':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-blue-300 to-blue-400 border-2 border-gray-900 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">🚿</span>
+                    </div>
+                  );
+                case 'door':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-amber-400 to-amber-500 border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">🚪</span>
+                    </div>
+                  );
+                case 'window':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-cyan-300 to-cyan-400 border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">🪟</span>
+                    </div>
+                  );
+                case 'code_blue':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-gray-900 rounded-full flex items-center justify-center animate-pulse">
+                      <span className="text-sm">🔵</span>
+                    </div>
+                  );
+                case 'presence':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-green-400 to-green-600 border-2 border-gray-900 rounded-full flex items-center justify-center">
+                      <span className="text-sm">👤</span>
+                    </div>
+                  );
+                case 'monitor':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">📺</span>
+                    </div>
+                  );
+                case 'iv_stand':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-green-300 to-green-400 border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">💉</span>
+                    </div>
+                  );
+                case 'sofa':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-purple-300 to-purple-400 border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">🛋️</span>
+                    </div>
+                  );
+                case 'tv':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-gray-800 to-black border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">📺</span>
+                    </div>
+                  );
+                case 'wardrobe':
+                  return (
+                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-amber-300 to-amber-400 border-2 border-gray-900 rounded flex items-center justify-center">
+                      <span className="text-sm">🗄️</span>
+                    </div>
+                  );
+                case 'room':
+                  return (
+                    <div key={element.id} style={elementStyle} className="border-2 border-dashed border-gray-400 bg-gray-50 opacity-30"></div>
+                  );
+                default:
+                  return null;
+              }
+            })}
+          </div>
+        );
+      }
+    }
+
+    // Default layout jika tidak ada layout_id
     return (
       <div className="relative w-full h-full min-h-[180px] bg-white border-4 border-gray-700 overflow-hidden">
         <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700">
@@ -229,27 +393,80 @@ export default function RoomMap() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-sm font-medium">Nomor Kamar</label>
-                  <input type="text" placeholder="401" className="w-full mt-1 px-3 py-2 border rounded-lg text-sm" />
+                  <input 
+                    type="text" 
+                    value={newRoomNumber}
+                    onChange={(e) => setNewRoomNumber(e.target.value)}
+                    placeholder="401" 
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm" 
+                  />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Bangsal</label>
-                  <select defaultValue={selectedFloor} className="w-full mt-1 px-3 py-2 border rounded-lg text-sm">
+                  <select 
+                    value={newRoomFloor}
+                    onChange={(e) => setNewRoomFloor(Number(e.target.value))}
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm"
+                  >
                     {floors.map(floor => (
                       <option key={floor} value={floor}>Bangsal {floor}</option>
                     ))}
                   </select>
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium">Gedung</label>
+                  <select 
+                    value={newRoomBuilding}
+                    onChange={(e) => setNewRoomBuilding(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm"
+                  >
+                    <option>Gedung A</option>
+                    <option>Gedung B</option>
+                    <option>Gedung C</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Tipe Kamar</label>
+                  <select 
+                    value={newRoomType}
+                    onChange={(e) => setNewRoomType(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 border rounded-lg text-sm"
+                  >
+                    <option>Reguler</option>
+                    <option>VIP</option>
+                    <option>ICU</option>
+                    <option>NICU</option>
+                    <option>HCU</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Jumlah Bed</label>
+                <input 
+                  type="number" 
+                  value={newRoomBedCount}
+                  onChange={(e) => setNewRoomBedCount(Number(e.target.value))}
+                  min={1}
+                  max={4}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg text-sm" 
+                />
+              </div>
             </div>
             <div className="flex gap-3 mt-6 justify-end">
               <button
-                onClick={() => setShowAddRoomModal(false)}
+                onClick={() => {
+                  setShowAddRoomModal(false);
+                  setNewRoomNumber('');
+                  setSelectedLayout('');
+                }}
                 className="px-4 py-2 border rounded-lg text-sm"
               >
                 Batal
               </button>
               <button
-                onClick={() => setShowAddRoomModal(false)}
+                onClick={handleSaveNewRoom}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm"
               >
                 Simpan
