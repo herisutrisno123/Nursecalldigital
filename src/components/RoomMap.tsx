@@ -307,26 +307,25 @@ export default function RoomMap() {
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
-        // Hitung scale untuk menyesuaikan denah dengan ukuran kartu kamar
-        // Gunakan ukuran yang lebih besar agar denah mengisi seluruh area
-        const containerWidth = 280;
-        const containerHeight = 200;
-        const padding = 10;
+        // Hitung scale agar denah mengisi PENUH container
+        const containerWidth = 300; // Lebar container
+        const containerHeight = 220; // Tinggi container
         
         const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
         const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
         
-        const scaleX = (containerWidth - padding * 2) / maxX;
-        const scaleY = (containerHeight - padding * 2) / maxY;
+        // Scale tanpa padding - denah mengisi penuh
+        const scaleX = containerWidth / maxX;
+        const scaleY = containerHeight / maxY;
         const scale = Math.min(scaleX, scaleY);
 
         return (
-          <div className="relative w-full h-full min-h-[200px] bg-white border-4 border-gray-700 overflow-hidden">
+          <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden">
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-10">
               {room.room_number}
             </div>
-            {/* Container untuk denah dengan padding */}
-            <div className="absolute inset-0 flex items-center justify-center" style={{ padding: `${padding}px` }}>
+            {/* Container untuk denah - mengisi penuh */}
+            <div className="absolute inset-0">
               {/* Render elemen dari layout menggunakan fungsi yang sama dengan editor */}
               {layout.elements.map((element) => renderElement(element, scale))}
             </div>
