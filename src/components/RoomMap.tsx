@@ -88,31 +88,9 @@ export default function RoomMap() {
     );
   };
 
-  // FUNGSI HAPUS KAMAR - LANGSUNG DAN SEDERHANA
-  const handleDeleteRoom = (roomId: string, roomNumber: string) => {
-    const confirmed = window.confirm(`Hapus Kamar ${roomNumber}?`);
-    if (confirmed) {
-      setRoomList(roomList.filter(r => r.id !== roomId));
-      if (selectedRoom === roomId) {
-        setSelectedRoom(null);
-      }
-    }
-  };
 
-  // Keyboard shortcut untuk hapus
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'Delete' && selectedRoom) {
-        const room = roomList.find(r => r.id === selectedRoom);
-        if (room && window.confirm('Hapus Kamar ' + room.room_number + '?')) {
-          setRoomList(roomList.filter(r => r.id !== selectedRoom));
-          setSelectedRoom(null);
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedRoom, roomList]);
+
+
 
   return (
     <div className="space-y-6">
@@ -137,41 +115,6 @@ export default function RoomMap() {
           <i className="fas fa-plus mr-2"></i>Tambah Kamar
         </button>
       </div>
-
-      {/* TOMBOL HAPUS RAKSASA DI TENGAH LAYAR */}
-      {selectedRoom && (
-        <div style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 999999
-        }}>
-          <button
-            onClick={() => {
-              const room = roomList.find(r => r.id === selectedRoom);
-              if (room && window.confirm('HAPUS ' + room.room_number + '?')) {
-                setRoomList(roomList.filter(r => r.id !== selectedRoom));
-                setSelectedRoom(null);
-              }
-            }}
-            style={{
-              width: '300px',
-              height: '100px',
-              backgroundColor: '#dc2626',
-              color: 'white',
-              borderRadius: '20px',
-              border: '5px solid white',
-              cursor: 'pointer',
-              fontSize: '32px',
-              fontWeight: 'bold',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
-            }}
-          >
-            🗑️ HAPUS
-          </button>
-        </div>
-      )}
 
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-800 mb-4">
@@ -206,43 +149,13 @@ export default function RoomMap() {
                   isSelected ? 'ring-2 ring-blue-500' : ''
                 }`}
               >
-                {/* Area untuk klik select room - TIDAK menutupi tombol hapus */}
+                {/* Area untuk klik select room */}
                 <div
                   onClick={() => setSelectedRoom(room.id)}
-                  className="cursor-pointer p-4 pb-16"
+                  className="cursor-pointer p-4"
                 >
                   {renderRoomLayout(room)}
                 </div>
-
-                {/* TOMBOL HAPUS - INLINE LANGSUNG */}
-                <button
-                  onClick={() => {
-                    if (window.confirm('Hapus Kamar ' + room.room_number + '?')) {
-                      setRoomList(roomList.filter(r => r.id !== room.id));
-                      if (selectedRoom === room.id) setSelectedRoom(null);
-                    }
-                  }}
-                  style={{
-                    position: 'absolute',
-                    bottom: '12px',
-                    right: '12px',
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: '#dc2626',
-                    color: 'white',
-                    borderRadius: '50%',
-                    border: '4px solid white',
-                    cursor: 'pointer',
-                    zIndex: 9999,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 10px 15px rgba(0,0,0,0.3)'
-                  }}
-                  title={'Hapus Kamar ' + room.room_number}
-                >
-                  🗑️
-                </button>
               </div>
             );
           })}
@@ -254,37 +167,16 @@ export default function RoomMap() {
           <h3 className="font-semibold text-gray-800 mb-4">
             Detail Kamar {selectedRoomData.room_number}
           </h3>
-          <div className="grid grid-cols-3 gap-6 text-sm">
+          <div className="grid grid-cols-2 gap-6 text-sm">
             <div>
               <p><strong>Tipe:</strong> {selectedRoomData.room_type}</p>
               <p><strong>Bed:</strong> {selectedRoomData.bed_count}</p>
-            </div>
-            <div>
               <p><strong>Gedung:</strong> {selectedRoomData.building}</p>
-              <p><strong>Status:</strong> {selectedRoomData.status}</p>
             </div>
             <div>
-              <button
-                onClick={() => {
-                  if (window.confirm('Hapus Kamar ' + selectedRoomData.room_number + '?')) {
-                    setRoomList(roomList.filter(r => r.id !== selectedRoom));
-                    setSelectedRoom(null);
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  backgroundColor: '#dc2626',
-                  color: 'white',
-                  borderRadius: '8px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 'bold'
-                }}
-              >
-                🗑️ Hapus Kamar Ini
-              </button>
+              <p><strong>Status:</strong> {selectedRoomData.status}</p>
+              <p><strong>Lantai:</strong> {selectedRoomData.floor}</p>
+              <p><strong>ID:</strong> {selectedRoomData.id}</p>
             </div>
           </div>
         </div>

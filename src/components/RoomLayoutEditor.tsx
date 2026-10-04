@@ -1408,7 +1408,7 @@ export default function RoomLayoutEditor() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2">
+                    <div>
                       <button
                         onClick={() => {
                           setEditorLayout(layout);
@@ -1418,32 +1418,9 @@ export default function RoomLayoutEditor() {
                           setEditingLayoutId(layout.id);
                           setActiveTab('editor');
                         }}
-                        className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
+                        className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
                       >
-                        <i className="fas fa-edit mr-1"></i>Edit
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (window.confirm('Hapus layout "' + layout.name + '"?')) {
-                            setSavedLayouts(savedLayouts.filter(l => l.id !== layout.id));
-                            localStorage.setItem('savedLayouts', JSON.stringify(
-                              savedLayouts.filter(l => l.id !== layout.id)
-                            ));
-                          }
-                        }}
-                        style={{
-                          padding: '8px 16px',
-                          backgroundColor: '#dc2626',
-                          color: 'white',
-                          borderRadius: '8px',
-                          border: '2px solid #991b1b',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        🗑️ Hapus
+                        <i className="fas fa-edit mr-1"></i>Edit Layout Ini
                       </button>
                     </div>
                   </div>
