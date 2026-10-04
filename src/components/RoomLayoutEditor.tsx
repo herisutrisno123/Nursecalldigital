@@ -150,6 +150,7 @@ export default function RoomLayoutEditor() {
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [layoutName, setLayoutName] = useState('');
   const [roomType, setRoomType] = useState('Reguler');
+  const [is3DView, setIs3DView] = useState(false);
 
   // Handle preset selection
   const handlePresetSelect = (preset: RoomLayout) => {
@@ -359,7 +360,7 @@ export default function RoomLayoutEditor() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [activeTab, selectedElement, editorLayout]);
 
-  // Render element based on type - Architectural Style
+  // Render element based on type - Architectural Style with 3D option
   const renderElement = (element: LayoutElement, isSelected: boolean) => {
     const baseStyle = {
       position: 'absolute' as const,
@@ -373,27 +374,109 @@ export default function RoomLayoutEditor() {
       boxShadow: isSelected ? '0 0 0 3px rgba(37, 99, 235, 0.3)' : '0 1px 3px rgba(0,0,0,0.2)',
     };
 
+    // 3D style for bed
+    const bed3DStyle = {
+      ...baseStyle,
+      transformStyle: 'preserve-3d' as const,
+      transform: `rotate(${element.rotation || 0}deg) rotateX(${is3DView ? '60deg' : '0deg'})`,
+      transition: 'transform 0.3s ease',
+    };
+
     switch (element.type) {
       case 'bed':
         return (
-          <div key={element.id} style={baseStyle} className="bg-white" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            {/* Bed Frame */}
-            <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-gray-50 to-white">
-              {/* Headboard */}
-              <div className="absolute top-0 left-0 right-0 h-2 bg-gray-700"></div>
-              {/* Pillow */}
-              <div className="absolute top-2 left-1 right-1 h-3 bg-white border border-gray-400 rounded-sm"></div>
-              {/* Mattress */}
-              <div className="absolute top-6 left-1 right-1 bottom-4 bg-white border border-gray-300 rounded-sm">
-                {/* Blanket fold */}
-                <div className="absolute bottom-0 left-0 right-0 h-4 bg-gray-100 border-t border-gray-300"></div>
-              </div>
-              {/* Footboard */}
-              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-700"></div>
-            </div>
+          <div 
+            key={element.id} 
+            style={is3DView ? bed3DStyle : baseStyle} 
+            className="bg-white" 
+            onClick={(e) => handleElementClick(element.id, e)} 
+            onMouseDown={(e) => handleElementDrag(e, element.id)}
+          >
+            {is3DView ? (
+              <>
+                {/* 3D Bed - Top Surface */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100 border-2 border-gray-700" style={{ transform: 'translateZ(8px)' }}>
+                  {/* Headboard */}
+                  <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-gray-600 to-gray-800 border-b-2 border-gray-900"></div>
+                  {/* Pillow */}
+                  <div className="absolute top-4 left-2 right-2 h-4 bg-white border-2 border-gray-400 rounded-sm shadow-md"></div>
+                  {/* Mattress */}
+                  <div className="absolute top-9 left-2 right-2 bottom-5 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-300 rounded-sm">
+                    {/* Blanket */}
+                    <div className="absolute bottom-0 left-0 right-0 h-5 bg-gradient-to-t from-blue-50 to-white border-t-2 border-blue-200"></div>
+                  </div>
+                  {/* Footboard */}
+                  <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-t from-gray-700 to-gray-600 border-t-2 border-gray-800"></div>
+                </div>
+                
+                {/* 3D Bed - Left Side */}
+                <div 
+                  className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-gray-300 to-gray-400 border-2 border-gray-700"
+                  style={{ 
+                    transform: 'rotateY(-90deg) translateZ(0px)',
+                    transformOrigin: 'left center',
+                    width: '8px'
+                  }}
+                ></div>
+                
+                {/* 3D Bed - Right Side */}
+                <div 
+                  className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-gray-300 to-gray-400 border-2 border-gray-700"
+                  style={{ 
+                    transform: 'rotateY(90deg) translateZ(0px)',
+                    transformOrigin: 'right center',
+                    width: '8px'
+                  }}
+                ></div>
+                
+                {/* 3D Bed - Front Side */}
+                <div 
+                  className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-gray-400 to-gray-300 border-2 border-gray-700"
+                  style={{ 
+                    transform: 'rotateX(-90deg) translateZ(0px)',
+                    transformOrigin: 'bottom center',
+                    height: '8px'
+                  }}
+                ></div>
+                
+                {/* 3D Bed - Back Side */}
+                <div 
+                  className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-gray-400 to-gray-300 border-2 border-gray-700"
+                  style={{ 
+                    transform: 'rotateX(90deg) translateZ(0px)',
+                    transformOrigin: 'top center',
+                    height: '8px'
+                  }}
+                ></div>
+
+                {/* Shadow */}
+                <div 
+                  className="absolute inset-0 bg-black opacity-20 blur-sm"
+                  style={{ transform: 'translateZ(-1px) translateY(4px)' }}
+                ></div>
+              </>
+            ) : (
+              <>
+                {/* 2D Bed Frame */}
+                <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-gray-50 to-white">
+                  {/* Headboard */}
+                  <div className="absolute top-0 left-0 right-0 h-2 bg-gray-700"></div>
+                  {/* Pillow */}
+                  <div className="absolute top-2 left-1 right-1 h-3 bg-white border border-gray-400 rounded-sm"></div>
+                  {/* Mattress */}
+                  <div className="absolute top-6 left-1 right-1 bottom-4 bg-white border border-gray-300 rounded-sm">
+                    {/* Blanket fold */}
+                    <div className="absolute bottom-0 left-0 right-0 h-4 bg-gray-100 border-t border-gray-300"></div>
+                  </div>
+                  {/* Footboard */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-700"></div>
+                </div>
+              </>
+            )}
+            
             {/* Bed Label */}
             {element.label && (
-              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded text-[9px] font-bold text-gray-800 border border-gray-400 shadow-sm">
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded text-[9px] font-bold text-gray-800 border border-gray-400 shadow-sm z-10">
                 {element.label}
               </div>
             )}
@@ -583,6 +666,25 @@ export default function RoomLayoutEditor() {
       {/* Preset Layout Tab */}
       {activeTab === 'preset' && (
         <div className="space-y-4">
+          {/* 3D Toggle for Preset */}
+          <div className="flex items-center justify-between bg-white rounded-lg border-2 border-gray-200 p-3">
+            <div className="flex items-center gap-2">
+              <i className="fas fa-cube text-purple-600"></i>
+              <span className="text-sm font-medium text-gray-700">Tampilan 3D untuk Bed</span>
+            </div>
+            <button
+              onClick={() => setIs3DView(!is3DView)}
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                is3DView 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <i className={`fas ${is3DView ? 'fa-cube' : 'fa-square'} mr-2`}></i>
+              {is3DView ? '3D View' : '2D View'}
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {presetLayouts.map(preset => {
               // Calculate optimal scale based on content
@@ -623,12 +725,13 @@ export default function RoomLayoutEditor() {
                     </span>
                   </div>
                   
-                  {/* Mini Preview - Optimized */}
+                  {/* Mini Preview - Optimized with 3D support */}
                   <div 
                     className="relative bg-white border-2 border-gray-700 rounded-lg overflow-hidden mb-3 mx-auto"
                     style={{ 
                       width: `${previewWidth}px`, 
                       height: `${previewHeight}px`,
+                      perspective: is3DView ? '800px' : 'none',
                       backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
                         linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)
@@ -636,43 +739,60 @@ export default function RoomLayoutEditor() {
                       backgroundSize: '10px 10px'
                     }}
                   >
-                    {preset.elements.map(element => (
-                      <div
-                        key={element.id}
-                        className={`absolute ${
-                          element.type === 'bed' ? 'bg-white border-2 border-gray-700' :
-                          element.type === 'bathroom' ? 'bg-blue-50 border-2 border-blue-500' :
-                          element.type === 'door' ? 'bg-amber-100 border-2 border-amber-700' :
-                          element.type === 'window' ? 'bg-blue-200 border-2 border-blue-500' :
-                          element.type === 'nurse_call' ? 'bg-red-500 border-2 border-red-700 rounded-full' :
-                          element.type === 'monitor' ? 'bg-gray-800 border-2 border-gray-900' :
-                          element.type === 'iv_stand' ? 'bg-gray-600' :
-                          element.type === 'sofa' ? 'bg-purple-100 border-2 border-purple-400' :
-                          element.type === 'tv' ? 'bg-gray-900 border-2 border-black' :
-                          'bg-amber-100 border-2 border-amber-600'
-                        }`}
-                        style={{
-                          left: `${element.x * scale}px`,
-                          top: `${element.y * scale}px`,
-                          width: `${element.width * scale}px`,
-                          height: `${element.height * scale}px`,
-                          transform: `rotate(${element.rotation || 0}deg)`,
-                        }}
-                      >
-                        {/* Bed Label */}
-                        {element.type === 'bed' && element.label && (
-                          <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-700">
-                            {element.label}
-                          </div>
-                        )}
-                        {/* Bathroom Label */}
-                        {element.type === 'bathroom' && (
-                          <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-blue-700">
-                            KM
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                    {preset.elements.map(element => {
+                      const isBed = element.type === 'bed';
+                      const bed3DTransform = is3DView && isBed ? `rotateX(60deg) rotate(${element.rotation || 0}deg)` : `rotate(${element.rotation || 0}deg)`;
+                      
+                      return (
+                        <div
+                          key={element.id}
+                          className={`absolute ${
+                            element.type === 'bed' ? 'bg-white border-2 border-gray-700' :
+                            element.type === 'bathroom' ? 'bg-blue-50 border-2 border-blue-500' :
+                            element.type === 'door' ? 'bg-amber-100 border-2 border-amber-700' :
+                            element.type === 'window' ? 'bg-blue-200 border-2 border-blue-500' :
+                            element.type === 'nurse_call' ? 'bg-red-500 border-2 border-red-700 rounded-full' :
+                            element.type === 'monitor' ? 'bg-gray-800 border-2 border-gray-900' :
+                            element.type === 'iv_stand' ? 'bg-gray-600' :
+                            element.type === 'sofa' ? 'bg-purple-100 border-2 border-purple-400' :
+                            element.type === 'tv' ? 'bg-gray-900 border-2 border-black' :
+                            'bg-amber-100 border-2 border-amber-600'
+                          }`}
+                          style={{
+                            left: `${element.x * scale}px`,
+                            top: `${element.y * scale}px`,
+                            width: `${element.width * scale}px`,
+                            height: `${element.height * scale}px`,
+                            transform: bed3DTransform,
+                            transformStyle: is3DView && isBed ? 'preserve-3d' : 'flat',
+                            transition: 'transform 0.3s ease',
+                            boxShadow: is3DView && isBed ? '0 4px 8px rgba(0,0,0,0.3)' : 'none',
+                          }}
+                        >
+                          {/* 3D Bed Effect */}
+                          {is3DView && isBed && (
+                            <>
+                              <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100"></div>
+                              <div className="absolute top-0 left-0 right-0 h-1 bg-gray-700"></div>
+                              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-700"></div>
+                            </>
+                          )}
+                          
+                          {/* Bed Label */}
+                          {element.type === 'bed' && element.label && (
+                            <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-700 z-10">
+                              {element.label}
+                            </div>
+                          )}
+                          {/* Bathroom Label */}
+                          {element.type === 'bathroom' && (
+                            <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-blue-700">
+                              KM
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Stats */}
@@ -783,6 +903,20 @@ export default function RoomLayoutEditor() {
                   Canvas Denah Kamar
                 </h4>
                 <div className="flex gap-2 items-center">
+                  {/* 3D View Toggle */}
+                  <button
+                    onClick={() => setIs3DView(!is3DView)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${
+                      is3DView 
+                        ? 'bg-purple-600 text-white shadow-md' 
+                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
+                    }`}
+                    title="Toggle 3D View"
+                  >
+                    <i className={`fas ${is3DView ? 'fa-cube' : 'fa-square'} mr-2`}></i>
+                    {is3DView ? '3D' : '2D'}
+                  </button>
+                  
                   <input
                     type="text"
                     placeholder="Nama Layout"
@@ -817,6 +951,8 @@ export default function RoomLayoutEditor() {
                   onDragOver={handleDragOver}
                   onClick={handleCanvasClick}
                   style={{
+                    perspective: is3DView ? '1000px' : 'none',
+                    perspectiveOrigin: 'center center',
                     backgroundImage: `
                       linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
                       linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px),
@@ -879,6 +1015,12 @@ export default function RoomLayoutEditor() {
                       <i className="fas fa-info-circle text-indigo-500"></i>
                       <span>Drag elemen dari toolbox, klik untuk memilih, drag untuk memindahkan</span>
                     </span>
+                    {is3DView && (
+                      <span className="flex items-center gap-1 text-purple-600 font-medium">
+                        <i className="fas fa-cube"></i>
+                        <span>Mode 3D Aktif - Bed tampil dengan kedalaman</span>
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1">
@@ -904,6 +1046,25 @@ export default function RoomLayoutEditor() {
       {/* Saved Layouts Tab */}
       {activeTab === 'saved' && (
         <div className="space-y-4">
+          {/* 3D Toggle for Saved Layouts */}
+          <div className="flex items-center justify-between bg-white rounded-lg border-2 border-gray-200 p-3">
+            <div className="flex items-center gap-2">
+              <i className="fas fa-cube text-purple-600"></i>
+              <span className="text-sm font-medium text-gray-700">Tampilan 3D untuk Bed</span>
+            </div>
+            <button
+              onClick={() => setIs3DView(!is3DView)}
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                is3DView 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <i className={`fas ${is3DView ? 'fa-cube' : 'fa-square'} mr-2`}></i>
+              {is3DView ? '3D View' : '2D View'}
+            </button>
+          </div>
+
           {savedLayouts.length === 0 ? (
             <div className="bg-white rounded-xl border p-12 text-center">
               <i className="fas fa-folder-open text-4xl text-gray-300 mb-3"></i>
@@ -945,12 +1106,13 @@ export default function RoomLayoutEditor() {
                       </span>
                     </div>
                     
-                    {/* Mini Preview - Optimized */}
+                    {/* Mini Preview - Optimized with 3D support */}
                     <div 
                       className="relative bg-white border-2 border-gray-700 rounded-lg overflow-hidden mb-3 mx-auto"
                       style={{ 
                         width: `${previewWidth}px`, 
                         height: `${previewHeight}px`,
+                        perspective: is3DView ? '800px' : 'none',
                         backgroundImage: `
                           linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
                           linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)
@@ -958,43 +1120,60 @@ export default function RoomLayoutEditor() {
                         backgroundSize: '10px 10px'
                       }}
                     >
-                      {layout.elements.map(element => (
-                        <div
-                          key={element.id}
-                          className={`absolute ${
-                            element.type === 'bed' ? 'bg-white border-2 border-gray-700' :
-                            element.type === 'bathroom' ? 'bg-blue-50 border-2 border-blue-500' :
-                            element.type === 'door' ? 'bg-amber-100 border-2 border-amber-700' :
-                            element.type === 'window' ? 'bg-blue-200 border-2 border-blue-500' :
-                            element.type === 'nurse_call' ? 'bg-red-500 border-2 border-red-700 rounded-full' :
-                            element.type === 'monitor' ? 'bg-gray-800 border-2 border-gray-900' :
-                            element.type === 'iv_stand' ? 'bg-gray-600' :
-                            element.type === 'sofa' ? 'bg-purple-100 border-2 border-purple-400' :
-                            element.type === 'tv' ? 'bg-gray-900 border-2 border-black' :
-                            'bg-amber-100 border-2 border-amber-600'
-                          }`}
-                          style={{
-                            left: `${element.x * scale}px`,
-                            top: `${element.y * scale}px`,
-                            width: `${element.width * scale}px`,
-                            height: `${element.height * scale}px`,
-                            transform: `rotate(${element.rotation || 0}deg)`,
-                          }}
-                        >
-                          {/* Bed Label */}
-                          {element.type === 'bed' && element.label && (
-                            <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-700">
-                              {element.label}
-                            </div>
-                          )}
-                          {/* Bathroom Label */}
-                          {element.type === 'bathroom' && (
-                            <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-blue-700">
-                              KM
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                      {layout.elements.map(element => {
+                        const isBed = element.type === 'bed';
+                        const bed3DTransform = is3DView && isBed ? `rotateX(60deg) rotate(${element.rotation || 0}deg)` : `rotate(${element.rotation || 0}deg)`;
+                        
+                        return (
+                          <div
+                            key={element.id}
+                            className={`absolute ${
+                              element.type === 'bed' ? 'bg-white border-2 border-gray-700' :
+                              element.type === 'bathroom' ? 'bg-blue-50 border-2 border-blue-500' :
+                              element.type === 'door' ? 'bg-amber-100 border-2 border-amber-700' :
+                              element.type === 'window' ? 'bg-blue-200 border-2 border-blue-500' :
+                              element.type === 'nurse_call' ? 'bg-red-500 border-2 border-red-700 rounded-full' :
+                              element.type === 'monitor' ? 'bg-gray-800 border-2 border-gray-900' :
+                              element.type === 'iv_stand' ? 'bg-gray-600' :
+                              element.type === 'sofa' ? 'bg-purple-100 border-2 border-purple-400' :
+                              element.type === 'tv' ? 'bg-gray-900 border-2 border-black' :
+                              'bg-amber-100 border-2 border-amber-600'
+                            }`}
+                            style={{
+                              left: `${element.x * scale}px`,
+                              top: `${element.y * scale}px`,
+                              width: `${element.width * scale}px`,
+                              height: `${element.height * scale}px`,
+                              transform: bed3DTransform,
+                              transformStyle: is3DView && isBed ? 'preserve-3d' : 'flat',
+                              transition: 'transform 0.3s ease',
+                              boxShadow: is3DView && isBed ? '0 4px 8px rgba(0,0,0,0.3)' : 'none',
+                            }}
+                          >
+                            {/* 3D Bed Effect */}
+                            {is3DView && isBed && (
+                              <>
+                                <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100"></div>
+                                <div className="absolute top-0 left-0 right-0 h-1 bg-gray-700"></div>
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-700"></div>
+                              </>
+                            )}
+                            
+                            {/* Bed Label */}
+                            {element.type === 'bed' && element.label && (
+                              <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-700 z-10">
+                                {element.label}
+                              </div>
+                            )}
+                            {/* Bathroom Label */}
+                            {element.type === 'bathroom' && (
+                              <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-blue-700">
+                                KM
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
 
                     {/* Stats */}
