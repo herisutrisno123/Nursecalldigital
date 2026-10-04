@@ -1197,14 +1197,7 @@ export default function RoomLayoutEditor() {
                   onClick={handleCanvasClick}
                   style={{
                     perspective: is3DView ? '1000px' : 'none',
-                    perspectiveOrigin: 'center center',
-                    backgroundImage: `
-                      linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px),
-                      linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '10px 10px, 10px 10px, 50px 50px, 50px 50px'
+                    perspectiveOrigin: 'center center'
                   }}
                 >
                 {/* Scale Indicator */}
