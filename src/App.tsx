@@ -19,7 +19,7 @@ const menuItems: { id: Page; label: string; icon: string; section?: string }[] =
   { id: 'call-events', label: 'Event Panggilan', icon: 'fa-phone-volume' },
   { id: 'device-status', label: 'Status Perangkat', icon: 'fa-microchip' },
   { id: 'nurse-activity', label: 'Aktivitas Perawat', icon: 'fa-user-nurse' },
-  { id: 'room-layout', label: 'Editor Denah', icon: 'fa-drafting-compass', section: 'Peta & Visualisasi' },
+  { id: 'room-layout', label: 'Editor Kamar', icon: 'fa-drafting-compass', section: 'Peta & Visualisasi' },
   { id: 'room-map', label: 'Peta Ruang', icon: 'fa-map-location-dot' },
   { id: 'statistics', label: 'Statistik Operasional', icon: 'fa-chart-line' },
   { id: 'integration', label: 'Integrasi Gateway', icon: 'fa-network-wired' },
