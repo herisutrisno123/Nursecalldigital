@@ -316,8 +316,9 @@ export default function RoomMap() {
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
-        // Scale agar denah MUAT UTUH (contain)
-        const scale = Math.min(containerWidth / layoutWidth, containerHeight / layoutHeight);
+        // Scale agar denah MUAT UTUH tapi lebih besar (contain dengan multiplier)
+        const baseScale = Math.min(containerWidth / layoutWidth, containerHeight / layoutHeight);
+        const scale = baseScale * 1.1; // Perbesar 10% untuk mengurangi ruang kosong
         
         // Offset untuk memusatkan
         const offsetX = (containerWidth - layoutWidth * scale) / 2;
