@@ -114,6 +114,194 @@ export default function RoomMap() {
     }
   };
 
+  // Fungsi render elemen yang sama persis dengan RoomLayoutEditor
+  const renderElement = (element: LayoutElement, scale: number) => {
+    const elementStyle = {
+      position: 'absolute' as const,
+      left: `${element.x * scale}px`,
+      top: `${element.y * scale}px`,
+      width: `${element.width * scale}px`,
+      height: `${element.height * scale}px`,
+      transform: `rotate(${element.rotation || 0}deg)`,
+    };
+
+    switch (element.type) {
+      case 'room':
+        return (
+          <div key={element.id} style={{...elementStyle, backgroundColor: 'transparent', border: '3px solid #6b7280'}} className="relative">
+            <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap">
+              Kamar ({element.width} x {element.height})
+            </div>
+          </div>
+        );
+
+      case 'bed':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-white border-2 border-gray-700">
+            <div className="absolute inset-0 border-2 border-gray-600 bg-gradient-to-br from-gray-100 to-white">
+              <div className="absolute inset-0 border-2 border-gray-500"></div>
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gray-500"></div>
+              <div className="absolute top-2 left-0 w-1 bottom-2 bg-gray-500"></div>
+              <div className="absolute top-2 right-0 w-1 bottom-2 bg-gray-500"></div>
+              <div className="absolute top-2 left-1 right-1 bottom-2 bg-blue-50 border border-blue-200 rounded-sm">
+                <div className="absolute top-1 left-1 right-1 h-2 bg-white border border-gray-300 rounded-sm"></div>
+                <div className="absolute top-4 left-0 right-0 bottom-0 bg-blue-100 border-t border-blue-300"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-500"></div>
+              <div className="absolute bottom-[-2px] left-[15%] w-2 h-2 bg-gray-700 rounded-full"></div>
+              <div className="absolute bottom-[-2px] right-[15%] w-2 h-2 bg-gray-700 rounded-full"></div>
+            </div>
+            {element.label && (
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded text-[9px] font-bold text-gray-800 border border-gray-400 shadow-sm z-10">
+                {element.label}
+              </div>
+            )}
+          </div>
+        );
+
+      case 'bathroom':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-blue-50">
+            <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-blue-50 to-blue-100">
+              <div className="absolute top-2 left-2 w-4 h-5 bg-white border-2 border-gray-600 rounded-full">
+                <div className="absolute top-0.5 left-0.5 right-0.5 h-1.5 bg-blue-200 rounded-full"></div>
+              </div>
+              <div className="absolute top-2 right-2 w-3 h-3 bg-white border-2 border-gray-600 rounded-sm">
+                <div className="absolute top-0.5 left-0.5 right-0.5 h-0.5 bg-blue-300 rounded-sm"></div>
+              </div>
+              <div className="absolute bottom-2 left-2 right-2 h-4 bg-blue-200 border border-blue-400 rounded-sm flex items-center justify-center">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+              </div>
+              <div className="absolute bottom-1 right-1 text-[7px] font-bold text-blue-700">KM</div>
+            </div>
+          </div>
+        );
+
+      case 'door':
+        return (
+          <div key={element.id} style={{...elementStyle, border: 'none'}}>
+            <div className="absolute inset-0 border-4 border-amber-950 bg-amber-100 rounded-sm shadow-lg">
+              <div className="absolute inset-1 border-2 border-amber-800 bg-gradient-to-br from-amber-50 to-amber-100">
+                <div className="absolute inset-1 bg-gradient-to-br from-gray-800 to-gray-900 rounded-sm">
+                  <div 
+                    className="absolute top-1 bottom-1 left-1 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 border-2 border-amber-700 rounded-sm"
+                    style={{ width: '55%', transform: 'skewY(-5deg)', transformOrigin: 'left center' }}
+                  >
+                    <div className="absolute top-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm bg-amber-300 opacity-60"></div>
+                    <div className="absolute bottom-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm bg-amber-300 opacity-60"></div>
+                    <div className="absolute top-[45%] right-1 w-1.5 h-2.5 bg-gray-800 rounded-full shadow"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'window':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-blue-100 to-blue-200">
+            <div className="absolute inset-0 border-2 border-gray-700">
+              <div className="absolute inset-0.5 grid grid-cols-2 gap-0.5">
+                <div className="bg-blue-200 border border-blue-400"></div>
+                <div className="bg-blue-200 border border-blue-400"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600"></div>
+            </div>
+          </div>
+        );
+
+      case 'code_blue':
+        return (
+          <div key={element.id} style={{...elementStyle, borderRadius: '50%'}} className="bg-blue-500">
+            <div className="absolute inset-0 rounded-full border-4 border-blue-800 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-700 flex items-center justify-center shadow-2xl animate-pulse">
+              <div className="w-4 h-4 bg-white rounded-full shadow-inner"></div>
+            </div>
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-[9px] font-bold text-blue-800 whitespace-nowrap bg-white px-1 rounded">CODE BLUE</div>
+          </div>
+        );
+
+      case 'presence':
+        return (
+          <div key={element.id} style={{...elementStyle, borderRadius: '50%'}} className="bg-green-500">
+            <div className="absolute inset-0 rounded-full border-4 border-green-800 bg-gradient-to-br from-green-400 via-green-500 to-green-700 flex items-center justify-center shadow-2xl">
+              <div className="w-4 h-4 bg-white rounded-full shadow-inner"></div>
+            </div>
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-[9px] font-bold text-green-800 whitespace-nowrap bg-white px-1 rounded">PRESENCE</div>
+          </div>
+        );
+
+      case 'monitor':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-gray-900">
+            <div className="absolute inset-0.5 bg-black border border-gray-600 rounded-sm overflow-hidden">
+              <div className="absolute inset-0 bg-black rounded-sm">
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="none">
+                  <path d="M0,25 L20,25 L25,10 L30,40 L35,25 L100,25" stroke="#00ff00" strokeWidth="1" fill="none"/>
+                </svg>
+                <div className="absolute top-0.5 right-0.5 text-[6px] text-green-400 font-bold">88</div>
+                <div className="absolute bottom-0.5 left-0.5 text-[6px] text-cyan-400 font-bold">98%</div>
+              </div>
+            </div>
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-1 bg-gray-700"></div>
+          </div>
+        );
+
+      case 'iv_stand':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-transparent">
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-700"></div>
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-3 h-0.5 bg-gray-700 rounded-full"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-gradient-to-b from-blue-200 to-blue-400 border border-blue-500 rounded-t-sm">
+              <div className="absolute top-0.5 left-0.5 right-0.5 h-0.5 bg-blue-300"></div>
+            </div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0.5 h-1 bg-gray-700"></div>
+          </div>
+        );
+
+      case 'sofa':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-purple-100 to-purple-200">
+            <div className="absolute top-0 left-0 right-0 h-[30%] bg-gradient-to-b from-purple-400 to-purple-500 border-2 border-purple-700 rounded-t-sm"></div>
+            <div className="absolute top-[30%] left-0 right-0 bottom-0 bg-gradient-to-b from-purple-200 to-purple-300 border-2 border-purple-600 rounded-b-sm">
+              <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
+                <div className="bg-purple-100 border border-purple-400 rounded-sm"></div>
+                <div className="bg-purple-100 border border-purple-400 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'tv':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-black">
+            <div className="absolute inset-0.5 bg-black border border-gray-700 rounded-sm">
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black">
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-blue-900/10 to-transparent"></div>
+              </div>
+              <div className="absolute bottom-0.5 right-0.5 text-[6px] text-gray-400">TV</div>
+            </div>
+          </div>
+        );
+
+      case 'wardrobe':
+        return (
+          <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-amber-100 to-amber-200">
+            <div className="absolute inset-0 border-2 border-amber-800 rounded-sm grid grid-cols-2 gap-px p-0.5">
+              <div className="bg-amber-50 border border-amber-600 rounded-sm relative">
+                <div className="absolute top-1/2 right-0.5 w-0.5 h-2 bg-amber-900 transform -translate-y-1/2"></div>
+              </div>
+              <div className="bg-amber-50 border border-amber-600 rounded-sm relative">
+                <div className="absolute top-1/2 left-0.5 w-0.5 h-2 bg-amber-900 transform -translate-y-1/2"></div>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const renderRoomLayout = (room: Room) => {
     // Jika kamar punya layout_id, tampilkan denah dari SavedLayout
     if (room.layout_id) {
@@ -133,96 +321,8 @@ export default function RoomMap() {
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-10">
               {room.room_number}
             </div>
-            {/* Render elemen dari layout */}
-            {layout.elements.map((element) => {
-              const elementStyle = {
-                position: 'absolute' as const,
-                left: `${element.x * scale}px`,
-                top: `${element.y * scale}px`,
-                width: `${element.width * scale}px`,
-                height: `${element.height * scale}px`,
-              };
-
-              switch (element.type) {
-                case 'bed':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-pink-200 to-pink-300 border-2 border-gray-900 rounded-lg flex items-center justify-center">
-                      <span className="text-lg">🛏️</span>
-                      {element.label && (
-                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-yellow-400 px-1 rounded text-[8px] font-bold">
-                          {element.label}
-                        </div>
-                      )}
-                    </div>
-                  );
-                case 'bathroom':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-blue-300 to-blue-400 border-2 border-gray-900 rounded-lg flex items-center justify-center">
-                      <span className="text-lg">🚿</span>
-                    </div>
-                  );
-                case 'door':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-amber-400 to-amber-500 border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">🚪</span>
-                    </div>
-                  );
-                case 'window':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-cyan-300 to-cyan-400 border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">🪟</span>
-                    </div>
-                  );
-                case 'code_blue':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-gray-900 rounded-full flex items-center justify-center animate-pulse">
-                      <span className="text-sm">🔵</span>
-                    </div>
-                  );
-                case 'presence':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-green-400 to-green-600 border-2 border-gray-900 rounded-full flex items-center justify-center">
-                      <span className="text-sm">👤</span>
-                    </div>
-                  );
-                case 'monitor':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">📺</span>
-                    </div>
-                  );
-                case 'iv_stand':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-green-300 to-green-400 border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">💉</span>
-                    </div>
-                  );
-                case 'sofa':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-purple-300 to-purple-400 border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">🛋️</span>
-                    </div>
-                  );
-                case 'tv':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-gray-800 to-black border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">📺</span>
-                    </div>
-                  );
-                case 'wardrobe':
-                  return (
-                    <div key={element.id} style={elementStyle} className="bg-gradient-to-br from-amber-300 to-amber-400 border-2 border-gray-900 rounded flex items-center justify-center">
-                      <span className="text-sm">🗄️</span>
-                    </div>
-                  );
-                case 'room':
-                  return (
-                    <div key={element.id} style={elementStyle} className="border-2 border-dashed border-gray-400 bg-gray-50 opacity-30"></div>
-                  );
-                default:
-                  return null;
-              }
-            })}
+            {/* Render elemen dari layout menggunakan fungsi yang sama dengan editor */}
+            {layout.elements.map((element) => renderElement(element, scale))}
           </div>
         );
       }
@@ -301,28 +401,72 @@ export default function RoomMap() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {floorRooms.map(room => {
-            const status = getRoomStatus(room.id);
-            const isSelected = selectedRoom === room.id;
+        {/* Layout dengan koridor di tengah */}
+        <div className="flex gap-4">
+          {/* Kamar-kamar di kiri koridor */}
+          <div className="flex-1 grid grid-cols-1 gap-4">
+            {floorRooms.filter((_, i) => i % 2 === 0).map(room => {
+              const status = getRoomStatus(room.id);
+              const isSelected = selectedRoom === room.id;
 
-            return (
-              <div
-                key={room.id}
-                className={`relative rounded-xl border-2 min-h-[200px] ${getRoomColor(status)} ${
-                  isSelected ? 'ring-2 ring-blue-500' : ''
-                }`}
-              >
-                {/* Area untuk klik select room */}
+              return (
                 <div
-                  onClick={() => setSelectedRoom(room.id)}
-                  className="cursor-pointer p-4"
+                  key={room.id}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('roomId', room.id);
+                  }}
+                  className={`relative rounded-xl border-2 min-h-[200px] ${getRoomColor(status)} ${
+                    isSelected ? 'ring-2 ring-blue-500' : ''
+                  }`}
                 >
-                  {renderRoomLayout(room)}
+                  {/* Area untuk klik select room */}
+                  <div
+                    onClick={() => setSelectedRoom(room.id)}
+                    className="cursor-pointer p-4"
+                  >
+                    {renderRoomLayout(room)}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Koridor di tengah */}
+          <div className="w-24 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center relative">
+            <div className="text-gray-500 font-bold text-sm transform -rotate-90 whitespace-nowrap">
+              KORIDOR
+            </div>
+          </div>
+
+          {/* Kamar-kamar di kanan koridor */}
+          <div className="flex-1 grid grid-cols-1 gap-4">
+            {floorRooms.filter((_, i) => i % 2 === 1).map(room => {
+              const status = getRoomStatus(room.id);
+              const isSelected = selectedRoom === room.id;
+
+              return (
+                <div
+                  key={room.id}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('roomId', room.id);
+                  }}
+                  className={`relative rounded-xl border-2 min-h-[200px] ${getRoomColor(status)} ${
+                    isSelected ? 'ring-2 ring-blue-500' : ''
+                  }`}
+                >
+                  {/* Area untuk klik select room */}
+                  <div
+                    onClick={() => setSelectedRoom(room.id)}
+                    className="cursor-pointer p-4"
+                  >
+                    {renderRoomLayout(room)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
