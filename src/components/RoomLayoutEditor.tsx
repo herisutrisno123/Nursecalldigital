@@ -159,7 +159,10 @@ export default function RoomLayoutEditor() {
     }
 
     const elementToDelete = editorLayout.elements.find(el => el.id === targetId);
-    if (!elementToDelete) return;
+    if (!elementToDelete) {
+      console.error('Element not found:', targetId);
+      return;
+    }
 
     const elementLabel = elementToDelete.type === 'bed' && elementToDelete.label 
       ? `Tempat Tidur ${elementToDelete.label}`
@@ -171,6 +174,18 @@ export default function RoomLayoutEditor() {
       ? 'Jendela'
       : elementToDelete.type === 'room'
       ? 'Kotak Kamar'
+      : elementToDelete.type === 'nurse_call'
+      ? 'Nurse Call'
+      : elementToDelete.type === 'iv_stand'
+      ? 'Tiang Infus'
+      : elementToDelete.type === 'monitor'
+      ? 'Monitor'
+      : elementToDelete.type === 'sofa'
+      ? 'Sofa'
+      : elementToDelete.type === 'tv'
+      ? 'TV'
+      : elementToDelete.type === 'wardrobe'
+      ? 'Lemari'
       : elementToDelete.type;
 
     const confirmDelete = window.confirm(
@@ -178,13 +193,12 @@ export default function RoomLayoutEditor() {
     );
 
     if (confirmDelete) {
-      setEditorLayout({
-        ...editorLayout,
-        elements: editorLayout.elements.filter(el => el.id !== targetId),
-      });
-      if (selectedElement === targetId) {
-        setSelectedElement(null);
-      }
+      console.log('Deleting element:', targetId);
+      setEditorLayout(prev => ({
+        ...prev,
+        elements: prev.elements.filter(el => el.id !== targetId),
+      }));
+      setSelectedElement(null);
     }
   };
 
@@ -588,22 +602,32 @@ export default function RoomLayoutEditor() {
     };
 
     // Delete button component for selected elements
-    const DeleteButton = () => (
-      isSelected && (
-        <button
+    const DeleteButton = () => {
+      if (!isSelected) return null;
+      
+      return (
+        <div
+          className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white transition-all hover:scale-110 cursor-pointer"
+          title="Hapus elemen"
+          style={{ 
+            zIndex: 9999,
+            pointerEvents: 'auto'
+          }}
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
+            console.log('Delete button clicked for:', element.id);
             handleDeleteElement(element.id);
           }}
-          className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white transition-all hover:scale-110 z-50"
-          title="Hapus elemen"
-          style={{ transform: 'translateZ(20px)' }}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
         >
-          <i className="fas fa-times text-xs"></i>
-        </button>
-      )
-    );
+          <i className="fas fa-times text-xs" style={{ pointerEvents: 'none' }}></i>
+        </div>
+      );
+    };
 
     switch (element.type) {
       case 'room':
