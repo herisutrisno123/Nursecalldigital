@@ -310,17 +310,16 @@ export default function RoomMap() {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
         // SOLUSI SEDERHANA: Fixed size, pasti berhasil
-        const containerWidth = 280;
-        const containerHeight = 220;
+        const containerWidth = 200;
+        const containerHeight = 180;
         
         const layoutWidth = Math.max(...layout.elements.map(e => e.x + e.width));
         const layoutHeight = Math.max(...layout.elements.map(e => e.y + e.height));
         
-        // Scale terpisah untuk X dan Y agar mengisi penuh container
+        // Scale agar denah MUAT UTUH (contain)
         const scaleX = containerWidth / layoutWidth;
         const scaleY = containerHeight / layoutHeight;
-        const baseScale = Math.min(scaleX, scaleY);
-        const scale = baseScale * 1.5; // Perbesar denah 1.5x
+        const scale = Math.min(scaleX, scaleY);
         
         return (
           <div className="relative w-full h-full min-h-[220px] bg-white border-4 border-gray-700 overflow-hidden flex items-center justify-center">
