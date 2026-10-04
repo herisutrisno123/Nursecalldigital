@@ -355,6 +355,19 @@ export default function RoomMap() {
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-20">
               {room.room_number}
             </div>
+            
+            {/* Info Ukuran - Tampilan Visual */}
+            <div className="absolute bottom-2 left-2 right-2 bg-black/80 text-white text-[10px] p-2 rounded z-30 font-mono">
+              <div className="flex justify-between">
+                <span>📦 Container: {Math.round(containerSize.width)} x {Math.round(containerSize.height)} px</span>
+                <span>🏠 Denah: {Math.round(layoutWidth)} x {Math.round(layoutHeight)} px</span>
+              </div>
+              <div className="flex justify-between mt-1">
+                <span>📏 Scale: {scale.toFixed(2)}x</span>
+                <span>📍 Offset: {Math.round(offsetX)}, {Math.round(offsetY)} px</span>
+              </div>
+            </div>
+            
             {/* Container denah yang mengisi penuh */}
             <div 
               style={{
