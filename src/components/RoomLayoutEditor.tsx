@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Types
 interface LayoutElement {
@@ -52,7 +52,7 @@ export default function RoomLayoutEditor() {
   const [roomType, setRoomType] = useState('Reguler');
   const [is3DView, setIs3DView] = useState(false);
   const [resizingElement, setResizingElement] = useState<string | null>(null);
-  const [resizeStart, setResizeStart] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const resizeStartRef = useRef<{ x: number; y: number; width: number; height: number; elementId: string } | null>(null);
 
   // Handle drag from toolbox
   const handleDragStart = (type: string) => {
@@ -181,35 +181,36 @@ export default function RoomLayoutEditor() {
     if (!element) return;
 
     setResizingElement(elementId);
-    setResizeStart({
+    resizeStartRef.current = {
       x: e.clientX,
       y: e.clientY,
       width: element.width,
       height: element.height,
-    });
+      elementId: elementId,
+    };
 
     const handleResizeMove = (moveEvent: MouseEvent) => {
-      if (!resizeStart) return;
+      if (!resizeStartRef.current) return;
 
-      const dx = moveEvent.clientX - resizeStart.x;
-      const dy = moveEvent.clientY - resizeStart.y;
+      const dx = moveEvent.clientX - resizeStartRef.current.x;
+      const dy = moveEvent.clientY - resizeStartRef.current.y;
 
-      const newWidth = Math.max(100, resizeStart.width + dx);
-      const newHeight = Math.max(100, resizeStart.height + dy);
+      const newWidth = Math.max(100, resizeStartRef.current.width + dx);
+      const newHeight = Math.max(100, resizeStartRef.current.height + dy);
 
-      setEditorLayout({
-        ...editorLayout,
-        elements: editorLayout.elements.map(el =>
-          el.id === elementId
+      setEditorLayout(prev => ({
+        ...prev,
+        elements: prev.elements.map(el =>
+          el.id === resizeStartRef.current!.elementId
             ? { ...el, width: newWidth, height: newHeight }
             : el
         ),
-      });
+      }));
     };
 
     const handleResizeEnd = () => {
       setResizingElement(null);
-      setResizeStart(null);
+      resizeStartRef.current = null;
       document.removeEventListener('mousemove', handleResizeMove);
       document.removeEventListener('mouseup', handleResizeEnd);
     };
@@ -562,11 +563,11 @@ export default function RoomLayoutEditor() {
       boxShadow: isSelected ? '0 0 0 3px rgba(37, 99, 235, 0.3)' : '0 1px 3px rgba(0,0,0,0.2)',
     };
 
-    // 3D style for bed
-    const bed3DStyle = {
+    // 3D style for elements
+    const element3DStyle = {
       ...baseStyle,
       transformStyle: 'preserve-3d' as const,
-      transform: `rotate(${element.rotation || 0}deg) rotateX(${is3DView ? '60deg' : '0deg'})`,
+      transform: `rotate(${element.rotation || 0}deg) ${is3DView ? 'perspective(800px) rotateX(45deg)' : ''}`,
       transition: 'transform 0.3s ease',
     };
 
@@ -587,7 +588,7 @@ export default function RoomLayoutEditor() {
           >
             {/* Room Label */}
             <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap">
-              Kamar ({element.width} x {element.height})
+              Kamar ({Math.round(element.width / 10)}m x {Math.round(element.height / 10)}m)
             </div>
             
             {/* Resize Handles - Corners */}
@@ -595,25 +596,46 @@ export default function RoomLayoutEditor() {
               <>
                 {/* Top-Left */}
                 <div
-                  className="absolute -top-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hover:bg-blue-600"
+                  className="absolute -top-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hover:bg-blue-600 hover:scale-125 transition-transform"
                   onMouseDown={(e) => handleResizeStart(e, element.id)}
                   style={{ zIndex: 10 }}
                 />
                 {/* Top-Right */}
                 <div
-                  className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nesw-resize hover:bg-blue-600"
+                  className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nesw-resize hover:bg-blue-600 hover:scale-125 transition-transform"
                   onMouseDown={(e) => handleResizeStart(e, element.id)}
                   style={{ zIndex: 10 }}
                 />
                 {/* Bottom-Left */}
                 <div
-                  className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nesw-resize hover:bg-blue-600"
+                  className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nesw-resize hover:bg-blue-600 hover:scale-125 transition-transform"
                   onMouseDown={(e) => handleResizeStart(e, element.id)}
                   style={{ zIndex: 10 }}
                 />
                 {/* Bottom-Right */}
                 <div
-                  className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hover:bg-blue-600"
+                  className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hover:bg-blue-600 hover:scale-125 transition-transform"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                {/* Edge Handles */}
+                <div
+                  className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-ns-resize hover:bg-blue-600 hover:scale-125 transition-transform"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                <div
+                  className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-ns-resize hover:bg-blue-600 hover:scale-125 transition-transform"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                <div
+                  className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-ew-resize hover:bg-blue-600 hover:scale-125 transition-transform"
+                  onMouseDown={(e) => handleResizeStart(e, element.id)}
+                  style={{ zIndex: 10 }}
+                />
+                <div
+                  className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full cursor-ew-resize hover:bg-blue-600 hover:scale-125 transition-transform"
                   onMouseDown={(e) => handleResizeStart(e, element.id)}
                   style={{ zIndex: 10 }}
                 />
@@ -626,72 +648,129 @@ export default function RoomLayoutEditor() {
         return (
           <div 
             key={element.id} 
-            style={is3DView ? bed3DStyle : baseStyle} 
+            style={is3DView ? element3DStyle : baseStyle} 
             className="bg-white" 
             onClick={(e) => handleElementClick(element.id, e)} 
             onMouseDown={(e) => handleElementDrag(e, element.id)}
           >
             {is3DView ? (
               <>
-                {/* 3D Bed - Top Surface */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100 border-2 border-gray-700" style={{ transform: 'translateZ(8px)' }}>
-                  {/* Headboard */}
-                  <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-gray-600 to-gray-800 border-b-2 border-gray-900"></div>
-                  {/* Pillow */}
-                  <div className="absolute top-4 left-2 right-2 h-4 bg-white border-2 border-gray-400 rounded-sm shadow-md"></div>
-                  {/* Mattress */}
-                  <div className="absolute top-9 left-2 right-2 bottom-5 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-300 rounded-sm">
-                    {/* Blanket */}
-                    <div className="absolute bottom-0 left-0 right-0 h-5 bg-gradient-to-t from-blue-50 to-white border-t-2 border-blue-200"></div>
+                {/* 3D Bed - Realistic Design */}
+                <div className="absolute inset-0" style={{ transform: 'translateZ(10px)', transformStyle: 'preserve-3d' }}>
+                  {/* Bed Frame Base */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-800 via-amber-700 to-amber-900 rounded-sm shadow-2xl" style={{ transform: 'translateZ(0px)' }}>
+                    {/* Wood texture effect */}
+                    <div className="absolute inset-0 opacity-30" style={{
+                      backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px)'
+                    }}></div>
                   </div>
-                  {/* Footboard */}
-                  <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-t from-gray-700 to-gray-600 border-t-2 border-gray-800"></div>
+                  
+                  {/* Headboard - Realistic wood */}
+                  <div className="absolute top-0 left-0 right-0 h-[15%] rounded-t-sm" style={{ transform: 'translateZ(2px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-b from-amber-900 via-amber-800 to-amber-700 border-2 border-amber-950 rounded-t-sm shadow-lg">
+                      {/* Wood grain */}
+                      <div className="absolute inset-0 opacity-20" style={{
+                        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.2) 3px, rgba(0,0,0,0.2) 6px)'
+                      }}></div>
+                      {/* Decorative panel */}
+                      <div className="absolute inset-2 border-2 border-amber-600 rounded-sm opacity-50"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Mattress - Realistic */}
+                  <div className="absolute top-[15%] left-[3%] right-[3%] bottom-[8%] rounded-sm" style={{ transform: 'translateZ(5px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 border-2 border-gray-300 rounded-sm shadow-inner">
+                      {/* Mattress texture */}
+                      <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'radial-gradient(circle at 2px 2px, gray 1px, transparent 0)',
+                        backgroundSize: '8px 8px'
+                      }}></div>
+                      {/* Mattress edge */}
+                      <div className="absolute inset-0 border-4 border-white rounded-sm opacity-50"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Pillow - Realistic */}
+                  <div className="absolute top-[17%] left-[8%] right-[8%] h-[12%] rounded-lg" style={{ transform: 'translateZ(8px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg shadow-md">
+                      {/* Pillow puffiness */}
+                      <div className="absolute inset-1 bg-gradient-to-br from-white to-gray-100 rounded-lg"></div>
+                      {/* Pillow seam */}
+                      <div className="absolute inset-0 border-t-2 border-gray-200 rounded-lg opacity-50"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Blanket/Sheet - Realistic */}
+                  <div className="absolute top-[32%] left-[3%] right-[3%] bottom-[10%] rounded-sm" style={{ transform: 'translateZ(6px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 border-2 border-blue-300 rounded-sm shadow-md">
+                      {/* Fabric texture */}
+                      <div className="absolute inset-0 opacity-20" style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.3) 5px, rgba(255,255,255,0.3) 10px)'
+                      }}></div>
+                      {/* Fold effect */}
+                      <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-blue-200 to-transparent"></div>
+                      {/* Wrinkle details */}
+                      <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'radial-gradient(ellipse at 30% 40%, rgba(0,0,0,0.2) 0%, transparent 50%)'
+                      }}></div>
+                    </div>
+                  </div>
+                  
+                  {/* Footboard - Realistic wood */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[8%] rounded-b-sm" style={{ transform: 'translateZ(2px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-amber-900 via-amber-800 to-amber-700 border-2 border-amber-950 rounded-b-sm shadow-lg">
+                      {/* Wood grain */}
+                      <div className="absolute inset-0 opacity-20" style={{
+                        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.2) 3px, rgba(0,0,0,0.2) 6px)'
+                      }}></div>
+                    </div>
+                  </div>
                 </div>
                 
                 {/* 3D Bed - Left Side */}
                 <div 
-                  className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-gray-300 to-gray-400 border-2 border-gray-700"
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-amber-900 to-amber-800 border-2 border-amber-950"
                   style={{ 
                     transform: 'rotateY(-90deg) translateZ(0px)',
                     transformOrigin: 'left center',
-                    width: '8px'
+                    width: '10px'
                   }}
                 ></div>
                 
                 {/* 3D Bed - Right Side */}
                 <div 
-                  className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-gray-300 to-gray-400 border-2 border-gray-700"
+                  className="absolute top-0 right-0 h-full bg-gradient-to-l from-amber-900 to-amber-800 border-2 border-amber-950"
                   style={{ 
                     transform: 'rotateY(90deg) translateZ(0px)',
                     transformOrigin: 'right center',
-                    width: '8px'
+                    width: '10px'
                   }}
                 ></div>
                 
                 {/* 3D Bed - Front Side */}
                 <div 
-                  className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-gray-400 to-gray-300 border-2 border-gray-700"
+                  className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-amber-900 to-amber-800 border-2 border-amber-950"
                   style={{ 
                     transform: 'rotateX(-90deg) translateZ(0px)',
                     transformOrigin: 'bottom center',
-                    height: '8px'
+                    height: '10px'
                   }}
                 ></div>
                 
                 {/* 3D Bed - Back Side */}
                 <div 
-                  className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-gray-400 to-gray-300 border-2 border-gray-700"
+                  className="absolute top-0 left-0 w-full bg-gradient-to-b from-amber-900 to-amber-800 border-2 border-amber-950"
                   style={{ 
                     transform: 'rotateX(90deg) translateZ(0px)',
                     transformOrigin: 'top center',
-                    height: '8px'
+                    height: '10px'
                   }}
                 ></div>
 
                 {/* Shadow */}
                 <div 
-                  className="absolute inset-0 bg-black opacity-20 blur-sm"
-                  style={{ transform: 'translateZ(-1px) translateY(4px)' }}
+                  className="absolute inset-0 bg-black opacity-30 blur-md"
+                  style={{ transform: 'translateZ(-2px) translateY(6px)' }}
                 ></div>
               </>
             ) : (
@@ -723,54 +802,187 @@ export default function RoomLayoutEditor() {
         );
       case 'bathroom':
         return (
-          <div key={element.id} style={baseStyle} className="bg-blue-50" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            {/* Bathroom Interior */}
-            <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-blue-50 to-blue-100">
-              {/* Toilet */}
-              <div className="absolute top-2 left-2 w-4 h-5 bg-white border-2 border-gray-600 rounded-full">
-                <div className="absolute top-0.5 left-0.5 right-0.5 h-1.5 bg-blue-200 rounded-full"></div>
-              </div>
-              {/* Sink */}
-              <div className="absolute top-2 right-2 w-3 h-3 bg-white border-2 border-gray-600 rounded-sm">
-                <div className="absolute top-0.5 left-0.5 right-0.5 h-0.5 bg-blue-300 rounded-sm"></div>
-              </div>
-              {/* Shower */}
-              <div className="absolute bottom-2 left-2 right-2 h-4 bg-blue-200 border border-blue-400 rounded-sm flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              </div>
-              {/* Label */}
-              <div className="absolute bottom-1 right-1 text-[7px] font-bold text-blue-700">KM</div>
-            </div>
+          <div key={element.id} style={is3DView ? element3DStyle : baseStyle} className="bg-blue-50" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {is3DView ? (
+              <>
+                {/* 3D Bathroom - Realistic */}
+                <div className="absolute inset-0" style={{ transform: 'translateZ(5px)', transformStyle: 'preserve-3d' }}>
+                  {/* Floor tiles */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-gray-600 rounded-sm">
+                    <div className="absolute inset-0 opacity-30" style={{
+                      backgroundImage: 'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)',
+                      backgroundSize: '10px 10px',
+                      backgroundPosition: '0 0, 0 5px, 5px -5px, -5px 0px'
+                    }}></div>
+                  </div>
+                  
+                  {/* Toilet - Realistic 3D */}
+                  <div className="absolute top-[10%] left-[10%] w-[30%] h-[40%]" style={{ transform: 'translateZ(8px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100 border-2 border-gray-400 rounded-t-full shadow-lg">
+                      {/* Toilet bowl */}
+                      <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-b from-white to-gray-50 border-t-2 border-gray-300 rounded-b-lg">
+                        {/* Water */}
+                        <div className="absolute top-2 left-2 right-2 h-3 bg-gradient-to-br from-blue-200 to-blue-300 rounded-full opacity-60"></div>
+                      </div>
+                      {/* Tank */}
+                      <div className="absolute top-0 left-[20%] right-[20%] h-[40%] bg-gradient-to-b from-white to-gray-100 border-2 border-gray-400 rounded-t-lg"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Sink - Realistic 3D */}
+                  <div className="absolute top-[10%] right-[10%] w-[35%] h-[30%]" style={{ transform: 'translateZ(6px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100 border-2 border-gray-400 rounded-lg shadow-md">
+                      {/* Basin */}
+                      <div className="absolute inset-2 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-gray-300 rounded-lg">
+                        {/* Drain */}
+                        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-600 rounded-full"></div>
+                      </div>
+                      {/* Faucet */}
+                      <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-gradient-to-b from-gray-400 to-gray-600 rounded-t-full"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Shower area - Realistic 3D */}
+                  <div className="absolute bottom-[10%] left-[10%] right-[10%] h-[35%]" style={{ transform: 'translateZ(4px)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-400 rounded-lg shadow-md">
+                      {/* Shower head */}
+                      <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-gradient-to-br from-gray-300 to-gray-500 border border-gray-600 rounded-full"></div>
+                      {/* Water drops effect */}
+                      <div className="absolute inset-0 opacity-30" style={{
+                        backgroundImage: 'radial-gradient(circle at 50% 30%, rgba(100,150,255,0.5) 0%, transparent 50%)'
+                      }}></div>
+                    </div>
+                  </div>
+                  
+                  {/* Label */}
+                  <div className="absolute bottom-1 right-1 text-[8px] font-bold text-blue-700 bg-white px-1 rounded border border-blue-300" style={{ transform: 'translateZ(10px)' }}>KM</div>
+                </div>
+                
+                {/* 3D Sides */}
+                <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-gray-300 to-gray-400 border-2 border-gray-600" style={{ transform: 'rotateY(-90deg)', transformOrigin: 'left center', width: '5px' }}></div>
+                <div className="absolute top-0 right-0 h-full bg-gradient-to-l from-gray-300 to-gray-400 border-2 border-gray-600" style={{ transform: 'rotateY(90deg)', transformOrigin: 'right center', width: '5px' }}></div>
+                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-gray-400 to-gray-300 border-2 border-gray-600" style={{ transform: 'rotateX(-90deg)', transformOrigin: 'bottom center', height: '5px' }}></div>
+                
+                {/* Shadow */}
+                <div className="absolute inset-0 bg-black opacity-20 blur-md" style={{ transform: 'translateZ(-2px) translateY(4px)' }}></div>
+              </>
+            ) : (
+              <>
+                {/* 2D Bathroom */}
+                <div className="absolute inset-0 border-2 border-gray-700 bg-gradient-to-br from-blue-50 to-blue-100">
+                  <div className="absolute top-2 left-2 w-4 h-5 bg-white border-2 border-gray-600 rounded-full">
+                    <div className="absolute top-0.5 left-0.5 right-0.5 h-1.5 bg-blue-200 rounded-full"></div>
+                  </div>
+                  <div className="absolute top-2 right-2 w-3 h-3 bg-white border-2 border-gray-600 rounded-sm">
+                    <div className="absolute top-0.5 left-0.5 right-0.5 h-0.5 bg-blue-300 rounded-sm"></div>
+                  </div>
+                  <div className="absolute bottom-2 left-2 right-2 h-4 bg-blue-200 border border-blue-400 rounded-sm flex items-center justify-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  </div>
+                  <div className="absolute bottom-1 right-1 text-[7px] font-bold text-blue-700">KM</div>
+                </div>
+              </>
+            )}
           </div>
         );
       case 'door':
         return (
-          <div key={element.id} style={{...baseStyle, border: 'none'}} onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            {/* Door Frame */}
-            <div className="absolute inset-0 border-2 border-gray-800 bg-amber-50">
-              {/* Door Panel */}
-              <div className="absolute inset-0.5 bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-700">
-                {/* Door Handle */}
-                <div className="absolute top-1/2 right-1 w-1 h-1 bg-gray-800 rounded-full transform -translate-y-1/2"></div>
-              </div>
-            </div>
-            {/* Door Swing Arc */}
-            <div className="absolute -top-12 left-0 w-12 h-12 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-40 pointer-events-none"></div>
+          <div key={element.id} style={is3DView ? { ...element3DStyle, border: 'none' } : { ...baseStyle, border: 'none' }} onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {is3DView ? (
+              <>
+                {/* 3D Door - Realistic */}
+                <div className="absolute inset-0" style={{ transform: 'translateZ(8px)', transformStyle: 'preserve-3d' }}>
+                  {/* Door Frame */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-900 to-amber-800 border-2 border-amber-950 rounded-sm shadow-xl">
+                    {/* Door Panel */}
+                    <div className="absolute inset-1 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 border-2 border-amber-800 rounded-sm">
+                      {/* Wood grain texture */}
+                      <div className="absolute inset-0 opacity-30" style={{
+                        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,0.2) 4px, rgba(0,0,0,0.2) 8px)'
+                      }}></div>
+                      {/* Upper panel */}
+                      <div className="absolute top-2 left-2 right-2 h-[40%] border-2 border-amber-700 rounded-sm bg-gradient-to-br from-amber-500 to-amber-600 opacity-80"></div>
+                      {/* Lower panel */}
+                      <div className="absolute bottom-2 left-2 right-2 h-[40%] border-2 border-amber-700 rounded-sm bg-gradient-to-br from-amber-500 to-amber-600 opacity-80"></div>
+                      {/* Door Handle - Realistic */}
+                      <div className="absolute top-1/2 right-2 transform -translate-y-1/2" style={{ transform: 'translateZ(3px)' }}>
+                        <div className="w-2 h-4 bg-gradient-to-br from-gray-300 to-gray-600 border border-gray-700 rounded-full shadow-lg"></div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-gray-800 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* 3D Door Side */}
+                <div className="absolute top-0 right-0 h-full bg-gradient-to-l from-amber-900 to-amber-800 border-2 border-amber-950" style={{ transform: 'rotateY(90deg)', transformOrigin: 'right center', width: '8px' }}></div>
+                
+                {/* Door Swing Arc */}
+                <div className="absolute -top-16 left-0 w-16 h-16 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-40 pointer-events-none" style={{ transform: 'translateZ(1px)' }}></div>
+                
+                {/* Shadow */}
+                <div className="absolute inset-0 bg-black opacity-20 blur-md" style={{ transform: 'translateZ(-2px) translateY(4px)' }}></div>
+              </>
+            ) : (
+              <>
+                {/* 2D Door */}
+                <div className="absolute inset-0 border-2 border-gray-800 bg-amber-50">
+                  <div className="absolute inset-0.5 bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-700">
+                    <div className="absolute top-1/2 right-1 w-1 h-1 bg-gray-800 rounded-full transform -translate-y-1/2"></div>
+                  </div>
+                </div>
+                <div className="absolute -top-12 left-0 w-12 h-12 border-l-2 border-t-2 border-gray-600 rounded-tl-full opacity-40 pointer-events-none"></div>
+              </>
+            )}
           </div>
         );
       case 'window':
         return (
-          <div key={element.id} style={baseStyle} className="bg-gradient-to-br from-blue-100 to-blue-200" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
-            {/* Window Frame */}
-            <div className="absolute inset-0 border-2 border-gray-700">
-              {/* Glass Panes */}
-              <div className="absolute inset-0.5 grid grid-cols-2 gap-0.5">
-                <div className="bg-blue-200 border border-blue-400"></div>
-                <div className="bg-blue-200 border border-blue-400"></div>
-              </div>
-              {/* Window Sill */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600"></div>
-            </div>
+          <div key={element.id} style={is3DView ? element3DStyle : baseStyle} className="bg-gradient-to-br from-blue-100 to-blue-200" onClick={(e) => handleElementClick(element.id, e)} onMouseDown={(e) => handleElementDrag(e, element.id)}>
+            {is3DView ? (
+              <>
+                {/* 3D Window - Realistic */}
+                <div className="absolute inset-0" style={{ transform: 'translateZ(6px)', transformStyle: 'preserve-3d' }}>
+                  {/* Window Frame */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-800 border-2 border-gray-900 rounded-sm shadow-xl">
+                    {/* Glass Panes - Realistic */}
+                    <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
+                      <div className="bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 border border-gray-500 relative overflow-hidden">
+                        {/* Glass reflection */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white to-transparent opacity-30"></div>
+                        <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-white to-transparent opacity-20"></div>
+                      </div>
+                      <div className="bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 border border-gray-500 relative overflow-hidden">
+                        {/* Glass reflection */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white to-transparent opacity-30"></div>
+                        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white to-transparent opacity-20"></div>
+                      </div>
+                    </div>
+                    {/* Window divider */}
+                    <div className="absolute top-1 bottom-1 left-1/2 transform -translate-x-1/2 w-1 bg-gray-700"></div>
+                    {/* Window sill */}
+                    <div className="absolute -bottom-1 left-0 right-0 h-2 bg-gradient-to-b from-gray-600 to-gray-800 border-2 border-gray-900 rounded-b-sm shadow-lg"></div>
+                  </div>
+                </div>
+                
+                {/* 3D Window Side */}
+                <div className="absolute top-0 right-0 h-full bg-gradient-to-l from-gray-700 to-gray-800 border-2 border-gray-900" style={{ transform: 'rotateY(90deg)', transformOrigin: 'right center', width: '6px' }}></div>
+                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-gray-700 to-gray-800 border-2 border-gray-900" style={{ transform: 'rotateX(-90deg)', transformOrigin: 'bottom center', height: '6px' }}></div>
+                
+                {/* Shadow */}
+                <div className="absolute inset-0 bg-black opacity-20 blur-md" style={{ transform: 'translateZ(-2px) translateY(3px)' }}></div>
+              </>
+            ) : (
+              <>
+                {/* 2D Window */}
+                <div className="absolute inset-0 border-2 border-gray-700">
+                  <div className="absolute inset-0.5 grid grid-cols-2 gap-0.5">
+                    <div className="bg-blue-200 border border-blue-400"></div>
+                    <div className="bg-blue-200 border border-blue-400"></div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600"></div>
+                </div>
+              </>
+            )}
           </div>
         );
       case 'nurse_call':
