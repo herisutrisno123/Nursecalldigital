@@ -150,25 +150,41 @@ export default function RoomLayoutEditor() {
   };
 
   // Handle element deletion
-  const handleDeleteElement = () => {
-    if (!selectedElement) {
+  const handleDeleteElement = (elementId?: string) => {
+    const targetId = elementId || selectedElement;
+    
+    if (!targetId) {
       alert('Silakan pilih elemen yang ingin dihapus terlebih dahulu');
       return;
     }
 
-    const elementToDelete = editorLayout.elements.find(el => el.id === selectedElement);
+    const elementToDelete = editorLayout.elements.find(el => el.id === targetId);
     if (!elementToDelete) return;
 
+    const elementLabel = elementToDelete.type === 'bed' && elementToDelete.label 
+      ? `Tempat Tidur ${elementToDelete.label}`
+      : elementToDelete.type === 'bathroom' 
+      ? 'Kamar Mandi'
+      : elementToDelete.type === 'door'
+      ? 'Pintu'
+      : elementToDelete.type === 'window'
+      ? 'Jendela'
+      : elementToDelete.type === 'room'
+      ? 'Kotak Kamar'
+      : elementToDelete.type;
+
     const confirmDelete = window.confirm(
-      `Apakah Anda yakin ingin menghapus ${elementToDelete.type} ini?`
+      `Apakah Anda yakin ingin menghapus ${elementLabel} ini?`
     );
 
     if (confirmDelete) {
       setEditorLayout({
         ...editorLayout,
-        elements: editorLayout.elements.filter(el => el.id !== selectedElement),
+        elements: editorLayout.elements.filter(el => el.id !== targetId),
       });
-      setSelectedElement(null);
+      if (selectedElement === targetId) {
+        setSelectedElement(null);
+      }
     }
   };
 
@@ -571,6 +587,24 @@ export default function RoomLayoutEditor() {
       transition: 'transform 0.3s ease',
     };
 
+    // Delete button component for selected elements
+    const DeleteButton = () => (
+      isSelected && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            handleDeleteElement(element.id);
+          }}
+          className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white transition-all hover:scale-110 z-50"
+          title="Hapus elemen"
+          style={{ transform: 'translateZ(20px)' }}
+        >
+          <i className="fas fa-times text-xs"></i>
+        </button>
+      )
+    );
+
     switch (element.type) {
       case 'room':
         return (
@@ -826,6 +860,9 @@ export default function RoomLayoutEditor() {
                 {element.label}
               </div>
             )}
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'bathroom':
@@ -911,6 +948,9 @@ export default function RoomLayoutEditor() {
                 </div>
               </>
             )}
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'door':
@@ -961,6 +1001,9 @@ export default function RoomLayoutEditor() {
                 </div>
               </>
             )}
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'window':
@@ -1011,6 +1054,9 @@ export default function RoomLayoutEditor() {
                 </div>
               </>
             )}
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'nurse_call':
@@ -1022,6 +1068,9 @@ export default function RoomLayoutEditor() {
             </div>
             {/* Label */}
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-[7px] font-bold text-red-700 whitespace-nowrap">CALL</div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'iv_stand':
@@ -1035,6 +1084,9 @@ export default function RoomLayoutEditor() {
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-blue-300 border border-blue-500 rounded-t-sm"></div>
             {/* Hook */}
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0.5 h-1 bg-gray-700"></div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'monitor':
@@ -1055,6 +1107,9 @@ export default function RoomLayoutEditor() {
             </div>
             {/* Monitor Stand */}
             <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-1 bg-gray-700"></div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'sofa':
@@ -1070,6 +1125,9 @@ export default function RoomLayoutEditor() {
                 <div className="bg-purple-100 border border-purple-300 rounded-sm"></div>
               </div>
             </div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'tv':
@@ -1082,6 +1140,9 @@ export default function RoomLayoutEditor() {
               {/* TV Label */}
               <div className="absolute bottom-0.5 right-0.5 text-[6px] text-gray-400">TV</div>
             </div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       case 'wardrobe':
@@ -1096,6 +1157,9 @@ export default function RoomLayoutEditor() {
                 <div className="absolute top-1/2 left-0.5 w-0.5 h-2 bg-amber-800 transform -translate-y-1/2"></div>
               </div>
             </div>
+            
+            {/* Delete Button */}
+            <DeleteButton />
           </div>
         );
       default:
@@ -1175,7 +1239,7 @@ export default function RoomLayoutEditor() {
                     <span className="ml-2 text-xs opacity-60">(R)</span>
                   </button>
                   <button
-                    onClick={handleDeleteElement}
+                    onClick={() => handleDeleteElement()}
                     className="w-full px-3 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
                     title="Shortcut: Delete"
                   >
