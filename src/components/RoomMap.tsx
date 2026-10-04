@@ -307,22 +307,29 @@ export default function RoomMap() {
     if (room.layout_id) {
       const layout = savedLayouts.find(l => l.id === room.layout_id);
       if (layout) {
-        // Hitung scale untuk menyesuaikan denah dengan ukuran kamar
-        const previewWidth = 200;
-        const previewHeight = 180;
+        // Hitung scale untuk menyesuaikan denah dengan ukuran kartu kamar
+        // Gunakan ukuran yang lebih besar agar denah mengisi seluruh area
+        const containerWidth = 280;
+        const containerHeight = 200;
+        const padding = 10;
+        
         const maxX = Math.max(...layout.elements.map(e => e.x + e.width));
         const maxY = Math.max(...layout.elements.map(e => e.y + e.height));
-        const scaleX = (previewWidth - 20) / maxX;
-        const scaleY = (previewHeight - 20) / maxY;
-        const scale = Math.min(scaleX, scaleY, 0.5);
+        
+        const scaleX = (containerWidth - padding * 2) / maxX;
+        const scaleY = (containerHeight - padding * 2) / maxY;
+        const scale = Math.min(scaleX, scaleY);
 
         return (
-          <div className="relative w-full h-full min-h-[180px] bg-white border-4 border-gray-700 overflow-hidden">
+          <div className="relative w-full h-full min-h-[200px] bg-white border-4 border-gray-700 overflow-hidden">
             <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold border-2 border-gray-700 z-10">
               {room.room_number}
             </div>
-            {/* Render elemen dari layout menggunakan fungsi yang sama dengan editor */}
-            {layout.elements.map((element) => renderElement(element, scale))}
+            {/* Container untuk denah dengan padding */}
+            <div className="absolute inset-0 flex items-center justify-center" style={{ padding: `${padding}px` }}>
+              {/* Render elemen dari layout menggunakan fungsi yang sama dengan editor */}
+              {layout.elements.map((element) => renderElement(element, scale))}
+            </div>
           </div>
         );
       }
