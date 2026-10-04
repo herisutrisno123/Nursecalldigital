@@ -212,33 +212,28 @@ export default function RoomMap() {
               return (
                 <div
                   key={room.id}
-                  className={`relative rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  onClick={() => setSelectedRoom(room.id)}
+                  className={`relative rounded-xl border-2 transition-all min-h-[180px] cursor-pointer ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
-                  <button
-                    onClick={() => setSelectedRoom(room.id)}
-                    className="w-full h-full"
-                  >
-                    <div className="absolute top-2 right-2 z-10">
-                      <i className={`fas ${getRoomIcon(status)}`}></i>
-                    </div>
-                    
-                    {renderRoomLayout(room)}
-                    
-                    {status === 'active-call' && (
-                      <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
-                        <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
-                          <span className="w-2 h-2 bg-white rounded-full"></span>
-                          PANGGILAN AKTIF
-                        </div>
+                  <div className="absolute top-2 right-2 z-10">
+                    <i className={`fas ${getRoomIcon(status)}`}></i>
+                  </div>
+                  
+                  {renderRoomLayout(room)}
+                  
+                  {status === 'active-call' && (
+                    <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                      <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
+                        <span className="w-2 h-2 bg-white rounded-full"></span>
+                        PANGGILAN AKTIF
                       </div>
-                    )}
-                  </button>
+                    </div>
+                  )}
                   
                   {/* Tombol Hapus di Kartu Kamar */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
                       if (window.confirm(`Hapus Kamar ${room.room_number}?`)) {
                         setRoomList(prev => prev.filter(r => r.id !== room.id));
                         if (selectedRoom === room.id) {
@@ -246,9 +241,8 @@ export default function RoomMap() {
                         }
                       }
                     }}
-                    className="absolute bottom-2 right-2 z-50 w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-125 border-4 border-white cursor-pointer"
+                    className="absolute bottom-2 right-2 z-50 w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-125 border-4 border-white"
                     title="Hapus Kamar"
-                    style={{ pointerEvents: 'auto' }}
                   >
                     <i className="fas fa-trash text-sm"></i>
                   </button>
@@ -267,33 +261,28 @@ export default function RoomMap() {
               return (
                 <div
                   key={room.id}
-                  className={`relative rounded-xl border-2 transition-all min-h-[180px] ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+                  onClick={() => setSelectedRoom(room.id)}
+                  className={`relative rounded-xl border-2 transition-all min-h-[180px] cursor-pointer ${getRoomColor(status)} ${selectedRoom === room.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
                 >
-                  <button
-                    onClick={() => setSelectedRoom(room.id)}
-                    className="w-full h-full"
-                  >
-                    <div className="absolute top-2 right-2 z-10">
-                      <i className={`fas ${getRoomIcon(status)}`}></i>
-                    </div>
-                    
-                    {renderRoomLayout(room)}
-                    
-                    {status === 'active-call' && (
-                      <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
-                        <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
-                          <span className="w-2 h-2 bg-white rounded-full"></span>
-                          PANGGILAN AKTIF
-                        </div>
+                  <div className="absolute top-2 right-2 z-10">
+                    <i className={`fas ${getRoomIcon(status)}`}></i>
+                  </div>
+                  
+                  {renderRoomLayout(room)}
+                  
+                  {status === 'active-call' && (
+                    <div className="absolute inset-0 bg-red-500/10 rounded-xl flex items-center justify-center">
+                      <div className="bg-red-600 text-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse flex items-center gap-1">
+                        <span className="w-2 h-2 bg-white rounded-full"></span>
+                        PANGGILAN AKTIF
                       </div>
-                    )}
-                  </button>
+                    </div>
+                  )}
                   
                   {/* Tombol Hapus di Kartu Kamar */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
                       if (window.confirm(`Hapus Kamar ${room.room_number}?`)) {
                         setRoomList(prev => prev.filter(r => r.id !== room.id));
                         if (selectedRoom === room.id) {
@@ -301,9 +290,8 @@ export default function RoomMap() {
                         }
                       }
                     }}
-                    className="absolute bottom-2 right-2 z-50 w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-125 border-4 border-white cursor-pointer"
+                    className="absolute bottom-2 right-2 z-50 w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-125 border-4 border-white"
                     title="Hapus Kamar"
-                    style={{ pointerEvents: 'auto' }}
                   >
                     <i className="fas fa-trash text-sm"></i>
                   </button>
