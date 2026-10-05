@@ -588,10 +588,8 @@ export default function RoomMap() {
               onChange={(e) => {
                 const bangsalId = Number(e.target.value);
                 setSelectedBangsalId(bangsalId);
-                // Load kamar dari bangsal yang dipilih
                 const bangsal = daftarBangsal.find(b => b.id === bangsalId);
                 if (bangsal) {
-                  // Generate kamar berdasarkan template
                   const templateKamarCount = {
                     'vvip': 1,
                     'vip': 2,
@@ -621,6 +619,36 @@ export default function RoomMap() {
             </select>
           </div>
 
+          {/* Tombol Tambah Kamar dan Simpan - SELALU DITAMPILKAN */}
+          <div className="flex gap-2 mb-6">
+            <button
+              type="button"
+              onClick={handleTambahKamar}
+              disabled={!selectedBangsalId}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                selectedBangsalId 
+                  ? 'bg-green-600 text-white hover:bg-green-700 cursor-pointer' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <i className="fas fa-plus mr-2"></i>
+              Tambah Kamar
+            </button>
+            <button
+              type="button"
+              onClick={handleSimpanBangsal}
+              disabled={!selectedBangsalId}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                selectedBangsalId 
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <i className="fas fa-save mr-2"></i>
+              Simpan
+            </button>
+          </div>
+
           {/* Tampilan Template Bangsal */}
           {selectedBangsalId && (() => {
             const selectedBangsal = daftarBangsal.find(b => b.id === selectedBangsalId);
@@ -639,14 +667,14 @@ export default function RoomMap() {
             if (!config) return null;
 
             return (
-              <div className="border-2 border-gray-300 rounded-lg p-6 mb-6">
+              <div className="border-2 border-gray-300 rounded-lg p-6">
                 <h4 className="font-semibold text-gray-800 mb-4">
                   Template: {selectedBangsal.nama}
                 </h4>
                 <div className="flex gap-2 h-64">
                   {/* Kamar Kiri */}
                   <div className="flex-1 grid gap-2" style={{ gridTemplateRows: `repeat(${config.left}, 1fr)` }}>
-                    {kamarList.slice(0, config.left).map((kamar, idx) => (
+                    {kamarList.slice(0, config.left).map((kamar) => (
                       <div 
                         key={kamar.id}
                         className="bg-blue-100 border-2 border-blue-400 rounded p-2 flex flex-col justify-center cursor-pointer hover:bg-blue-200 transition"
@@ -670,7 +698,7 @@ export default function RoomMap() {
                   </div>
                   {/* Kamar Kanan */}
                   <div className="flex-1 grid gap-2" style={{ gridTemplateRows: `repeat(${config.right}, 1fr)` }}>
-                    {kamarList.slice(config.left, config.left + config.right).map((kamar, idx) => (
+                    {kamarList.slice(config.left, config.left + config.right).map((kamar) => (
                       <div 
                         key={kamar.id}
                         className="bg-blue-100 border-2 border-blue-400 rounded p-2 flex flex-col justify-center cursor-pointer hover:bg-blue-200 transition"
@@ -692,30 +720,6 @@ export default function RoomMap() {
               </div>
             );
           })()}
-
-          {/* Tombol Tambah Kamar dan Simpan */}
-          {selectedBangsalId && (
-            <div className="flex gap-2 mt-4">
-              <button
-                type="button"
-                onClick={handleTambahKamar}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition cursor-pointer"
-                style={{ pointerEvents: 'auto' }}
-              >
-                <i className="fas fa-plus mr-2"></i>
-                Tambah Kamar
-              </button>
-              <button
-                type="button"
-                onClick={handleSimpanBangsal}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition cursor-pointer"
-                style={{ pointerEvents: 'auto' }}
-              >
-                <i className="fas fa-save mr-2"></i>
-                Simpan
-              </button>
-            </div>
-          )}
 
           {!selectedBangsalId && (
             <div className="text-center py-12 text-gray-500">
