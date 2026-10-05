@@ -671,39 +671,43 @@ export default function RoomMap() {
                     ))}
                   </div>
                 </div>
-                
-                {/* Tombol Tambah Kamar */}
-                <div className="mt-4 flex gap-2">
-                  <button
-                    onClick={() => {
-                      const newKamar = {
-                        id: Date.now(),
-                        nomor: String(kamarList.length + 1),
-                        tipe: 'Reguler',
-                        status: 'Tersedia'
-                      };
-                      setKamarList([...kamarList, newKamar]);
-                    }}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
-                  >
-                    <i className="fas fa-plus mr-2"></i>
-                    Tambah Kamar
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm('Simpan perubahan bangsal ini?')) {
-                        alert('Bangsal berhasil disimpan!');
-                      }
-                    }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
-                  >
-                    <i className="fas fa-save mr-2"></i>
-                    Simpan
-                  </button>
-                </div>
               </div>
             );
           })()}
+
+          {/* Tombol Tambah Kamar dan Simpan - Dipindahkan keluar dari IIFE */}
+          {selectedBangsalId && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const newKamar = {
+                    id: Date.now(),
+                    nomor: String(kamarList.length + 1),
+                    tipe: 'Reguler',
+                    status: 'Tersedia'
+                  };
+                  setKamarList([...kamarList, newKamar]);
+                }}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
+              >
+                <i className="fas fa-plus mr-2"></i>
+                Tambah Kamar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Simpan perubahan bangsal ini?')) {
+                    alert('Bangsal berhasil disimpan!');
+                  }
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+              >
+                <i className="fas fa-save mr-2"></i>
+                Simpan
+              </button>
+            </div>
+          )}
 
           {!selectedBangsalId && (
             <div className="text-center py-12 text-gray-500">
