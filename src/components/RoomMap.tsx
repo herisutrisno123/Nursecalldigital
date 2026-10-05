@@ -82,6 +82,104 @@ export default function RoomMap() {
     }
   };
 
+  // Fungsi untuk render denah kamar secara visual
+  const renderDenahKamar = (layout: any, containerWidth: number, containerHeight: number) => {
+    if (!layout || !layout.elements) return null;
+
+    // Hitung ukuran asli denah
+    const layoutWidth = Math.max(...layout.elements.map((e: any) => e.x + e.width));
+    const layoutHeight = Math.max(...layout.elements.map((e: any) => e.y + e.height));
+
+    // Hitung scale agar denah muat di container
+    const scaleX = containerWidth / layoutWidth;
+    const scaleY = containerHeight / layoutHeight;
+    const scale = Math.min(scaleX, scaleY);
+
+    // Render setiap elemen
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div
+          style={{
+            width: `${layoutWidth}px`,
+            height: `${layoutHeight}px`,
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
+            position: 'relative'
+          }}
+        >
+          {layout.elements.map((element: any) => {
+            const elementStyle = {
+              position: 'absolute' as const,
+              left: `${element.x}px`,
+              top: `${element.y}px`,
+              width: `${element.width}px`,
+              height: `${element.height}px`,
+              transform: `rotate(${element.rotation || 0}deg)`,
+            };
+
+            switch (element.type) {
+              case 'bed':
+                return (
+                  <div key={element.id} style={elementStyle} className="bg-white border-2 border-gray-700">
+                    <div className="absolute inset-0 border-2 border-gray-600 bg-gradient-to-br from-gray-100 to-white">
+                      <div className="absolute top-0 left-0 right-0 h-2 bg-gray-500"></div>
+                      <div className="absolute top-2 left-1 right-1 bottom-2 bg-blue-50 border border-blue-200 rounded-sm">
+                        <div className="absolute top-1 left-1 right-1 h-2 bg-white border border-gray-300 rounded-sm"></div>
+                        <div className="absolute top-4 left-0 right-0 bottom-0 bg-blue-100 border-t border-blue-300"></div>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-500"></div>
+                    </div>
+                    {element.label && (
+                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white px-1 rounded text-[8px] font-bold border">
+                        {element.label}
+                      </div>
+                    )}
+                  </div>
+                );
+              case 'bathroom':
+                return (
+                  <div key={element.id} style={elementStyle} className="bg-blue-50 border-2 border-gray-700">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100">
+                      <div className="absolute top-1 left-1 w-3 h-4 bg-white border border-gray-600 rounded-full"></div>
+                      <div className="absolute top-1 right-1 w-2 h-2 bg-white border border-gray-600 rounded-sm"></div>
+                      <div className="absolute bottom-1 left-1 right-1 h-3 bg-blue-200 border border-blue-400 rounded-sm"></div>
+                      <div className="absolute bottom-0.5 right-0.5 text-[6px] font-bold text-blue-700">KM</div>
+                    </div>
+                  </div>
+                );
+              case 'door':
+                return (
+                  <div key={element.id} style={elementStyle} className="bg-amber-100 border-2 border-gray-700">
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100">
+                      <div className="absolute top-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm bg-amber-300 opacity-60"></div>
+                      <div className="absolute bottom-1 left-1 right-1 h-[35%] border border-amber-600 rounded-sm bg-amber-300 opacity-60"></div>
+                    </div>
+                  </div>
+                );
+              case 'window':
+                return (
+                  <div key={element.id} style={elementStyle} className="bg-blue-200 border-2 border-gray-700">
+                    <div className="absolute inset-0 grid grid-cols-2 gap-0.5">
+                      <div className="bg-blue-100 border border-blue-400"></div>
+                      <div className="bg-blue-100 border border-blue-400"></div>
+                    </div>
+                  </div>
+                );
+              case 'room':
+                return (
+                  <div key={element.id} style={elementStyle} className="border-2 border-dashed border-gray-400 bg-gray-50 opacity-30"></div>
+                );
+              default:
+                return (
+                  <div key={element.id} style={elementStyle} className="bg-gray-200 border border-gray-400"></div>
+                );
+            }
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Tab Menu */}
@@ -778,15 +876,12 @@ export default function RoomMap() {
                         >
                           {layout ? (
                             <>
-                              {/* Tampilkan denah */}
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-[10px] text-gray-500">
-                                  <i className="fas fa-drafting-compass"></i> Denah: {layout.name}
-                                </div>
-                              </div>
-                              <div className="relative z-10 bg-white bg-opacity-80 px-1 py-0.5 rounded">
-                                <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
-                                <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                              {/* Tampilkan denah secara visual */}
+                              {renderDenahKamar(layout, 200, 150)}
+                              {/* Label kamar di pojok */}
+                              <div className="absolute top-1 left-1 bg-white bg-opacity-90 px-1 py-0.5 rounded z-20">
+                                <div className="text-[10px] font-semibold">Kamar {kamar.nomor}</div>
+                                <div className="text-[8px] text-gray-600">{kamar.tipe}</div>
                               </div>
                             </>
                           ) : (
@@ -823,15 +918,12 @@ export default function RoomMap() {
                         >
                           {layout ? (
                             <>
-                              {/* Tampilkan denah */}
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-[10px] text-gray-500">
-                                  <i className="fas fa-drafting-compass"></i> Denah: {layout.name}
-                                </div>
-                              </div>
-                              <div className="relative z-10 bg-white bg-opacity-80 px-1 py-0.5 rounded">
-                                <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
-                                <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                              {/* Tampilkan denah secara visual */}
+                              {renderDenahKamar(layout, 200, 150)}
+                              {/* Label kamar di pojok */}
+                              <div className="absolute top-1 left-1 bg-white bg-opacity-90 px-1 py-0.5 rounded z-20">
+                                <div className="text-[10px] font-semibold">Kamar {kamar.nomor}</div>
+                                <div className="text-[8px] text-gray-600">{kamar.tipe}</div>
                               </div>
                             </>
                           ) : (
