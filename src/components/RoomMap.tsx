@@ -30,17 +30,49 @@ export default function RoomMap() {
     nomor: string;
     tipe: string;
     status: string;
+    layoutId?: string; // ID denah yang dipilih
+  }>>([]);
+  const [showPilihDenahModal, setShowPilihDenahModal] = useState(false);
+  const [daftarDenah, setDaftarDenah] = useState<Array<{
+    id: string;
+    name: string;
+    roomType: string;
+    elements: any[];
   }>>([]);
 
-  // Fungsi untuk menambah kamar
+  // Load daftar denah dari localStorage
+  const loadDaftarDenah = () => {
+    const savedData = localStorage.getItem('savedLayouts');
+    if (savedData) {
+      try {
+        const layouts = JSON.parse(savedData);
+        setDaftarDenah(layouts);
+      } catch (error) {
+        console.error('Error loading layouts:', error);
+      }
+    }
+  };
+
+  // Fungsi untuk menambah kamar - membuka modal pilih denah
   const handleTambahKamar = () => {
-    const newKamar = {
-      id: Date.now(),
-      nomor: String(kamarList.length + 1),
-      tipe: 'Reguler',
-      status: 'Tersedia'
-    };
-    setKamarList([...kamarList, newKamar]);
+    loadDaftarDenah();
+    setShowPilihDenahModal(true);
+  };
+
+  // Fungsi untuk memilih denah dan menambah kamar
+  const handlePilihDenah = (layoutId: string) => {
+    const layout = daftarDenah.find(l => l.id === layoutId);
+    if (layout) {
+      const newKamar = {
+        id: Date.now(),
+        nomor: String(kamarList.length + 1),
+        tipe: layout.roomType,
+        status: 'Tersedia',
+        layoutId: layoutId
+      };
+      setKamarList([...kamarList, newKamar]);
+      setShowPilihDenahModal(false);
+    }
   };
 
   // Fungsi untuk menyimpan bangsal
@@ -574,6 +606,60 @@ export default function RoomMap() {
         </div>
       )}
 
+      {/* Modal Pilih Denah */}
+      {showPilihDenahModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div className="p-6 border-b flex-shrink-0">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">Pilih Denah Kamar</h3>
+                <button
+                  onClick={() => setShowPilihDenahModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              {daftarDenah.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <i className="fas fa-drafting-compass text-4xl mb-3 text-gray-300"></i>
+                  <p>Belum ada denah kamar yang dibuat</p>
+                  <p className="text-sm mt-1">Silakan buat denah di menu "Editor Kamar" terlebih dahulu</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {daftarDenah.map((layout) => (
+                    <div
+                      key={layout.id}
+                      onClick={() => handlePilihDenah(layout.id)}
+                      className="border-2 border-gray-200 rounded-lg p-4 hover:border-indigo-500 cursor-pointer transition"
+                    >
+                      <h4 className="font-semibold text-gray-800 mb-2">{layout.name}</h4>
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                          {layout.roomType}
+                        </span>
+                        <span>{layout.elements.length} elemen</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-6 border-t bg-gray-50 flex justify-end flex-shrink-0">
+              <button
+                onClick={() => setShowPilihDenahModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {activeTab === 'peta' && (
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h3 className="font-semibold text-gray-800 mb-4">
@@ -674,23 +760,44 @@ export default function RoomMap() {
                 <div className="flex gap-2 h-64">
                   {/* Kamar Kiri */}
                   <div className="flex-1 grid gap-2" style={{ gridTemplateRows: `repeat(${config.left}, 1fr)` }}>
-                    {kamarList.slice(0, config.left).map((kamar) => (
-                      <div 
-                        key={kamar.id}
-                        className="bg-blue-100 border-2 border-blue-400 rounded p-2 flex flex-col justify-center cursor-pointer hover:bg-blue-200 transition"
-                        onClick={() => {
-                          const nomor = prompt(`Edit nomor kamar:`, kamar.nomor);
-                          if (nomor) {
-                            setKamarList(kamarList.map(k => 
-                              k.id === kamar.id ? { ...k, nomor } : k
-                            ));
-                          }
-                        }}
-                      >
-                        <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
-                        <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
-                      </div>
-                    ))}
+                    {kamarList.slice(0, config.left).map((kamar) => {
+                      const layout = kamar.layoutId ? daftarDenah.find(l => l.id === kamar.layoutId) : null;
+                      
+                      return (
+                        <div 
+                          key={kamar.id}
+                          className={`${layout ? 'bg-white' : 'bg-blue-100'} border-2 ${layout ? 'border-gray-400' : 'border-blue-400'} rounded p-2 flex flex-col justify-center cursor-pointer hover:shadow-md transition relative overflow-hidden`}
+                          onClick={() => {
+                            const nomor = prompt(`Edit nomor kamar:`, kamar.nomor);
+                            if (nomor) {
+                              setKamarList(kamarList.map(k => 
+                                k.id === kamar.id ? { ...k, nomor } : k
+                              ));
+                            }
+                          }}
+                        >
+                          {layout ? (
+                            <>
+                              {/* Tampilkan denah */}
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="text-[10px] text-gray-500">
+                                  <i className="fas fa-drafting-compass"></i> Denah: {layout.name}
+                                </div>
+                              </div>
+                              <div className="relative z-10 bg-white bg-opacity-80 px-1 py-0.5 rounded">
+                                <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
+                                <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
+                              <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                   {/* Koridor */}
                   <div className="w-20 bg-gray-200 border-2 border-gray-400 rounded flex items-center justify-center">
@@ -698,23 +805,44 @@ export default function RoomMap() {
                   </div>
                   {/* Kamar Kanan */}
                   <div className="flex-1 grid gap-2" style={{ gridTemplateRows: `repeat(${config.right}, 1fr)` }}>
-                    {kamarList.slice(config.left, config.left + config.right).map((kamar) => (
-                      <div 
-                        key={kamar.id}
-                        className="bg-blue-100 border-2 border-blue-400 rounded p-2 flex flex-col justify-center cursor-pointer hover:bg-blue-200 transition"
-                        onClick={() => {
-                          const nomor = prompt(`Edit nomor kamar:`, kamar.nomor);
-                          if (nomor) {
-                            setKamarList(kamarList.map(k => 
-                              k.id === kamar.id ? { ...k, nomor } : k
-                            ));
-                          }
-                        }}
-                      >
-                        <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
-                        <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
-                      </div>
-                    ))}
+                    {kamarList.slice(config.left, config.left + config.right).map((kamar) => {
+                      const layout = kamar.layoutId ? daftarDenah.find(l => l.id === kamar.layoutId) : null;
+                      
+                      return (
+                        <div 
+                          key={kamar.id}
+                          className={`${layout ? 'bg-white' : 'bg-blue-100'} border-2 ${layout ? 'border-gray-400' : 'border-blue-400'} rounded p-2 flex flex-col justify-center cursor-pointer hover:shadow-md transition relative overflow-hidden`}
+                          onClick={() => {
+                            const nomor = prompt(`Edit nomor kamar:`, kamar.nomor);
+                            if (nomor) {
+                              setKamarList(kamarList.map(k => 
+                                k.id === kamar.id ? { ...k, nomor } : k
+                              ));
+                            }
+                          }}
+                        >
+                          {layout ? (
+                            <>
+                              {/* Tampilkan denah */}
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="text-[10px] text-gray-500">
+                                  <i className="fas fa-drafting-compass"></i> Denah: {layout.name}
+                                </div>
+                              </div>
+                              <div className="relative z-10 bg-white bg-opacity-80 px-1 py-0.5 rounded">
+                                <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
+                                <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="text-xs font-semibold text-center">Kamar {kamar.nomor}</div>
+                              <div className="text-[10px] text-center text-gray-600">{kamar.tipe}</div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
