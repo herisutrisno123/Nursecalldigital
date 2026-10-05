@@ -32,6 +32,24 @@ export default function RoomMap() {
     status: string;
   }>>([]);
 
+  // Fungsi untuk menambah kamar
+  const handleTambahKamar = () => {
+    const newKamar = {
+      id: Date.now(),
+      nomor: String(kamarList.length + 1),
+      tipe: 'Reguler',
+      status: 'Tersedia'
+    };
+    setKamarList([...kamarList, newKamar]);
+  };
+
+  // Fungsi untuk menyimpan bangsal
+  const handleSimpanBangsal = () => {
+    if (confirm('Simpan perubahan bangsal ini?')) {
+      alert('Bangsal berhasil disimpan!');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Tab Menu */}
@@ -675,33 +693,23 @@ export default function RoomMap() {
             );
           })()}
 
-          {/* Tombol Tambah Kamar dan Simpan - Dipindahkan keluar dari IIFE */}
+          {/* Tombol Tambah Kamar dan Simpan */}
           {selectedBangsalId && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 mt-4">
               <button
                 type="button"
-                onClick={() => {
-                  const newKamar = {
-                    id: Date.now(),
-                    nomor: String(kamarList.length + 1),
-                    tipe: 'Reguler',
-                    status: 'Tersedia'
-                  };
-                  setKamarList([...kamarList, newKamar]);
-                }}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
+                onClick={handleTambahKamar}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition cursor-pointer"
+                style={{ pointerEvents: 'auto' }}
               >
                 <i className="fas fa-plus mr-2"></i>
                 Tambah Kamar
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  if (confirm('Simpan perubahan bangsal ini?')) {
-                    alert('Bangsal berhasil disimpan!');
-                  }
-                }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                onClick={handleSimpanBangsal}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition cursor-pointer"
+                style={{ pointerEvents: 'auto' }}
               >
                 <i className="fas fa-save mr-2"></i>
                 Simpan
